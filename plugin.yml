@@ -1,0 +1,6 @@
+name: BaseTemplate
+main: main.java.me.avankziar.mim.spigot.MIM
+version: 1
+author: Avankziar
+api-version: 1.18
+description: A Mysql Inventory synchronization and Custom Inventory management.
