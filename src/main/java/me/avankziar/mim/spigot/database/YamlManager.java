@@ -188,7 +188,7 @@ public class YamlManager
 		String basePermission = "perm.base.";
 		argumentInput("base_argument", "argument", basePermission,
 				"/base argument <id>", "/econ deletelog ",
-				"&c/base argument &f| Ein Subbefehl",
+				"&c/base argument &f| Ein Unterbefehl",
 				"&c/base argument &f| A Subcommand.");
 	}
 	
