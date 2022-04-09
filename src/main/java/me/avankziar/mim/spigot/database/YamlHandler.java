@@ -9,6 +9,8 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -23,6 +25,11 @@ public class YamlHandler
 	
 	private File commands = null;
 	private YamlConfiguration com = new YamlConfiguration();
+	
+	private File server = null;
+	private YamlConfiguration ser = new YamlConfiguration();
+	
+	private LinkedHashMap<String, YamlConfiguration> worlds = new LinkedHashMap<>();
 	
 	private String languages;
 	private File language = null;
@@ -47,6 +54,16 @@ public class YamlHandler
 	public YamlConfiguration getLang()
 	{
 		return lang;
+	}
+	
+	public YamlConfiguration getSynServer()
+	{
+		return ser;
+	}
+	
+	public YamlConfiguration getSyncWorld(World world)
+	{
+		return worlds.get(world.getName());
 	}
 	
 	private YamlConfiguration loadYamlTask(File file, YamlConfiguration yaml)
@@ -194,23 +211,15 @@ public class YamlHandler
 				break;
 			}
 		}
-		/*
-		 * Set the standard languages
-		 */
+		
 		plugin.getYamlManager().setLanguageType(languageType);
-		/*
-		 * Start to make the specific languagefile.
-		 * Attention! Only one file will be created.
-		 */
+		
 		if(!mkdirLanguage())
 		{
 			return false;
 		}
-		/*
-		 * Here a example to create multiple flatfile for one purpose.
-		 * This example is been using for inventory-guis.
-		 */
-		if(!mkdirGUIs())
+		
+		if(!mkdirSyncro())
 		{
 			return false;
 		}
@@ -255,9 +264,57 @@ public class YamlHandler
 		return true;
 	}
 	
-	private boolean mkdirGUIs()
+	private boolean mkdirSyncro()
 	{
-		
+		File directory = new File(plugin.getDataFolder()+"/Synchronization/");
+		if(!directory.exists())
+		{
+			directory.mkdir();
+		}
+		/*
+		 * The rest is equals part from the config.yml
+		 */
+		server = new File(directory.getPath(), "server.yml");
+		if(!server.exists()) 
+		{
+			MIM.log.info("Create %lang%.yml...".replace("%lang%", "server"));
+			try(InputStream in = plugin.getResource("default.yml"))
+			{
+				Files.copy(in, config.toPath());
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		ser = loadYamlTask(server, ser);
+		if (ser == null)
+		{
+			return false;
+		}
+		writeFile(server, ser, plugin.getYamlManager().getSyncKey());
+		for(World w : Bukkit.getWorlds())
+		{
+			File world = new File(directory.getPath(), w.getName()+".yml");
+			if(!world.exists()) 
+			{
+				MIM.log.info("Create %lang%.yml...".replace("%lang%", w.getName()));
+				try(InputStream in = plugin.getResource("default.yml"))
+				{
+					Files.copy(in, config.toPath());
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			YamlConfiguration wo = loadYamlTask(world, new YamlConfiguration());
+			if (wo == null)
+			{
+				return false;
+			}
+			writeFile(world, wo, plugin.getYamlManager().getWorldKey());
+			writeFile(world, wo, plugin.getYamlManager().getSyncKey());
+			worlds.put(w.getName(), wo);
+		}
 		return true;
 	}
 }

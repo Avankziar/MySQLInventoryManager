@@ -19,6 +19,8 @@ public class YamlManager
 	private static LinkedHashMap<String, Language> configSpigotKeys = new LinkedHashMap<>();
 	private static LinkedHashMap<String, Language> commandsKeys = new LinkedHashMap<>();
 	private static LinkedHashMap<String, Language> languageKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> worldKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> syncKeys = new LinkedHashMap<>();
 	/*
 	 * Here are mutiplefiles in one "double" map. The first String key is the filename
 	 * So all filename muss be predefine. For example in the config.
@@ -30,6 +32,7 @@ public class YamlManager
 		initConfig();
 		initCommands();
 		initLanguage();
+		initSync();
 	}
 	
 	public ISO639_2B getLanguageType()
@@ -60,6 +63,16 @@ public class YamlManager
 	public LinkedHashMap<String, Language> getLanguageKey()
 	{
 		return languageKeys;
+	}
+	
+	public LinkedHashMap<String, Language> getWorldKey()
+	{
+		return worldKeys;
+	}
+	
+	public LinkedHashMap<String, Language> getSyncKey()
+	{
+		return syncKeys;
 	}
 	
 	public LinkedHashMap<String, LinkedHashMap<String, Language>> getGUIKey()
@@ -242,5 +255,16 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}))*/
+	}
+	
+	public void initSync() //INFO:Synchro
+	{
+		worldKeys.put("ServerOverWorldSettings",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		//ADDME alle anderen Events
+		syncKeys.put("SyncEvents.PlayerDropItem",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
 	}
 }

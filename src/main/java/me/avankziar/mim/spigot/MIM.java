@@ -7,7 +7,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -56,6 +59,9 @@ public class MIM extends JavaPlugin
 	
 	public static String infoCommandPath = "CmdBase";
 	public static String infoCommand = "/";
+	
+	public Set<UUID> playerInSync = new HashSet<>();
+	public Set<UUID> playerSyncComplete = new HashSet<>();
 	
 	private Base64Api base64Api;
 	
