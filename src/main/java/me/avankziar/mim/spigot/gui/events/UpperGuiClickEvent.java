@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import main.java.me.avankziar.mim.spigot.gui.GUIApi;
+import main.java.me.avankziar.mim.spigot.gui.GUI;
 
 public class UpperGuiClickEvent extends Event
 {	
@@ -17,7 +17,7 @@ public class UpperGuiClickEvent extends Event
 	private String pluginName;
 	private String inventoryIdentifier;
 	private String function;
-	private GUIApi.SettingsLevel settingsLevel;
+	private GUI.SettingsLevel settingsLevel;
 	private LinkedHashMap<String, Byte> valuesByte = new LinkedHashMap<>();
 	private LinkedHashMap<String, byte[]> valuesByteArray = new LinkedHashMap<>();
 	private LinkedHashMap<String, Double> valuesDouble = new LinkedHashMap<>();
@@ -30,7 +30,7 @@ public class UpperGuiClickEvent extends Event
 	private LinkedHashMap<String, String> valuesString = new LinkedHashMap<>();
 	
 	public UpperGuiClickEvent(InventoryClickEvent inventoryClickEvent,
-			String pluginName, String inventoryIdentifier, String function, GUIApi.SettingsLevel settingsLevel)
+			String pluginName, String inventoryIdentifier, String function, GUI.SettingsLevel settingsLevel)
 	{
 		setCancelled(false);
 		setInventoryClickEvent(inventoryClickEvent);
@@ -40,7 +40,7 @@ public class UpperGuiClickEvent extends Event
 		setSettingsLevel(settingsLevel);
 	}
 	
-	public Object getValue(GUIApi.Type type, String key)
+	public Object getValue(GUI.PersistentType type, String key)
 	{
 		switch(type)
 		{
@@ -168,12 +168,12 @@ public class UpperGuiClickEvent extends Event
 		this.function = function;
 	}
 
-	public GUIApi.SettingsLevel getSettingsLevel()
+	public GUI.SettingsLevel getSettingsLevel()
 	{
 		return settingsLevel;
 	}
 
-	public void setSettingsLevel(GUIApi.SettingsLevel settingsLevel)
+	public void setSettingsLevel(GUI.SettingsLevel settingsLevel)
 	{
 		this.settingsLevel = settingsLevel;
 	}

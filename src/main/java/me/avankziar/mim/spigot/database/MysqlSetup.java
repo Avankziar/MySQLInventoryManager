@@ -72,9 +72,42 @@ public class MysqlSetup
 	{
 		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.PLAYERDATA.getValue()
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		  		+ " player_uuid char(36) NOT NULL UNIQUE,"
+		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
-		  		+ " searchtype text);";
+		  		+ " synchro_key text,"
+		  		+ " game_mode text,"
+		  		
+		  		+ " inventory_content LONGTEXT,"
+		  		+ " armor_content LONGTEXT,"
+		  		+ " off_hand MEDIUMTEXT,"
+		  		+ " enderchest_content LONGTEXT,"
+		  		
+		  		+ " food_level int,"
+		  		+ " saturation float,"
+		  		+ " saturated_regen_rate int,"
+		  		+ " unsaturated_regen_rate int,"
+		  		+ " starvation_rate int,"
+		  		+ " exhaustion float,"
+		  		+ " attributes LONGTEXT,"
+		  		+ " health double,"
+		  		+ " absorption_amount double,"
+		  		+ " exp_towards_next_level float,"
+		  		+ " exp_level int,"
+		  		+ " total_experience int"
+		  		+ " walk_speed float,"
+		  		+ " fly_speed float,"
+		  		+ " fire_ticks int,"
+		  		+ " freeze_ticks int,"
+		  		+ " glowing boolean,"
+		  		+ " gravity boolean,"
+		  		+ " potion_effects LONGTEXT,"
+		  		+ " entity_category text,"
+		  		+ " arrows_in_body int,"
+		  		+ " maximum_air int,"
+		  		+ " remaining_air int,"
+		  		+ " custom_name text,"
+		  		+ " persistent_data LONGTEXT,"
+		  		+ " clear_toggle boolean);";
 		baseSetup(data);
 		return true;
 	}

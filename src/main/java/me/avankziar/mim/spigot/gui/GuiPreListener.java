@@ -54,16 +54,16 @@ public class GuiPreListener implements Listener
 	public void onGuiClose(InventoryCloseEvent event)
 	{
 		String uuid = event.getPlayer().getUniqueId().toString();
-		if(GUIApi.isInGui(uuid))
+		if(GUI.isInGui(uuid))
 		{
-			GUIApi.removeInGui(uuid);
+			GUI.removeInGui(uuid);
 		}
 	}
 	
 	private void getBottomGuiEvent(InventoryClickEvent event)
 	{
 		String uuid = event.getWhoClicked().getUniqueId().toString();
-		if(!GUIApi.isInGui(uuid))
+		if(!GUI.isInGui(uuid))
 		{
 			return;
 		}
@@ -72,7 +72,7 @@ public class GuiPreListener implements Listener
 		BottomGuiClickEvent gce = new BottomGuiClickEvent(
 				event, 
 				GuiValues.PLUGINNAME,
-				GUIApi.getGui(uuid));
+				GUI.getGui(uuid));
 		Bukkit.getPluginManager().callEvent(gce);
 	}
 	
@@ -83,11 +83,11 @@ public class GuiPreListener implements Listener
 			return;
 		}
 		ItemStack i = event.getCurrentItem().clone();
-		NamespacedKey npluginName = new NamespacedKey(plugin, GUIApi.PLUGINNAME);
-		NamespacedKey ninventoryIdentifier = new NamespacedKey(plugin, GUIApi.INVENTORYIDENTIFIER);
-		NamespacedKey nclickEventCancel = new NamespacedKey(plugin, GUIApi.CLICKEVENTCANCEL);
-		NamespacedKey nfunction = new NamespacedKey(plugin, GUIApi.FUNCTION);
-		NamespacedKey nsettingslevel = new NamespacedKey(plugin, GUIApi.SETTINGLEVEL);
+		NamespacedKey npluginName = new NamespacedKey(plugin, GUI.PLUGINNAME);
+		NamespacedKey ninventoryIdentifier = new NamespacedKey(plugin, GUI.INVENTORYIDENTIFIER);
+		NamespacedKey nclickEventCancel = new NamespacedKey(plugin, GUI.CLICKEVENTCANCEL);
+		NamespacedKey nfunction = new NamespacedKey(plugin, GUI.FUNCTION);
+		NamespacedKey nsettingslevel = new NamespacedKey(plugin, GUI.SETTINGLEVEL);
 		PersistentDataContainer pdc = i.getItemMeta().getPersistentDataContainer();
 		if(!pdc.has(npluginName, PersistentDataType.STRING)
 				|| !pdc.has(ninventoryIdentifier, PersistentDataType.STRING)
@@ -108,7 +108,7 @@ public class GuiPreListener implements Listener
 				pdc.get(npluginName, PersistentDataType.STRING),
 				pdc.get(ninventoryIdentifier, PersistentDataType.STRING), 
 				pdc.get(nfunction, PersistentDataType.STRING), 
-				GUIApi.SettingsLevel.valueOf(pdc.get(nsettingslevel, PersistentDataType.STRING)));
+				GUI.SettingsLevel.valueOf(pdc.get(nsettingslevel, PersistentDataType.STRING)));
 		for(NamespacedKey key : pdc.getKeys())
 		{
 			if(!key.getKey().contains(":::"))
@@ -117,7 +117,7 @@ public class GuiPreListener implements Listener
 			}
 			String[] split = key.getKey().split(":::");
 			String purekey = split[0];
-			GUIApi.Type type = GUIApi.Type.valueOf(split[1]);
+			GUI.PersistentType type = GUI.PersistentType.valueOf(split[1]);
 			switch(type)
 			{
 			case BYTE:

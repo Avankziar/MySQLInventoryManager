@@ -16,6 +16,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +32,8 @@ import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.database.MysqlSetup;
 import main.java.me.avankziar.mim.spigot.database.YamlHandler;
 import main.java.me.avankziar.mim.spigot.database.YamlManager;
+import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
+import main.java.me.avankziar.mim.spigot.ifh.Base64Api;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class MIM extends JavaPlugin
@@ -44,6 +47,7 @@ public class MIM extends JavaPlugin
 	private MysqlHandler mysqlHandler;
 	private Utility utility;
 	private BackgroundTask backgroundTask;
+	private ConfigHandler configHandler;
 	
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
@@ -53,12 +57,14 @@ public class MIM extends JavaPlugin
 	public static String infoCommandPath = "CmdBase";
 	public static String infoCommand = "/";
 	
+	private Base64Api base64Api;
+	
 	public void onEnable()
 	{
 		plugin = this;
 		log = getLogger();
 		
-		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Base
+		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=MIM
 		log.info("  | API-Version: "+plugin.getDescription().getAPIVersion());
 		log.info("  | Author: "+plugin.getDescription().getAuthors().toString());
 		log.info("  | Plugin Website: "+plugin.getDescription().getWebsite());
@@ -85,6 +91,8 @@ public class MIM extends JavaPlugin
 		setupBypassPerm();
 		setupCommandTree();
 		setupListeners();
+		configHandler = new ConfigHandler(this);
+		setupIFH();
 	}
 	
 	public void onDisable()
@@ -295,25 +303,46 @@ public class MIM extends JavaPlugin
 		//pm.registerEvents(new BackListener(plugin), plugin);
 	}
 	
+	public ConfigHandler getConfigHandler()
+	{
+		return configHandler;
+	}
+	
+	public Base64Api getBase64Api()
+	{
+		return base64Api;
+	}
+	
 	public boolean reload() throws IOException
 	{
 		yamlHandler = new YamlHandler(this);
 		return true;
 	}
 	
-	//Hier IFH implementieren für später
-	/*private void setupServerRules()
-	{      
-        if (plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	private void setupIFH()
+	{
+		if(!setupBase64())
 		{
-			srapi = new ServerRuleAPI(this);
-            plugin.getServer().getServicesManager().register(
-            		main.java.me.avankziar.interfacehub.spigot.serverrules.ServerRules.class,
-            		srapi,
-            		this,
-                    ServicePriority.Normal);
-            log.info(pluginName + " detected InterfaceHub. Hooking!");
-            return;
-        }
-	}*/
+			return;
+		}
+	}
+	
+	//Hier IFH implementieren für später
+	private boolean setupBase64()
+	{      
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "! Disable plugin!");
+			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
+	    	return false;
+	    }
+		base64Api = new Base64Api();
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.serializer.Base64.class,
+        base64Api,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> Base64.class is provided!");
+		return true;
+	}
 }

@@ -255,7 +255,7 @@ public class MysqlHandler
 		try (Connection conn = plugin.getMysqlSetup().getConnection();)
 		{
 			PreparedStatement ps = getPreparedStatement(conn,
-					" SELECT sum("+whereColumn+") FROM `" + type.getValue() + "` WHERE 1",
+					"SELECT sum("+whereColumn+") FROM `" + type.getValue() + "` WHERE 1",
 					1,
 					whereObject);
 	        ResultSet rs = ps.executeQuery();
@@ -296,7 +296,7 @@ public class MysqlHandler
 		return new ArrayList<>();
 	}
 	
-	public ArrayList<?> getFullList(Type type, String orderByColumn,
+	public ArrayList<Object> getFullList(Type type, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		Object object = type.getObject();

@@ -2,6 +2,7 @@ package main.java.me.avankziar.mim.spigot.assistance;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
@@ -18,22 +19,18 @@ public class Utility
 	
 	public static String convertUUIDToName(String uuid) throws IOException
 	{
-		String name = null;
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "player_uuid = ?", uuid))
 		{
-			name = ((PlayerData) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "player_uuid = ?", uuid)).getName();
-			return name;
+			return ((PlayerData) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "player_uuid = ?", uuid)).getName();
 		}
 		return null;
 	}
 	
-	public static String convertNameToUUID(String playername) throws IOException
+	public static UUID convertNameToUUID(String playername) throws IOException
 	{
-		String uuid = "";
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername))
 		{
-			uuid = ((PlayerData) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername)).getUUID();
-			return uuid;
+			return ((PlayerData) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername)).getUUID();
 		}
 		return null;
 	}

@@ -16,11 +16,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 
-public class GUIApi
+public class GUI
 {
-	public enum Type
+	public enum PersistentType
 	{
-		STRING, BYTE, BYTE_ARRAY, DOUBLE, FLOAT, INTEGER, INTEGER_ARRAY, LONG, LONG_ARRAY, SHORT
+		STRING, BYTE, BYTE_ARRAY, DOUBLE, FLOAT, INTEGER, INTEGER_ARRAY, LONG, LONG_ARRAY, SHORT;
 	}
 	/*
 	 * Als Einstellung zu verstehen, dass man bei bestimmten LEvel, nur bestimmte einstellmöglichkeiten sieht.
@@ -58,14 +58,14 @@ public class GUIApi
 	private String inventoryIdentifier;
 	private static JavaPlugin plugin = MIM.getPlugin();
 	
-	public GUIApi(String pluginName, String inventoryIdentifier, Inventory inventory)
+	public GUI(String pluginName, String inventoryIdentifier, Inventory inventory)
 	{
 		this.inventory = inventory;
 		this.pluginName = pluginName;
 		this.inventoryIdentifier = inventoryIdentifier;
 	}
 	
-	public GUIApi(String pluginName, String inventoryIdentifier, InventoryHolder owner, int row, String title)
+	public GUI(String pluginName, String inventoryIdentifier, InventoryHolder owner, int row, String title)
 	{
 		if(row > 6) row = 6;
 		this.inventory = Bukkit.createInventory(owner, row*9, title);
@@ -86,7 +86,7 @@ public class GUIApi
 	 */
 	public static ItemStack recreate(ItemStack itemstack, String pluginName, String inventoryIdentifier, 
 			String function, SettingsLevel settingsLevel, boolean clickEventCancel,
-			LinkedHashMap<String, Entry<Type, Object>> values)
+			LinkedHashMap<String, Entry<PersistentType, Object>> values)
 	{
 		ItemStack i = itemstack.clone();
 		ItemMeta im = i.getItemMeta();
@@ -100,7 +100,7 @@ public class GUIApi
 		{
 			for(String key : values.keySet())
 			{
-				Entry<Type, Object> value = values.get(key);
+				Entry<PersistentType, Object> value = values.get(key);
 				String fullkey = key+":::"+value.getKey();
 				switch(value.getKey())
 				{
@@ -171,22 +171,22 @@ public class GUIApi
 		return i;
 	}
 	
-	public void add(int slot, ItemStack itemstack, String function, SettingsLevel settingsLevel, boolean clickEventCancel,
-			LinkedHashMap<String, Entry<Type, Object>> values)
+	public void add(int slot, ItemStack itemstack, String function, SettingsLevel settingsLevel, boolean directEventCancelByClicking,
+			LinkedHashMap<String, Entry<PersistentType, Object>> values)
 	{
 		ItemStack i = itemstack.clone();
 		ItemMeta im = i.getItemMeta();
 		PersistentDataContainer pdc = im.getPersistentDataContainer();
 		pdc.set(new NamespacedKey(plugin, PLUGINNAME), PersistentDataType.STRING, this.pluginName);
 		pdc.set(new NamespacedKey(plugin, INVENTORYIDENTIFIER), PersistentDataType.STRING, this.inventoryIdentifier);
-		pdc.set(new NamespacedKey(plugin, CLICKEVENTCANCEL), PersistentDataType.STRING, String.valueOf(clickEventCancel));
+		pdc.set(new NamespacedKey(plugin, CLICKEVENTCANCEL), PersistentDataType.STRING, String.valueOf(directEventCancelByClicking));
 		pdc.set(new NamespacedKey(plugin, FUNCTION), PersistentDataType.STRING, function);
 		pdc.set(new NamespacedKey(plugin, SETTINGLEVEL), PersistentDataType.STRING, settingsLevel.getName());
 		if(values != null)
 		{
 			for(String key : values.keySet())
 			{
-				Entry<Type, Object> value = values.get(key);
+				Entry<PersistentType, Object> value = values.get(key);
 				String fullkey = key+":::"+value.getKey();
 				switch(value.getKey())
 				{
