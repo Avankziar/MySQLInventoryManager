@@ -2,12 +2,14 @@ package main.java.me.avankziar.mim.spigot.database;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.mim.spigot.database.Language.ISO639_2B;
+import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class YamlManager
 {
@@ -194,6 +196,14 @@ public class YamlManager
 	
 	private void comBypass() //INFO:ComBypass
 	{
+		List<Bypass.Permission> list = new ArrayList<Bypass.Permission>(EnumSet.allOf(Bypass.Permission.class));
+		for(Bypass.Permission ept : list)
+		{
+			commandsKeys.put("Bypass."+ept.toString().replace("_", "")
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"aep."+ept.toString().toLowerCase().replace("_", "")}));
+		}
+		
 		String path = "Bypass.";
 		commandsKeys.put(path+"Perm1.Perm"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
