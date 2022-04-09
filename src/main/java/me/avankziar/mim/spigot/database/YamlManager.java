@@ -23,7 +23,7 @@ public class YamlManager
 	private static LinkedHashMap<String, Language> syncKeys = new LinkedHashMap<>();
 	/*
 	 * Here are mutiplefiles in one "double" map. The first String key is the filename
-	 * So all filename muss be predefine. For example in the config.
+	 * So all filename must be predefine. For example in the config.
 	 */
 	private static LinkedHashMap<String, LinkedHashMap<String, Language>> guisKeys = new LinkedHashMap<>();
 	
@@ -81,7 +81,7 @@ public class YamlManager
 	}
 	
 	/*
-	 * The main methode to set all paths in the yamls.
+	 * The main method to set all paths in the yamls.
 	 */
 	public void setFileInput(YamlConfiguration yml, LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
 	{
