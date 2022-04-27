@@ -9,6 +9,7 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.mim.spigot.database.Language.ISO639_2B;
+import main.java.me.avankziar.mim.spigot.listener.BaseListener;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class YamlManager
@@ -126,15 +127,7 @@ public class YamlManager
 	}
 	
 	public void initConfig() //INFO:Config
-	{
-		/*
-		 * The normale single path. In the config make it no sense to add other language as English
-		 * But the ISO639_2B is here the default language from this plugin!
-		 */
-		configSpigotKeys.put("ServerName"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"hub"}));
-		
+	{		
 		configSpigotKeys.put("Mysql.Status"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
@@ -163,9 +156,16 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"not_0123456789"}));
 		
+		configSpigotKeys.put("SleepMode"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		
 		configSpigotKeys.put("EnableCommands.Base"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
+		configSpigotKeys.put("Default.ClearToggle"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
 		/*
 		 * The "Stringlist" are define so.
 		 */
@@ -272,9 +272,18 @@ public class YamlManager
 		worldKeys.put("ServerOverWorldSettings",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
-		//ADDME alle anderen Events
-		syncKeys.put("SyncEvents.PlayerDropItem",
+		syncKeys.put("Synchrokey",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
+				"default"}));
+		syncKeys.put("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				5}));
+		List<BaseListener.Type> events = new ArrayList<BaseListener.Type>(EnumSet.allOf(BaseListener.Type.class));
+		for(BaseListener.Type event : events)
+		{
+			syncKeys.put("SyncEvents."+event.getName(),
+					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
+		}
 	}
 }

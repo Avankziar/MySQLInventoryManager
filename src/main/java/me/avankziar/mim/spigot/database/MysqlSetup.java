@@ -32,6 +32,14 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseII())
+		{
+			return false;
+		}
+		if(!setupDatabaseIII())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -93,7 +101,7 @@ public class MysqlSetup
 		  		+ " absorption_amount double,"
 		  		+ " exp_towards_next_level float,"
 		  		+ " exp_level int,"
-		  		+ " total_experience int"
+		  		+ " total_experience int,"
 		  		+ " walk_speed float,"
 		  		+ " fly_speed float,"
 		  		+ " fire_ticks int,"
@@ -108,6 +116,88 @@ public class MysqlSetup
 		  		+ " custom_name text,"
 		  		+ " persistent_data LONGTEXT,"
 		  		+ " clear_toggle boolean);";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseII() 
+	{
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
+		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		  		+ " time_stamp BIGINT"
+		  		+ " player_uuid char(36) NOT NULL,"
+		  		+ " synchro_key text,"
+		  		+ " game_mode text,"
+		  		
+		  		+ " inventory_content LONGTEXT,"
+		  		+ " armor_content LONGTEXT,"
+		  		+ " off_hand MEDIUMTEXT,"
+		  		
+		  		+ " food_level int,"
+		  		+ " saturation float,"
+		  		+ " saturated_regen_rate int,"
+		  		+ " unsaturated_regen_rate int,"
+		  		+ " starvation_rate int,"
+		  		+ " exhaustion float,"
+		  		+ " attributes LONGTEXT,"
+		  		+ " health double,"
+		  		+ " absorption_amount double,"
+		  		+ " exp_towards_next_level float,"
+		  		+ " exp_level int,"
+		  		+ " walk_speed float,"
+		  		+ " fly_speed float,"
+		  		+ " fire_ticks int,"
+		  		+ " freeze_ticks int,"
+		  		+ " glowing boolean,"
+		  		+ " gravity boolean,"
+		  		+ " potion_effects LONGTEXT,"
+		  		+ " entity_category text,"
+		  		+ " arrows_in_body int,"
+		  		+ " maximum_air int,"
+		  		+ " remaining_air int,"
+		  		+ " custom_name text,"
+		  		+ " persistent_data LONGTEXT);";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseIII() 
+	{
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
+		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		  		+ " state_name text"
+		  		+ " synchro_key text,"
+		  		+ " game_mode text,"
+		  		
+		  		+ " inventory_content LONGTEXT,"
+		  		+ " armor_content LONGTEXT,"
+		  		+ " off_hand MEDIUMTEXT,"
+		  		+ " enderchest_content LONGTEXT,"
+		  		
+		  		+ " food_level int,"
+		  		+ " saturation float,"
+		  		+ " saturated_regen_rate int,"
+		  		+ " unsaturated_regen_rate int,"
+		  		+ " starvation_rate int,"
+		  		+ " exhaustion float,"
+		  		+ " attributes LONGTEXT,"
+		  		+ " health double,"
+		  		+ " absorption_amount double,"
+		  		+ " exp_towards_next_level float,"
+		  		+ " exp_level int,"
+		  		+ " walk_speed float,"
+		  		+ " fly_speed float,"
+		  		+ " fire_ticks int,"
+		  		+ " freeze_ticks int,"
+		  		+ " glowing boolean,"
+		  		+ " gravity boolean,"
+		  		+ " potion_effects LONGTEXT,"
+		  		+ " entity_category text,"
+		  		+ " arrows_in_body int,"
+		  		+ " maximum_air int,"
+		  		+ " remaining_air int,"
+		  		+ " custom_name text,"
+		  		+ " persistent_data LONGTEXT);";
 		baseSetup(data);
 		return true;
 	}

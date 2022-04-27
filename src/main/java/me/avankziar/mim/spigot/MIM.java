@@ -71,12 +71,12 @@ public class MIM extends JavaPlugin
 		log = getLogger();
 		
 		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=MIM
-		log.info("  | API-Version: "+plugin.getDescription().getAPIVersion());
-		log.info("  | Author: "+plugin.getDescription().getAuthors().toString());
-		log.info("  | Plugin Website: "+plugin.getDescription().getWebsite());
-		log.info("  | Depend Plugins: "+plugin.getDescription().getDepend().toString());
-		log.info("  | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
-		log.info("  | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
+		log.info(" ███╗   ███╗██╗███╗   ███╗ | API-Version: "+plugin.getDescription().getAPIVersion());
+		log.info(" ████╗ ████║██║████╗ ████║ | Author: "+plugin.getDescription().getAuthors().toString());
+		log.info(" ██╔████╔██║██║██╔████╔██║ | Plugin Website: "+plugin.getDescription().getWebsite());
+		log.info(" ██║╚██╔╝██║██║██║╚██╔╝██║ | Depend Plugins: "+plugin.getDescription().getDepend().toString());
+		log.info(" ██║ ╚═╝ ██║██║██║ ╚═╝ ██║ | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
+		log.info(" ╚═╝     ╚═╝╚═╝╚═╝     ╚═╝ | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
 		
 		yamlHandler = new YamlHandler(this);
 		
