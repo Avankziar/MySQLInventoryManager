@@ -10,6 +10,7 @@ import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.mim.spigot.handler.DeathMemoryStateHandler;
 import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
+import main.java.me.avankziar.mim.spigot.handler.PredefinePlayerStateHandler;
 
 public class SyncTask extends BukkitRunnable
 {
@@ -25,7 +26,11 @@ public class SyncTask extends BukkitRunnable
 	private RunType runType;
 	private Player player;
 	private GameMode targetMode;
+	
 	private int deathMemoryState;
+	
+	private String synchroKey;
+	private String statename;
 	
 	public SyncTask(MIM plugin, SyncType syncType, RunType runType, final Player player)
 	{
@@ -53,6 +58,15 @@ public class SyncTask extends BukkitRunnable
 		this.player = player;
 		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
+	
+	public SyncTask(MIM plugin, SyncType syncType, RunType runType, final Player player, String statename, @Nullable String sychroKey)
+	{
+		this.plugin = plugin;
+		this.syncType = syncType;
+		this.runType = runType;
+		this.player = player;
+		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
+	}
 
 	@Override
 	public void run()
@@ -76,10 +90,10 @@ public class SyncTask extends BukkitRunnable
 			DeathMemoryStateHandler.load(syncType, player, deathMemoryState);
 		} else if(runType == RunType.SAVEPREDEFINESTATE)
 		{
-			
+			PredefinePlayerStateHandler.save(syncType, player, statename, synchroKey);
 		} else if(runType == RunType.LOADPREDEFINESTATE)
 		{
-			
+			PredefinePlayerStateHandler.load(syncType, player, statename);
 		}
 		plugin.playerInSync.remove(player.getUniqueId());
 		plugin.playerSyncComplete.add(player.getUniqueId());

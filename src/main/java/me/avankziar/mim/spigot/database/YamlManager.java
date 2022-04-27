@@ -275,6 +275,21 @@ public class YamlManager
 		syncKeys.put("Synchrokey",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"default"}));
+		syncKeys.put("Load.OnFirstJoin.PredefineState",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		syncKeys.put("Load.OnFirstJoin.PredefineStatename",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"here_statename"}));
+		syncKeys.put("Load.Always.PredefineState",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		syncKeys.put("Load.Always.PredefineStatename",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"here_statename"}));
+		syncKeys.put("Reset.OnQuit",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
 		syncKeys.put("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				5}));

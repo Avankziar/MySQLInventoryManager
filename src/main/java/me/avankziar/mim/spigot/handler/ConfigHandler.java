@@ -15,15 +15,15 @@ public class ConfigHandler
 		this.plugin = plugin;
 	}
 	
-	public String getSynchroKey(Player player)
+	public YamlConfiguration getSyncYaml(World world)
 	{
-		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(player.getWorld());
+		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(world);
 		if(w == null)
 		{
 			w = plugin.getYamlHandler().getSynServer();
 			if(w == null)
 			{
-				return "default";
+				return null;
 			}
 		} else
 		{
@@ -32,9 +32,19 @@ public class ConfigHandler
 				w = plugin.getYamlHandler().getSynServer();
 				if(w == null)
 				{
-					return "default";
+					return null;
 				} 
 			}
+		}
+		return w;
+	}
+	
+	public String getSynchroKey(Player player)
+	{
+		YamlConfiguration w = getSyncYaml(player.getWorld());
+		if(w == null)
+		{
+			return "default";
 		}
 		return w.getString("Synchrokey", "default");
 	}
@@ -46,24 +56,10 @@ public class ConfigHandler
 	
 	public boolean isEventEnabled(String event, World world)
 	{
-		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(world);
+		YamlConfiguration w = getSyncYaml(world);
 		if(w == null)
 		{
-			w = plugin.getYamlHandler().getSynServer();
-			if(w == null)
-			{
-				return false;
-			}
-		} else
-		{
-			if(w.getBoolean("ServerOverWorldSettings"))
-			{
-				w = plugin.getYamlHandler().getSynServer();
-				if(w == null)
-				{
-					return false;
-				} 
-			}
+			return false;
 		}
 		return w.getBoolean("SyncEvents."+event, false);
 	}
@@ -73,26 +69,52 @@ public class ConfigHandler
 		return plugin.getYamlHandler().getConfig().getBoolean("SleepMode", false);
 	}
 	
-	public int getMaximalAmountDeathMemoryStatePerPlayer(World world)
+	public boolean loadPredefineOnFirstJoin(World world)
 	{
-		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(world);
+		YamlConfiguration w = getSyncYaml(world);
 		if(w == null)
 		{
-			w = plugin.getYamlHandler().getSynServer();
-			if(w == null)
-			{
-				return 0;
-			}
-		} else
+			return false;
+		}
+		return w.getBoolean("Load.OnFirstJoin.PredefineState", false);
+	}
+	
+	public String getPredefineStatenameOnFristJoin(World world)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
 		{
-			if(w.getBoolean("ServerOverWorldSettings", true))
-			{
-				w = plugin.getYamlHandler().getSynServer();
-				if(w == null)
-				{
-					return 0;
-				} 
-			}
+			return "default";
+		}
+		return w.getString("Load.OnFirstJoin.PredefineStatename", "default");
+	}
+	
+	public boolean loadPredefineAlways(World world)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
+		{
+			return false;
+		}
+		return w.getBoolean("Load.Always.PredefineState", false);
+	}
+	
+	public String getPredefineStatenameAlways(World world)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
+		{
+			return null;
+		}
+		return w.getString("Load.Always.PredefineStatename", "default");
+	}
+	
+	public int getMaximalAmountDeathMemoryStatePerPlayer(World world)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
+		{
+			return 0;
 		}
 		return w.getInt("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey", 0);
 	}
