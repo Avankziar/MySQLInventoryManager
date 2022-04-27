@@ -11,6 +11,32 @@ import main.java.me.avankziar.mim.spigot.MIM;
 
 public class BaseListener implements Listener
 {
+	public enum Type
+	{
+		ENTITYPICKUPITEM("EntityPickUpItem"),
+		PLAYERCHANGEWORLD("PlayerChangeWorld"),
+		PLAYERDROPITEM("PlayerDropItem"),
+		PLAYEREXPCHANGE("PlayerExpChange"),
+		PLAYERGAMEMODECHANGE("PlayerGameModeChange"),
+		PLAYERHARVESTBLOCK("PlayerHarvestBlock"),
+		PLAYERLEVELCHANGE("PlayerLevelChange"),
+		PLAYERRESPAWN("PlayerRespawn"),
+		PLAYERTELEPORT("PlayerTeleport"),
+		TIMESKIP("TimeSkip"),
+		;
+		
+		private String name;
+		
+		Type(String name)
+		{
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+	}
 	public MIM plugin;
 	private static Set<UUID> cooldown = new HashSet<>();
 	

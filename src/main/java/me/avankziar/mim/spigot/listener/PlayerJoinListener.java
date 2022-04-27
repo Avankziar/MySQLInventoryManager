@@ -3,38 +3,26 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
-public class PlayerDropItemListener extends BaseListener
+public class PlayerJoinListener extends BaseListener
 {
-	public PlayerDropItemListener(MIM plugin)
+	public PlayerJoinListener(MIM plugin)
 	{
 		super(plugin);
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
-	public void onPlayerDropItem(PlayerDropItemEvent event)
+	public void onPlayerQuit(PlayerJoinEvent event)
 	{
-		if(event.isCancelled())
-		{
-			return;
-		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYERDROPITEM.getName(), event.getPlayer().getWorld()))
-		{
-			return;
-		}
 		Player player = event.getPlayer();
-		if(!preChecks(player))
-		{
-			return;
-		}
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.INVENTORY, RunType.SAVE, player).run();
+		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player, player.getGameMode()).run();
 		removeCooldown(player.getUniqueId());
 	}
 }

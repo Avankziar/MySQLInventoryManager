@@ -117,7 +117,7 @@ public class PlayerData implements MysqlHandable
 		setClearToggle(clearToggle);
 	}
 	
-	private PlayerData(int id, String synchroKey, GameMode gameMode, UUID uuid, String name, 
+	public PlayerData(int id, String synchroKey, GameMode gameMode, UUID uuid, String name, 
 			String inventoryContents, String armorContents, String offHand, 
 			String enderchestContents, int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, String attributes, double health, 
@@ -575,7 +575,15 @@ public class PlayerData implements MysqlHandable
 					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`, `glowing`, `gravity`,"
 					+ " `potion_effects`, `entity_category`, `arrows_in_body`, `maximum_air`, `remaining_air`, `custom_name`,"
 					+ " `persistent_data`, `clear_toggle`) " 
-					+ "VALUES(?, ?)";
+					+ "VALUES(?, ?, "
+					+ "?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, "
+					+ "?, ?, ?, "
+					+ "?, ?, ?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, ?, "
+					+ "?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
