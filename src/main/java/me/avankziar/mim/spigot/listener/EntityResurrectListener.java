@@ -3,28 +3,36 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
-public class PlayerRespawnListener extends BaseListener
+public class EntityResurrectListener extends BaseListener
 {
-	public PlayerRespawnListener(MIM plugin)
+	public EntityResurrectListener(MIM plugin)
 	{
-		super(plugin, BaseListener.Type.PLAYER_RESPAWN);
+		super(plugin, BaseListener.Type.ENTITY_RESURRECT);
 	}
 	
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event)
+	@EventHandler (priority = EventPriority.NORMAL)
+	public void onEntityResurrect(EntityResurrectEvent event)
 	{
-		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getRespawnLocation().getWorld()))
+		if(event.isCancelled())
 		{
 			return;
 		}
-		Player player = event.getPlayer();
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getEntity().getWorld()))
+		{
+			return;
+		}
+		if(!(event.getEntity() instanceof Player))
+		{
+			return;
+		}
+		Player player = (Player) event.getEntity();
 		addCooldown(player.getUniqueId());
 		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
 		removeCooldown(player.getUniqueId());	

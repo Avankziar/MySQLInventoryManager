@@ -3,28 +3,34 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
-public class PlayerDeathListener extends BaseListener
+public class EntityTameListener extends BaseListener
 {
-	public PlayerDeathListener(MIM plugin)
+	public EntityTameListener(MIM plugin)
 	{
-		super(plugin, BaseListener.Type.PLAYER_DEATH);
+		super(plugin, BaseListener.Type.ENTITY_TAME);
 	}
 	
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onPlayerDeath(PlayerDeathEvent event)
+	@EventHandler (priority = EventPriority.NORMAL)
+	public void onEntityTame(EntityTameEvent event)
 	{
+		if(event.isCancelled())
+		{
+			return;
+		}
 		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getEntity().getWorld()))
 		{
 			return;
 		}
-		final Player player = event.getEntity();
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE_DEATHSTATE, player).run();
+		Player player = (Player) event.getOwner();
+		addCooldown(player.getUniqueId());
+		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
+		removeCooldown(player.getUniqueId());	
 	}
 }

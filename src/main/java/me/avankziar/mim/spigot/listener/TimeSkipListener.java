@@ -15,7 +15,7 @@ public class TimeSkipListener extends BaseListener
 {
 	public TimeSkipListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.WORLD_TIMESKIP);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
@@ -29,7 +29,7 @@ public class TimeSkipListener extends BaseListener
 		{
 			return;
 		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.TIMESKIP.getName(), event.getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getWorld()))
 		{
 			return;
 		}

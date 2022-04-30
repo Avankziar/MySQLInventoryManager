@@ -14,13 +14,13 @@ public class InventoryCloseListener extends BaseListener
 {
 	public InventoryCloseListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.INVENTORY_CLOSE);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYERTELEPORT.getName(), event.getPlayer().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getPlayer().getWorld()))
 		{
 			return;
 		}

@@ -230,7 +230,7 @@ public class DeathMemoryStateHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
@@ -384,7 +384,7 @@ public class DeathMemoryStateHandler
 		if(dms == null)
 		{
 			return;
-		}
+		}//ADDME noch den fall einbauen, dass der Spieler nicht on ist. Bungeecord?
 		if(syncType != SyncType.FULL)
 		{
 			load(syncType, player, dms);
@@ -430,7 +430,7 @@ public class DeathMemoryStateHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			player.setFoodLevel(dms.getFoodLevel());

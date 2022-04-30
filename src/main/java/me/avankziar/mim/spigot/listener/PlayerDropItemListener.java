@@ -14,7 +14,7 @@ public class PlayerDropItemListener extends BaseListener
 {
 	public PlayerDropItemListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.PLAYER_DROPITEM);
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
@@ -24,7 +24,7 @@ public class PlayerDropItemListener extends BaseListener
 		{
 			return;
 		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYERDROPITEM.getName(), event.getPlayer().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getPlayer().getWorld()))
 		{
 			return;
 		}

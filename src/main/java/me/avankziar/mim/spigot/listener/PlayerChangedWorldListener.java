@@ -14,12 +14,16 @@ public class PlayerChangedWorldListener extends BaseListener
 {
 	public PlayerChangedWorldListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.PLAYER_CHANGEDWORLD);
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void onPlayerChangeWorld(PlayerChangedWorldEvent event)
 	{
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getPlayer().getWorld()))
+		{
+			return;
+		}
 		Player player = event.getPlayer();
 		addCooldown(player.getUniqueId());
 		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player).run();

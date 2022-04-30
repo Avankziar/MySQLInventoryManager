@@ -227,7 +227,7 @@ public class PredefinePlayerStateHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
@@ -431,7 +431,7 @@ public class PredefinePlayerStateHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			player.setFoodLevel(pps.getFoodLevel());

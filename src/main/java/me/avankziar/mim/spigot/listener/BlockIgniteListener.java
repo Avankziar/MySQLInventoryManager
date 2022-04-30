@@ -3,30 +3,34 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
-public class PlayerRespawnListener extends BaseListener
+public class BlockIgniteListener extends BaseListener
 {
-	public PlayerRespawnListener(MIM plugin)
+	public BlockIgniteListener(MIM plugin)
 	{
-		super(plugin, BaseListener.Type.PLAYER_RESPAWN);
+		super(plugin, BaseListener.Type.BLOCK_IGNITE);
 	}
 	
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event)
+	@EventHandler (priority = EventPriority.NORMAL)
+	public void onBlockIgnite(BlockIgniteEvent event)
 	{
-		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getRespawnLocation().getWorld()))
+		if(event.isCancelled())
+		{
+			return;
+		}
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getBlock().getWorld()))
 		{
 			return;
 		}
 		Player player = event.getPlayer();
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
+		new SyncTask(plugin, SyncType.INV_ONLY, RunType.SAVE, player).run();
 		removeCooldown(player.getUniqueId());	
 	}
 }

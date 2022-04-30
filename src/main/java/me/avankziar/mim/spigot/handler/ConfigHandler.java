@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.listener.BaseListener;
 
 public class ConfigHandler
 {
@@ -109,6 +110,16 @@ public class ConfigHandler
 		return w.getString("Load.Always.PredefineStatename", "default");
 	}
 	
+	public boolean isClearAndResetByQuit(World world)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
+		{
+			return false;
+		}
+		return w.getBoolean("ClearAndReset.OnLeaveOrQuit", false);
+	}
+	
 	public int getMaximalAmountDeathMemoryStatePerPlayer(World world)
 	{
 		YamlConfiguration w = getSyncYaml(world);
@@ -117,5 +128,15 @@ public class ConfigHandler
 			return 0;
 		}
 		return w.getInt("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey", 0);
+	}
+	
+	public int getTimeDelayInSecsRemoveCooldown(World world, BaseListener.Type btype)
+	{
+		YamlConfiguration w = getSyncYaml(world);
+		if(w == null)
+		{
+			return 5;
+		}
+		return w.getInt("SyncEvents."+btype.getName()+".TimeDelayInSecs.RemoveCooldown", 5);
 	}
 }

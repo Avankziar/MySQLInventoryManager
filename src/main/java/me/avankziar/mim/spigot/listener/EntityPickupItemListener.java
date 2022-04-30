@@ -15,7 +15,7 @@ public class EntityPickupItemListener extends BaseListener
 {
 	public EntityPickupItemListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.ENTITY_PICKUPITEM);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
@@ -29,7 +29,7 @@ public class EntityPickupItemListener extends BaseListener
 		{
 			return;
 		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.ENTITYPICKUPITEM.getName(), event.getEntity().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getEntity().getWorld()))
 		{
 			return;
 		}

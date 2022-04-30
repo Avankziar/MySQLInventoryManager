@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.handler.ClearAndResetHandler;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.mim.spigot.handler.DeathMemoryStateHandler;
 import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
@@ -16,9 +17,10 @@ public class SyncTask extends BukkitRunnable
 {
 	public enum RunType
 	{
+		CLEAR_AND_RESET,
 		LOAD, SAVE, 
-		LOADDEATHSTATE, SAVEDEATHSTATE,
-		LOADPREDEFINESTATE, SAVEPREDEFINESTATE;
+		LOAD_DEATHSTATE, SAVE_DEATHSTATE,
+		LOAD_PREDEFINESTATE, SAVE_PREDEFINESTATE;
 	}
 	
 	private MIM plugin;
@@ -54,7 +56,7 @@ public class SyncTask extends BukkitRunnable
 	{
 		this.plugin = plugin;
 		this.syncType = syncType;
-		this.runType = RunType.LOADDEATHSTATE;
+		this.runType = RunType.LOAD_DEATHSTATE;
 		this.player = player;
 		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
@@ -82,18 +84,27 @@ public class SyncTask extends BukkitRunnable
 			{
 				PlayerDataHandler.load(syncType, player, targetMode);
 			}
-		} else if(runType == RunType.SAVEDEATHSTATE)
+		} else if(runType == RunType.SAVE_DEATHSTATE)
 		{
 			DeathMemoryStateHandler.save(syncType, player);
-		} else if(runType == RunType.LOADDEATHSTATE)
+		} else if(runType == RunType.LOAD_DEATHSTATE)
 		{
-			DeathMemoryStateHandler.load(syncType, player, deathMemoryState);
-		} else if(runType == RunType.SAVEPREDEFINESTATE)
+			if(!new ConfigHandler(plugin).inSleepMode())
+			{
+				DeathMemoryStateHandler.load(syncType, player, deathMemoryState);
+			}
+		} else if(runType == RunType.SAVE_PREDEFINESTATE)
 		{
 			PredefinePlayerStateHandler.save(syncType, player, statename, synchroKey);
-		} else if(runType == RunType.LOADPREDEFINESTATE)
+		} else if(runType == RunType.LOAD_PREDEFINESTATE)
 		{
-			PredefinePlayerStateHandler.load(syncType, player, statename);
+			if(!new ConfigHandler(plugin).inSleepMode())
+			{
+				PredefinePlayerStateHandler.load(syncType, player, statename);
+			}
+		} else if(runType == RunType.CLEAR_AND_RESET)
+		{
+			ClearAndResetHandler.clearAndReset(syncType, player); //DO ONLY If the player DONT quit the server!
 		}
 		plugin.playerInSync.remove(player.getUniqueId());
 		plugin.playerSyncComplete.add(player.getUniqueId());

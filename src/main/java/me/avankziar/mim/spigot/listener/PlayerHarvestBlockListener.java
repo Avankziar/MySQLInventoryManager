@@ -14,7 +14,7 @@ public class PlayerHarvestBlockListener extends BaseListener
 {
 	public PlayerHarvestBlockListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.PLAYER_HARVESTBLOCK);
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
@@ -24,7 +24,7 @@ public class PlayerHarvestBlockListener extends BaseListener
 		{
 			return;
 		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYERHARVESTBLOCK.getName(), event.getHarvestedBlock().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getHarvestedBlock().getWorld()))
 		{
 			return;
 		}

@@ -13,7 +13,7 @@ public class PlayerTeleportListener extends BaseListener
 {
 	public PlayerTeleportListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.PLAYER_TELEPORT);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
@@ -27,7 +27,7 @@ public class PlayerTeleportListener extends BaseListener
 		{
 			return;
 		}
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYERTELEPORT.getName(), event.getFrom().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getFrom().getWorld()))
 		{
 			return;
 		}

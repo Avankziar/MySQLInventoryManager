@@ -230,7 +230,7 @@ public class PlayerDataHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
@@ -440,7 +440,7 @@ public class PlayerDataHandler
 	{
 		switch(syncType)
 		{
-		case FULL:
+		default:
 			return;
 		case ATTRIBUTE:
 			player.setFoodLevel(pd.getFoodLevel());

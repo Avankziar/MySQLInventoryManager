@@ -14,13 +14,13 @@ public class PlayerExpChangeListener extends BaseListener
 {
 	public PlayerExpChangeListener(MIM plugin)
 	{
-		super(plugin);
+		super(plugin, BaseListener.Type.PLAYER_EXPCHANGE);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onPlayerExpChangeBlock(PlayerExpChangeEvent event)
 	{
-		if(!plugin.getConfigHandler().isEventEnabled(BaseListener.Type.PLAYEREXPCHANGE.getName(), event.getPlayer().getWorld()))
+		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getPlayer().getWorld()))
 		{
 			return;
 		}

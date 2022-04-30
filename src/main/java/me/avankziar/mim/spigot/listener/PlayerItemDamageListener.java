@@ -3,22 +3,22 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
-public class PlayerGameModeChangeListener extends BaseListener
+public class PlayerItemDamageListener extends BaseListener
 {
-	public PlayerGameModeChangeListener(MIM plugin)
+	public PlayerItemDamageListener(MIM plugin)
 	{
-		super(plugin, BaseListener.Type.PLAYER_GAMEMODECHANGE);
+		super(plugin, BaseListener.Type.PLAYER_ITEMDAMGE);
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void onGameModeChangeQuit(PlayerGameModeChangeEvent event)
+	public void onPlayerItemDamage(PlayerItemDamageEvent event)
 	{
 		if(event.isCancelled())
 		{
@@ -30,8 +30,7 @@ public class PlayerGameModeChangeListener extends BaseListener
 		}
 		Player player = event.getPlayer();
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
-		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player, event.getNewGameMode()).run();
-		removeCooldown(player.getUniqueId());
+		new SyncTask(plugin, SyncType.INVENTORY, RunType.SAVE, player).run();
+		removeCooldown(player.getUniqueId());	
 	}
 }

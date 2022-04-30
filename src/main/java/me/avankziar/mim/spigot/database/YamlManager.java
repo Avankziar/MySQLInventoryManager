@@ -287,10 +287,13 @@ public class YamlManager
 		syncKeys.put("Load.Always.PredefineStatename",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"here_statename"}));
-		syncKeys.put("Reset.OnQuit",
+		syncKeys.put("ClearAndReset.OnLeaveOrQuit",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
 		syncKeys.put("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				5}));
+		syncKeys.put("TimeDelayInSecs.RemoveCooldown",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				5}));
 		List<BaseListener.Type> events = new ArrayList<BaseListener.Type>(EnumSet.allOf(BaseListener.Type.class));
@@ -299,6 +302,31 @@ public class YamlManager
 			syncKeys.put("SyncEvents."+event.getName(),
 					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
+			int i = 5;
+			switch(event)
+			{
+			default:
+				break;
+			case BLOCK_SIGNCHANGE:
+			case ENTITY_RESURRECT:
+			case ENTITY_TAME:
+			case PLAYER_CHANGEDWORLD:
+			case PLAYER_JOIN:
+			case PLAYER_QUIT:
+			case PLAYER_RESPAWN:
+			case PLAYER_TELEPORT:
+				i = 15;
+				break;
+			case PLAYER_GAMEMODECHANGE:
+				i = 30;
+				break;
+			case WORLD_TIMESKIP:
+				i = 60;
+				break;
+			}
+			syncKeys.put("SyncEvents."+event.getName()+".TimeDelayInSecs.RemoveCooldown",
+					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					i}));
 		}
 	}
 }
