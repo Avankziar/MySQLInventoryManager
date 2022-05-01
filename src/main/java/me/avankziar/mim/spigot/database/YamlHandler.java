@@ -31,6 +31,8 @@ public class YamlHandler
 	
 	private LinkedHashMap<String, YamlConfiguration> worlds = new LinkedHashMap<>();
 	
+	private LinkedHashMap<String, YamlConfiguration> customPlayerInventory = new LinkedHashMap<>();
+	
 	private String languages;
 	private File language = null;
 	private YamlConfiguration lang = new YamlConfiguration();
@@ -64,6 +66,11 @@ public class YamlHandler
 	public YamlConfiguration getSyncWorld(World world)
 	{
 		return worlds.get(world.getName());
+	}
+	
+	public YamlConfiguration getCustomPlayerInventory(String uniquename)
+	{
+		return customPlayerInventory.get(uniquename);
 	}
 	
 	private YamlConfiguration loadYamlTask(File file, YamlConfiguration yaml)
@@ -183,7 +190,7 @@ public class YamlHandler
 			try(InputStream in = plugin.getResource("default.yml"))
 			{
 				//Erstellung einer "leere" config.yml
-				Files.copy(in, config.toPath());
+				Files.copy(in, commands.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -223,6 +230,11 @@ public class YamlHandler
 		{
 			return false;
 		}
+		
+		if(!mkdirCustomPlayerInventory())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -249,7 +261,7 @@ public class YamlHandler
 			MIM.log.info("Create %lang%.yml...".replace("%lang%", languageString));
 			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				Files.copy(in, config.toPath());
+				Files.copy(in, language.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -280,7 +292,7 @@ public class YamlHandler
 			MIM.log.info("Create %lang%.yml...".replace("%lang%", "server"));
 			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				Files.copy(in, config.toPath());
+				Files.copy(in, server.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -300,7 +312,7 @@ public class YamlHandler
 				MIM.log.info("Create %lang%.yml...".replace("%lang%", w.getName()));
 				try(InputStream in = plugin.getResource("default.yml"))
 				{
-					Files.copy(in, config.toPath());
+					Files.copy(in, world.toPath());
 				} catch (IOException e)
 				{
 					e.printStackTrace();
@@ -314,6 +326,57 @@ public class YamlHandler
 			writeFile(world, wo, plugin.getYamlManager().getWorldKey());
 			writeFile(world, wo, plugin.getYamlManager().getSyncKey());
 			worlds.put(w.getName(), wo);
+		}
+		return true;
+	}
+	
+	private boolean mkdirCustomPlayerInventory()
+	{
+		File directory = new File(plugin.getDataFolder()+"/CustomPlayerInventorys/");
+		if(!directory.exists())
+		{
+			directory.mkdir();
+		}
+		File[] listOfFiles = directory.listFiles();
+		if(listOfFiles.length == 0)
+		{
+			File defaults = new File(plugin.getDataFolder(), "default.yml");
+			if(!defaults.exists()) 
+			{
+				MIM.log.info("Create default.yml...");
+				try(InputStream in = plugin.getResource("default.yml"))
+				{
+					//Erstellung einer "leere" config.yml
+					Files.copy(in, defaults.toPath());
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			YamlConfiguration def = loadYamlTask(defaults, new YamlConfiguration());
+			if (def == null)
+			{
+				return false;
+			}
+			writeFile(defaults, def, plugin.getYamlManager().getCustomInventoryKey().get("default"));
+		} else
+		{
+			for(int i = 0; i < listOfFiles.length; i++)
+			{
+				if(listOfFiles[i].isFile())
+				{
+					YamlConfiguration f = loadYamlTask(listOfFiles[i], new YamlConfiguration());
+					if (f == null)
+					{
+						return false;
+					}
+					String uniquename = f.getString("UniqueName");
+					if(uniquename != null)
+					{
+						customPlayerInventory.put(uniquename, f);
+					}
+				}
+			}
 		}
 		return true;
 	}

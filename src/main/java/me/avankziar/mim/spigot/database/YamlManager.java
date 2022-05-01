@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.mim.spigot.database.Language.ISO639_2B;
@@ -28,7 +29,7 @@ public class YamlManager
 	 * Here are mutiplefiles in one "double" map. The first String key is the filename
 	 * So all filename must be predefine. For example in the config.
 	 */
-	private static LinkedHashMap<String, LinkedHashMap<String, Language>> guisKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, LinkedHashMap<String, Language>> customInventoryKeys = new LinkedHashMap<>();
 	
 	public YamlManager()
 	{
@@ -78,9 +79,9 @@ public class YamlManager
 		return syncKeys;
 	}
 	
-	public LinkedHashMap<String, LinkedHashMap<String, Language>> getGUIKey()
+	public LinkedHashMap<String, LinkedHashMap<String, Language>> getCustomInventoryKey()
 	{
-		return guisKeys;
+		return customInventoryKeys;
 	}
 	
 	/*
@@ -328,5 +329,65 @@ public class YamlManager
 					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					i}));
 		}
+	}
+	
+	public void initCustomPlayerInventory() //INFO:CustomPlayerInventory
+	{
+		LinkedHashMap<String, Language> cpiKeysI = new LinkedHashMap<>();
+		cpiKeysI.put("UniqueName",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"default"}));
+		cpiKeysI.put("IsActive",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		cpiKeysI.put("AccessPermission",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"mim.customplayerinv.default"}));
+		cpiKeysI.put("CountPermissionType",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"ADDUP"}));
+		cpiKeysI.put("CountPermission",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"mim.customplayerinv.count.default."}));
+		cpiKeysI.put("CostPerRow.1",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("CostPerRow.2",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("CostPerRow.3",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("CostPerRow.4",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("CostPerRow.5",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("CostPerRow.6",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;5;DIAMOND",
+				"EXP;5"}));
+		cpiKeysI.put("List.Status",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"BLACKLIST"}));
+		cpiKeysI.put("List.Material",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"DIAMOND_AXE",
+				"DIAMOND_HOE",
+				"DIAMOND_PICKAXE",
+				"DIAMOND_SHOVEL"}));
+		
 	}
 }
