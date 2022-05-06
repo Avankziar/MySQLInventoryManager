@@ -16,20 +16,24 @@ import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
+import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
+import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class BaseCommandExecutor implements CommandExecutor
+public class CustomPlayerInventoryCmdExecutor implements CommandExecutor
 {
 	private MIM plugin;
-	private static CommandConstructor cc;
+	private String cpiUniquename;
+	private CommandConstructor cc;
 	
-	public BaseCommandExecutor(MIM plugin, CommandConstructor cc)
+	public CustomPlayerInventoryCmdExecutor(MIM plugin, CommandConstructor cc, String cpiUniquename)
 	{
 		this.plugin = plugin;
-		BaseCommandExecutor.cc = cc;
+		this.cc = cc;
+		this.cpiUniquename = cpiUniquename;
 	}
 	
 	@Override
@@ -45,28 +49,14 @@ public class BaseCommandExecutor implements CommandExecutor
 		{
 			return false;
 		}
-		if (args.length == 1) 
-		{
-			if(MatchApi.isInteger(args[0]))
-			{
-				if(!player.hasPermission(cc.getPermission()))
-				{
-					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-					return false;
-				}
-				baseCommands(player, Integer.parseInt(args[0])); //Base and Info Command
-				return true;
-			}
-		} else if(args.length == 0)
+		if(args.length == 0)
 		{
 			if(!player.hasPermission(cc.getPermission()))
 			{
-				///Du hast dafür keine Rechte!
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
-			baseCommands(player, 0); //Base and Info Command
+			baseCommands(player); //Base and Info Command
 			return true;
 		}
 		int length = args.length-1;
@@ -114,89 +104,29 @@ public class BaseCommandExecutor implements CommandExecutor
 				}
 			}
 		}
-		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 				ClickEvent.Action.RUN_COMMAND, MIM.infoCommand));
 		return false;
 	}
 	
-	public void baseCommands(final Player player, int page)
+	public void baseCommands(final Player player)
 	{
-		int count = 0;
-		int start = page*10;
-		int end = page*10+9;
-		int last = 0;
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString(
-				MIM.infoCommandPath+".Headline")));
-		for(BaseConstructor bc : plugin.getCommandHelpList())
+		CustomPlayerInventory cpi = (CustomPlayerInventory) plugin.getMysqlHandler().getData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY,
+				"`cpi_name` = ? AND `owner_uuid` = ?", cpiUniquename, player.getUniqueId().toString());
+		if(cpi != null)
 		{
-			if(count >= start && count <= end)
+			
+		} else
+		{
+			cpi = new CustomPlayerInventory(cpiUniquename);
+			if(!cpi.isActive())
 			{
-				if(player.hasPermission(bc.getPermission()))
-				{
-					sendInfo(player, bc);
-				}
+				//FIXME
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("")));
+				return;
 			}
-			count++;
-			last++;
+			
 		}
-		boolean lastpage = false;
-		if(end >= last)
-		{
-			lastpage = true;
-		}
-		pastNextPage(player, MIM.infoCommandPath, page, lastpage, MIM.infoCommand);
+		
 	}
-	
-	private void sendInfo(Player player, BaseConstructor bc)
-	{
-		player.spigot().sendMessage(ChatApi.apiChat(
-				bc.getHelpInfo(),
-				ClickEvent.Action.SUGGEST_COMMAND, bc.getSuggestion(),
-				HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getLang().getString("GeneralHover")));
-	}
-	
-	public void pastNextPage(Player player, String path,
-			int page, boolean lastpage, String cmdstring, String...objects)
-	{
-		if(page==0 && lastpage)
-		{
-			return;
-		}
-		int i = page+1;
-		int j = page-1;
-		TextComponent MSG = ChatApi.tctl("");
-		List<BaseComponent> pages = new ArrayList<BaseComponent>();
-		if(page!=0)
-		{
-			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".Past"));
-			String cmd = cmdstring+" "+String.valueOf(j);
-			for(String o : objects)
-			{
-				cmd += " "+o;
-			}
-			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
-			pages.add(msg2);
-		}
-		if(!lastpage)
-		{
-			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".Next"));
-			String cmd = cmdstring+" "+String.valueOf(i);
-			for(String o : objects)
-			{
-				cmd += " "+o;
-			}
-			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
-			if(pages.size()==1)
-			{
-				pages.add(ChatApi.tc(" | "));
-			}
-			pages.add(msg1);
-		}
-		MSG.setExtra(pages);	
-		player.spigot().sendMessage(MSG);
-	}
-
 }

@@ -40,6 +40,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseIV())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -198,6 +202,20 @@ public class MysqlSetup
 		  		+ " remaining_air int,"
 		  		+ " custom_name text,"
 		  		+ " persistent_data LONGTEXT);";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseIV() 
+	{
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.CUSTOMPLAYERINVENTORY.getValue()
+		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		  		+ " cpi_name text"
+		  		+ " owner_uuid text,"
+		  		+ " actual_row_amount int,"
+		  		+ " target_row_amount int,"
+		  		+ " maxbuyed_row_amount int,"
+		  		+ " inventory_content LONGTEXT);";
 		baseSetup(data);
 		return true;
 	}

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.DeathMemoryState;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.PredefinePlayerState;
@@ -19,7 +20,8 @@ public class MysqlHandler
 	{
 		PLAYERDATA("mimPlayerData", new PlayerData()),
 		DEATHMEMORYSTATE("mimDeathMemoryState", new DeathMemoryState()),
-		PREDEFINEPLAYERSTATE("minPredefinePlayerState", new PredefinePlayerState()),
+		PREDEFINEPLAYERSTATE("mimPredefinePlayerState", new PredefinePlayerState()),
+		CUSTOMPLAYERINVENTORY("mimCustomPlayerInventory", new CustomPlayerInventory())
 		;
 		
 		private Type(String value, Object object)

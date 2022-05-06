@@ -173,7 +173,7 @@ public class MIM extends JavaPlugin
 		}
 	}
 	
-	public ArrayList<BaseConstructor> getHelpList()
+	public ArrayList<BaseConstructor> getCommandHelpList()
 	{
 		return helpList;
 	}

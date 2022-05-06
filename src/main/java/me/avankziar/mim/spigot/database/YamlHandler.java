@@ -68,6 +68,11 @@ public class YamlHandler
 		return worlds.get(world.getName());
 	}
 	
+	public LinkedHashMap<String, YamlConfiguration> getCustomPlayerInventory()
+	{
+		return customPlayerInventory;
+	}
+	
 	public YamlConfiguration getCustomPlayerInventory(String uniquename)
 	{
 		return customPlayerInventory.get(uniquename);

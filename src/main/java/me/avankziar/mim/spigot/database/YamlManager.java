@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.mim.spigot.database.Language.ISO639_2B;
@@ -340,23 +339,26 @@ public class YamlManager
 		cpiKeysI.put("IsActive",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
-		cpiKeysI.put("AccessPermission",
+		cpiKeysI.put("UsePredefineCustomInventory",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"mim.customplayerinv.default"}));
+				false}));
+		cpiKeysI.put("UsedPredefineCustomInventory",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"predefinecustominventoryname"}));
 		cpiKeysI.put("CountPermissionType",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"ADDUP"}));
 		cpiKeysI.put("CountPermission",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"mim.customplayerinv.count.default."}));
+				"mim.customplayerinv.defaultbox.count."}));
 		cpiKeysI.put("CostPerRow.1",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
-				"MATERIAL;5;DIAMOND",
-				"EXP;5"}));
+				"FREE;",
+				"FREE;"}));
 		cpiKeysI.put("CostPerRow.2",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MONEY;25;default",
+				"MONEY;5;specialcurrencyuniquename",
 				"MATERIAL;5;DIAMOND",
 				"EXP;5"}));
 		cpiKeysI.put("CostPerRow.3",
@@ -388,6 +390,23 @@ public class YamlManager
 				"DIAMOND_HOE",
 				"DIAMOND_PICKAXE",
 				"DIAMOND_SHOVEL"}));
+		String path = "Command";
+		cpiKeysI.put(path+".Name"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"defaultbox"}));
+		cpiKeysI.put(path+".Permission",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"mim.customplayerinv.defaultbox.cmd"}));
+		cpiKeysI.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox"}));
+		cpiKeysI.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox "}));
+		cpiKeysI.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c/defaultbox &f| Öffnet das Benutzerdefinierte Spielerinventar.",
+				"&c/defaultbox &f| Open the custom player inventory."}));
 		
 	}
 }
