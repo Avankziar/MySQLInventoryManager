@@ -21,15 +21,15 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class BaseCommandExecutor implements CommandExecutor
+public class MiMCommandExecutor implements CommandExecutor
 {
 	private MIM plugin;
 	private static CommandConstructor cc;
 	
-	public BaseCommandExecutor(MIM plugin, CommandConstructor cc)
+	public MiMCommandExecutor(MIM plugin, CommandConstructor cc)
 	{
 		this.plugin = plugin;
-		BaseCommandExecutor.cc = cc;
+		MiMCommandExecutor.cc = cc;
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class BaseCommandExecutor implements CommandExecutor
 					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
-				baseCommands(player, Integer.parseInt(args[0])); //Base and Info Command
+				baseCommands(player, Integer.parseInt(args[0]));
 				return true;
 			}
 		} else if(args.length == 0)
@@ -66,7 +66,7 @@ public class BaseCommandExecutor implements CommandExecutor
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
-			baseCommands(player, 0); //Base and Info Command
+			baseCommands(player, 0);
 			return true;
 		}
 		int length = args.length-1;
@@ -114,7 +114,6 @@ public class BaseCommandExecutor implements CommandExecutor
 				}
 			}
 		}
-		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 				ClickEvent.Action.RUN_COMMAND, MIM.infoCommand));
 		return false;

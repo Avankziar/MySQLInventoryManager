@@ -2,7 +2,6 @@ package main.java.me.avankziar.mim.spigot.cmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,17 +10,13 @@ import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
-import main.java.me.avankziar.mim.spigot.assistance.MatchApi;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
-import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
+import main.java.me.avankziar.mim.spigot.handler.CustomPlayerInventoryHandler;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class CustomPlayerInventoryCmdExecutor implements CommandExecutor
 {
@@ -111,22 +106,34 @@ public class CustomPlayerInventoryCmdExecutor implements CommandExecutor
 	
 	public void baseCommands(final Player player)
 	{
-		CustomPlayerInventory cpi = (CustomPlayerInventory) plugin.getMysqlHandler().getData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY,
+		CustomPlayerInventory cpi = new CustomPlayerInventory(cpiUniquename);
+		if(!cpi.isActive())
+		{
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.NotActiveOrDontExist")));
+			return;
+		}
+		cpi = (CustomPlayerInventory) plugin.getMysqlHandler().getData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY,
 				"`cpi_name` = ? AND `owner_uuid` = ?", cpiUniquename, player.getUniqueId().toString());
-		if(cpi != null)
+		if(cpi == null)
 		{
-			
-		} else
-		{
-			cpi = new CustomPlayerInventory(cpiUniquename);
-			if(!cpi.isActive())
+			String n = null;
+			cpi = new CustomPlayerInventory(cpiUniquename, player.getUniqueId(), 0, 0, 0, n);
+			if(cpi.usePredefineCustomInventory())
 			{
-				//FIXME
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("")));
+				//ADDME PredefineCustomInventory.
+			}
+			int targetRow = cpi.getPermissionRowAmount(player);
+			if(targetRow <= 0)
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.DoNotHaveAccess")));
 				return;
 			}
-			
+			if(cpi.getMaxbuyedRowAmount() == 0)
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.DoNotHaveAccess")));
+				return;
+			}
 		}
-		
+		new CustomPlayerInventoryHandler(cpi).openInventory(player);
 	}
 }

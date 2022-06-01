@@ -32,7 +32,7 @@ public class CustomPlayerInventory implements MysqlHandable
 		ADDUP, HIGHEST;
 	}
 	
-	private static LinkedHashMap<String, ArrayList<Material>> listItem = new LinkedHashMap<>();
+	public static LinkedHashMap<String, ArrayList<Material>> listItem = new LinkedHashMap<>();
 	
 	private String uniqueName; //Identifier for the customplayerinventory file
 	private UUID ownerUUID; //The uuid of the player, which owns the inv
@@ -93,6 +93,18 @@ public class CustomPlayerInventory implements MysqlHandable
 		return MIM.getPlugin().getYamlHandler().getCustomPlayerInventory(getUniqueName());
 	}
 	
+	public String getInventoryName()
+	{
+		YamlConfiguration y = getFile();
+		return y == null ? "Custom Player Inventory %player%" : y.getString("InventoryName", "Custom Player Inventory %player%");
+	}
+	
+	public String getShulkerInventoryName()
+	{
+		YamlConfiguration y = getFile();
+		return y == null ? "Custom Player Shulker Inventory %player%" : y.getString("InventoryShulkerName", "Custom Player Shulker Inventory %player%");
+	}
+	
 	public boolean canMaterialAccessInventory(ItemStack is)
 	{
 		YamlConfiguration y = getFile();
@@ -103,7 +115,7 @@ public class CustomPlayerInventory implements MysqlHandable
 		ListStatus ls;
 		try
 		{
-			ls = ListStatus.valueOf(y.getString("List.Status", "ACACIA_BOAT"));
+			ls = ListStatus.valueOf(y.getString("List.Status", "BLACKLIST"));
 		} catch(Exception e)
 		{
 			return false;
@@ -132,6 +144,12 @@ public class CustomPlayerInventory implements MysqlHandable
 	public String getCommandPath()
 	{
 		return "Command";
+	}
+	
+	public boolean canOpenShulkerInInventory(Player player)
+	{
+		YamlConfiguration y = getFile();
+		return y == null ? false : y.getBoolean("ShulkerOpenInInventoryPermission", false);
 	}
 	
 	public int getPermissionRowAmount(Player player)
@@ -174,6 +192,12 @@ public class CustomPlayerInventory implements MysqlHandable
 		return y == null ? null : y.getStringList("CostPerRow."+row);
 	}
 	
+	public ListStatus getListStatus()
+	{
+		YamlConfiguration y = getFile();
+		return ListStatus.valueOf(y.getString("List.Status", "BLACKLIST"));
+	}
+	
 	public CustomPlayerInventory(String uniqueName, UUID ownerUUID,
 			int actualRowAmount, int targetRowAmount, int maxbuyedRowAmount, ItemStack[] inventory)
 	{
@@ -186,7 +210,7 @@ public class CustomPlayerInventory implements MysqlHandable
 	}
 	
 	public CustomPlayerInventory(String uniqueName, UUID ownerUUID,
-			int actualRowAmount, int targetRowAmount, int maxbuyedRowAmount,  String inventory)
+			int actualRowAmount, int targetRowAmount, int maxbuyedRowAmount, String inventory)
 	{
 		setUniqueName(uniqueName);
 		setOwnerUUID(ownerUUID);
@@ -194,11 +218,17 @@ public class CustomPlayerInventory implements MysqlHandable
 		setTargetRowAmount(targetRowAmount);
 		setMaxbuyedRowAmount(maxbuyedRowAmount);
 		ArrayList<ItemStack> invc = new ArrayList<>();
-		for(Object o : MIM.getPlugin().getBase64Api().fromBase64Array(inventory))
+		if(inventory != null)
 		{
-			invc.add((ItemStack) o);
+			for(Object o : MIM.getPlugin().getBase64Api().fromBase64Array(inventory))
+			{
+				invc.add((ItemStack) o);
+			}
+			setInventory(invc.toArray(new ItemStack[invc.size()]));
+		} else
+		{
+			setInventory(new ItemStack[actualRowAmount]);
 		}
-		setInventory(invc.toArray(new ItemStack[invc.size()]));
 	}
 
 	public UUID getOwnerUUID()

@@ -6,7 +6,8 @@ public class Bypass
 {
 	public enum Permission
 	{
-		BASE
+		CUSTOMPLAYERINVENTORY_BUY,
+		CUSTOMPLAYERINVENTORY_COST,
 	}
 	private static LinkedHashMap<Bypass.Permission, String> mapPerm = new LinkedHashMap<>();
 	

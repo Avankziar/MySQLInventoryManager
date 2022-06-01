@@ -203,11 +203,6 @@ public class YamlManager
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"aep."+ept.toString().toLowerCase().replace("_", "")}));
 		}
-		
-		String path = "Bypass.";
-		commandsKeys.put(path+"Perm1.Perm"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"perm.bypass.perm"}));
 	}
 	
 	private void commandsInput(String path, String name, String basePermission, 
@@ -254,20 +249,137 @@ public class YamlManager
 				helpInfoEnglish}));
 	}
 	
-	public void initLanguage() //INFO:Languages
+	private void initLanguage() //INFO:Languages
 	{
+		languageKeys.put("NoPermission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast dafür keine Rechte!",
+				"&cYou have no rights!"}));
 		languageKeys.put("InputIsWrong",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDeine Eingabe ist fehlerhaft! Klicke hier auf den Text, um weitere Infos zu bekommen!",
-						"&cYour input is incorrect! Click here on the text to get more information!"}));
-		
+				"&cDeine Eingabe ist fehlerhaft! Klicke hier auf den Text, um weitere Infos zu bekommen!",
+				"&cYour input is incorrect! Click here on the text to get more information!"}));
+		languageKeys.put("PlayerNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler existiert nicht!",
+				"&cThe player does not exist!"}));
+		languageKeys.put("PlayerNotOnline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler ist nicht online!",
+				"&cThe player is not online!"}));
+		initLangCustomPlayerInventory();
 		/*languageKeys.put(""
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}))*/
 	}
 	
-	public void initSync() //INFO:Synchro
+	private void initLangCustomPlayerInventory()
+	{
+		String path = "CPI.";
+		languageKeys.put(path+"ActionLogCategory",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"CustomSpielerInventar",
+				"CustomPlayerInventory"}));
+		languageKeys.put(path+"ActionLogComment",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&bDu hast &c%format% &bfür das %cpi% Reihe %row% bezahlt.",
+				"&bYou have paid &c%format% &bfor the %cpi% row %row%."}));
+		languageKeys.put(path+"NotActiveOrDontExist",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Custom Spieler Inventar ist nicht aktiv oder existiert nicht!",
+				"&cThe Custom Player Inventory is not active or does not exist!"}));
+		languageKeys.put(path+"InventoryIsAlreadyInUse",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Custom Spieler Inventar wird gerade schon benutzt!",
+				"&cThe Custom Player Inventory is already being used right now!"}));
+		languageKeys.put(path+"DoNotHaveAccess",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast kein Zugriff auf dieses Custom Spieler Inventar!",
+				"&cYou do not have access to this Custom Player inventory!"}));
+		languageKeys.put(path+"AreYouSureToDrop",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBist du dir sicher, dass du alle Items des %cpi% droppen möchtest? Dann füge dem Befehl ein &fbestätigen &chinzu.",
+				"&cAre you sure you want to drop all items of the %cpi%? Then add &fconfirm &cto the command."}));
+		languageKeys.put(path+"HaveNothingToDrop",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Custom Spieler Inventar ist leer, es gibt nichts zum droppen!",
+				"&cThe Custom Player Inventory is empty, there is nothing to drop!"}));
+		languageKeys.put(path+"HaveNotBuyOneSingeRow",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast noch keine einzelne Reihe!",
+				"&cThe Custom Player Inventory is empty, there is nothing to drop!"}));
+		languageKeys.put(path+"InfoArray",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f===&7[&c%cpi% &6Info&7]&f===",
+				"&cMöglich Reihe: &r%permrowamount%",
+				"&cGekaufte Reihe: &r%maxbuyedrow%",
+				"&cKosten für Reihe 1: &r%costrowone%",
+				"&cKosten für Reihe 2: &r%costrowtwo%",
+				"&cKosten für Reihe 3: &r%costrowthree%",
+				"&cKosten für Reihe 4: &r%costrowfour%",
+				"&cKosten für Reihe 5: &r%costrowfive%",
+				"&cKosten für Reihe 6: &r%costrowsix%",
+				"&cListen Status: &r%liststatus%",
+				"&cMaterialliste: &r%list%",
+				"&f===&7[&c%cpi% &6Info&7]&f===",
+				"&cPossible row: &r%permrowamount%",
+				"&cBuyed row: &r%maxbuyedrow%",
+				"&cCost for row 1: &r%costrowone%",
+				"&cCost for row 2: &r%costrowtwo%",
+				"&cCost for row 3: &r%costrowthree%",
+				"&cCost for row 4: &r%costrowfour%",
+				"&cCost for row 5: &r%costrowfive%",
+				"&cCost for row 6: &r%costrowsix%",
+				"&cLists Status: &r%liststatus%",
+				"&cMateriallists: &r%list%"}));
+		languageKeys.put(path+"CostReplacer.Free",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aKostenlos",
+				"&aFree of charge"}));
+		languageKeys.put(path+"UsePredefineSetsCannotBeBuyed",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cCustom Spieler Inventare welche vordefinierte Sets benutzen, können nicht gekauft werden!",
+				"&cCustom player inventories which use predefined sets cannot be purchased!"}));
+		languageKeys.put(path+"YouHaveAlreadyBuyedRowSix",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast schon alle Reihen des Custom Spieler Inventar gekauft!",
+				"&cYou have already bought all rows of the custom player inventory!"}));
+		languageKeys.put(path+"YouCannotBuyWhereYouHaveNoPermission",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu kannst keine weitere Inventarreihe kaufen, wo du nicht die Permission hast!",
+				"&cYou cannot buy another inventory row where you do not have the permission!"}));
+		languageKeys.put(path+"YouCannotBuyAAnotherPlayerARow",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu darfst keinem anderem Spieler eine weitere Inventarreihe kaufen!",
+				"&cYou may not buy another inventory row for another player!"}));
+		languageKeys.put(path+"YouHaveNoAccountToWithdrawTheCost",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu besitzt keinen Konto um die &r%format% &cabzuziehen!",
+				"&cYou do not have an account to deduct the &r%format%&c!"}));
+		languageKeys.put(path+"YouHaveNoEnoughMoneyAmount",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu besitzt keine &r%format%&c!",
+				"&cYou do not own a &r%format%&c!"}));
+		languageKeys.put(path+"YouHaveNoEnoughMaterials",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast im Inventar nur &r%actual%/%needed% %mat%&c!",
+				"&cYou do not own a &r%format%&c!"}));
+		languageKeys.put(path+"YouHaveNoEnoughExp",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast nur &r%actual%/%needed% Exp&c!",
+				"&cYou have only &r%actual%/%needed% Exp&c!"}));
+		languageKeys.put(path+"YouPaidForTheNextRow",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast die Reihe %row% des %cpi% freigeschaltet. Bezahlt wurde: &r%cost%",
+				"&eYou have unlocked the %row% series of the %cpi%. Paid: &r%cost%"}));
+		languageKeys.put(path+"YouGetTheNextRow",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast die Reihe %row% des %cpi% freigeschaltet.",
+				"&eYou have unlocked the %row% series of the %cpi%."}));
+	}
+	
+	private void initSync() //INFO:Synchro
 	{
 		worldKeys.put("ServerOverWorldSettings",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -336,6 +448,12 @@ public class YamlManager
 		cpiKeysI.put("UniqueName",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"default"}));
+		cpiKeysI.put("InventoryName",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"%player%´s Default Inventory"}));
+		cpiKeysI.put("InventoryShulkerName",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"%player%´s Shulkerbox Default Inventory"}));
 		cpiKeysI.put("IsActive",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
@@ -381,6 +499,9 @@ public class YamlManager
 				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
 				"MATERIAL;5;DIAMOND",
 				"EXP;5"}));
+		cpiKeysI.put("ShulkerOpenInInventoryPermission",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"mim.customplayerinv.openshulker"}));
 		cpiKeysI.put("List.Status",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"BLACKLIST"}));
@@ -391,12 +512,13 @@ public class YamlManager
 				"DIAMOND_PICKAXE",
 				"DIAMOND_SHOVEL"}));
 		String path = "Command";
+		String perm = "mim.customplayerinv.defaultbox.";
 		cpiKeysI.put(path+".Name"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"defaultbox"}));
 		cpiKeysI.put(path+".Permission",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"mim.customplayerinv.defaultbox.cmd"}));
+				perm+"cmd"}));
 		cpiKeysI.put(path+".Suggestion"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"/defaultbox"}));
@@ -407,6 +529,74 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c/defaultbox &f| Öffnet das Benutzerdefinierte Spielerinventar.",
 				"&c/defaultbox &f| Open the custom player inventory."}));
-		
+		path = "Argument_buy";
+		cpiKeysI.put(path+".Argument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"buy"}));
+		cpiKeysI.put(path+".Permission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				perm+"buy"}));
+		cpiKeysI.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox buy [Playername]"}));
+		cpiKeysI.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox buy "}));
+		cpiKeysI.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c/defaultbox buy [Spielername] &f| Kauft die nächsthöhere Reihe des CustomSpielerInventars, wenn es möglich ist.",
+				"&c/defaultbox buy [Playername] &f| Buy the next higher row of the CustomPlayer inventory, if possible."}));
+		path = "Argument_drop";
+		cpiKeysI.put(path+".Argument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"drop"}));
+		cpiKeysI.put(path+".Permission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				perm+"drop"}));
+		cpiKeysI.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox drop [confirm]"}));
+		cpiKeysI.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox drop "}));
+		cpiKeysI.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c/defaultbox drop [bestätigen] &f| Dropt alle Items des Custom Spieler Inventars auf dem Boden.",
+				"&c/defaultbox drop [confirm] &f| Drops all items of the custom player inventory on the floor."}));
+		path = "Argument_info";
+		cpiKeysI.put(path+".Argument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"info"}));
+		cpiKeysI.put(path+".Permission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				perm+"info"}));
+		cpiKeysI.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox info"}));
+		cpiKeysI.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox info "}));
+		cpiKeysI.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c/defaultbox info &f| Gibt Infos bezüglich der defaultbox aus.",
+				"&c/defaultbox info &f| Outputs info regarding the defaultbox."}));
+		path = "Argument_see";
+		cpiKeysI.put(path+".Argument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"see"}));
+		cpiKeysI.put(path+".Permission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				perm+"see"}));
+		cpiKeysI.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox see <Playername>"}));
+		cpiKeysI.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"/defaultbox see "}));
+		cpiKeysI.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c/defaultbox see <Spielername> &f| Schaut in die defaultbox des angegeben Spielers.",
+				"&c/defaultbox see <Playername> &f| Look in the defaultbox of the specified player."}));
+		customInventoryKeys.put("default", cpiKeysI);
 	}
 }
