@@ -16,17 +16,10 @@ public class ConfigHandler
 		this.plugin = plugin;
 	}
 	
-	public YamlConfiguration getSyncYaml(World world)
+	public YamlConfiguration getSyncYaml(World world, boolean console)
 	{
-		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(world);
-		if(w == null)
-		{
-			w = plugin.getYamlHandler().getSynServer();
-			if(w == null)
-			{
-				return null;
-			}
-		} else
+		YamlConfiguration w = plugin.getYamlHandler().getSynServer();
+		if(console)
 		{
 			if(w.getBoolean("ServerOverWorldSettings"))
 			{
@@ -36,13 +29,34 @@ public class ConfigHandler
 					return null;
 				} 
 			}
+		} else
+		{
+			w = plugin.getYamlHandler().getSyncWorld(world);
+			if(w == null)
+			{
+				w = plugin.getYamlHandler().getSynServer();
+				if(w == null)
+				{
+					return null;
+				}
+			} else
+			{
+				if(w.getBoolean("ServerOverWorldSettings"))
+				{
+					w = plugin.getYamlHandler().getSynServer();
+					if(w == null)
+					{
+						return null;
+					} 
+				}
+			}
 		}
 		return w;
 	}
 	
-	public String getSynchroKey(Player player)
+	public String getSynchroKey(Player player, boolean console)
 	{
-		YamlConfiguration w = getSyncYaml(player.getWorld());
+		YamlConfiguration w = getSyncYaml(player == null ? null : player.getWorld(), console);
 		if(w == null)
 		{
 			return "default";
@@ -57,7 +71,7 @@ public class ConfigHandler
 	
 	public boolean isEventEnabled(String event, World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return false;
@@ -72,7 +86,7 @@ public class ConfigHandler
 	
 	public boolean loadPredefineOnFirstJoin(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return false;
@@ -82,7 +96,7 @@ public class ConfigHandler
 	
 	public String getPredefineStatenameOnFristJoin(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return "default";
@@ -92,7 +106,7 @@ public class ConfigHandler
 	
 	public boolean loadPredefineAlways(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return false;
@@ -102,7 +116,7 @@ public class ConfigHandler
 	
 	public String getPredefineStatenameAlways(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return null;
@@ -112,7 +126,7 @@ public class ConfigHandler
 	
 	public boolean isClearAndResetByQuit(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return false;
@@ -122,7 +136,7 @@ public class ConfigHandler
 	
 	public int getMaximalAmountDeathMemoryStatePerPlayer(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return 0;
@@ -132,7 +146,7 @@ public class ConfigHandler
 	
 	public int getTimeDelayInSecsRemoveCooldown(World world, BaseListener.Type btype)
 	{
-		YamlConfiguration w = getSyncYaml(world);
+		YamlConfiguration w = getSyncYaml(world, false);
 		if(w == null)
 		{
 			return 5;

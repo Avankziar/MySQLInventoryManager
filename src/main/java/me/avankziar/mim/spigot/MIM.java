@@ -26,18 +26,27 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
+import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
-import main.java.me.avankziar.mim.spigot.cmd.MiMCommandExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.AnvilCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
+import main.java.me.avankziar.mim.spigot.cmd.WorkbenchCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIBuy;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIDrop;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIInfo;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPISee;
+import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSave;
+import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSaveAndKick;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
@@ -49,6 +58,31 @@ import main.java.me.avankziar.mim.spigot.database.YamlHandler;
 import main.java.me.avankziar.mim.spigot.database.YamlManager;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.mim.spigot.ifh.Base64Api;
+import main.java.me.avankziar.mim.spigot.ifh.CommandToBungeeApi;
+import main.java.me.avankziar.mim.spigot.ifh.PlayerParameterApi;
+import main.java.me.avankziar.mim.spigot.listener.BlockCanBuildListener;
+import main.java.me.avankziar.mim.spigot.listener.BlockIgniteListener;
+import main.java.me.avankziar.mim.spigot.listener.BlockSignChangeListener;
+import main.java.me.avankziar.mim.spigot.listener.EntityPickupItemListener;
+import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
+import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
+import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerDeathListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerDropItemListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerExpChangeListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerGameModeChangeListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerHarvestBlockListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerItemBreakListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerItemConsumeListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerItemDamageListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerLevelChangeListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerQuitListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerRespawnListener;
+import main.java.me.avankziar.mim.spigot.listener.PlayerTeleportListener;
+import main.java.me.avankziar.mim.spigot.listener.PrepareItemEnchantListener;
+import main.java.me.avankziar.mim.spigot.listener.TimeSkipListener;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
@@ -57,7 +91,7 @@ public class MIM extends JavaPlugin
 {
 	public static Logger log;
 	private static MIM plugin;
-	public String pluginName = "Base";
+	public String pluginName = "MysqlInventoryManager";
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
@@ -78,6 +112,8 @@ public class MIM extends JavaPlugin
 	public Set<UUID> playerSyncComplete = new HashSet<>();
 	
 	private Base64Api base64Api;
+	private CommandToBungeeApi cmdToBungeeApi;
+	private PlayerParameterApi ppmApi;
 	private Economy ecoConsumer;
 	
 	public void onEnable()
@@ -109,11 +145,11 @@ public class MIM extends JavaPlugin
 		utility = new Utility(plugin);
 		backgroundTask = new BackgroundTask(this);
 		
+		setupIFH();
 		setupBypassPerm();
 		setupCommandTree();
 		setupListeners();
 		configHandler = new ConfigHandler(this);
-		setupIFH();
 		CustomPlayerInventory.initListItem();
 	}
 	
@@ -185,10 +221,42 @@ public class MIM extends JavaPlugin
 		infoCommand += plugin.getYamlHandler().getCommands().getString("base.Name");
 		TabCompletion tab = new TabCompletion(plugin);
 		
-		CommandConstructor mim = new CommandConstructor(CommandExecuteType.MIM, "mim", false);
+		ArgumentConstructor saveAndKick = new ArgumentConstructor(CommandExecuteType.MIM_SAVEANDKICK, "mim_saveandkick", 0, 0, 1, false, null);
+		new MiMSaveAndKick(saveAndKick);
+		
+		ArgumentConstructor save = new ArgumentConstructor(CommandExecuteType.MIM_SAVE, "mim_save", 0, 0, 1, false, null);
+		new MiMSave(save);
+		
+		CommandConstructor mim = new CommandConstructor(CommandExecuteType.MIM, "mim", false,
+				saveAndKick, save);
 		registerCommand(mim.getPath(), mim.getName());
-		getCommand(mim.getName()).setExecutor(new MiMCommandExecutor(plugin, mim));
+		getCommand(mim.getName()).setExecutor(new MiMCmdExecutor(plugin, mim));
 		getCommand(mim.getName()).setTabCompleter(tab);
+		
+		CommandConstructor gm = new CommandConstructor(CommandExecuteType.GAMEMODE, "gm", false);
+		registerCommand(gm.getPath(), gm.getName());
+		getCommand(gm.getName()).setExecutor(new GameModeCmdExecutor(plugin, gm));
+		getCommand(gm.getName()).setTabCompleter(tab);
+		
+		CommandConstructor workbench = new CommandConstructor(CommandExecuteType.WORKBENCH, "workbench", false);
+		registerCommand(workbench.getPath(), workbench.getName());
+		getCommand(workbench.getName()).setExecutor(new WorkbenchCmdExecutor(plugin, workbench));
+		getCommand(workbench.getName()).setTabCompleter(tab);
+		
+		CommandConstructor enderchest = new CommandConstructor(CommandExecuteType.ENDERCHEST, "enderchest", false);
+		registerCommand(enderchest.getPath(), enderchest.getName());
+		getCommand(enderchest.getName()).setExecutor(new EnderChestCmdExecutor(plugin, enderchest));
+		getCommand(enderchest.getName()).setTabCompleter(tab);
+		
+		CommandConstructor enchantingtable = new CommandConstructor(CommandExecuteType.ENCHANTINGTABLE, "enchantingtable", false);
+		registerCommand(enchantingtable.getPath(), enchantingtable.getName());
+		getCommand(enchantingtable.getName()).setExecutor(new EnchantingTableCmdExecutor(plugin, enchantingtable));
+		getCommand(enchantingtable.getName()).setTabCompleter(tab);
+		
+		CommandConstructor anvil = new CommandConstructor(CommandExecuteType.ANVIL, "anvil", false);
+		registerCommand(anvil.getPath(), anvil.getName());
+		getCommand(anvil.getName()).setExecutor(new AnvilCmdExecutor(plugin, anvil));
+		getCommand(anvil.getName()).setTabCompleter(tab);
 		
 		setupCmdCustomPlayerInventory(tab);
 	}
@@ -367,7 +435,36 @@ public class MIM extends JavaPlugin
 	public void setupListeners()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		//pm.registerEvents(new BackListener(plugin), plugin);
+		pm.registerEvents(new BlockCanBuildListener(plugin), plugin);
+		pm.registerEvents(new BlockIgniteListener(plugin), plugin);
+		pm.registerEvents(new BlockSignChangeListener(plugin), plugin);
+		pm.registerEvents(new EntityPickupItemListener(plugin), plugin);
+		pm.registerEvents(new EntityResurrectListener(plugin), plugin);
+		pm.registerEvents(new EntityTameListener(plugin), plugin);
+		pm.registerEvents(new InventoryCloseListener(plugin), plugin);
+		pm.registerEvents(new PlayerChangedWorldListener(plugin), plugin);
+		pm.registerEvents(new PlayerDeathListener(plugin), plugin);
+		pm.registerEvents(new PlayerDropItemListener(plugin), plugin);
+		pm.registerEvents(new PlayerExpChangeListener(plugin), plugin);
+		pm.registerEvents(new PlayerGameModeChangeListener(plugin), plugin);
+		pm.registerEvents(new PlayerHarvestBlockListener(plugin), plugin);
+		pm.registerEvents(new PlayerItemBreakListener(plugin), plugin);
+		pm.registerEvents(new PlayerItemConsumeListener(plugin), plugin);
+		pm.registerEvents(new PlayerItemDamageListener(plugin), plugin);
+		pm.registerEvents(new PlayerJoinListener(plugin), plugin);
+		pm.registerEvents(new PlayerLevelChangeListener(plugin), plugin);
+		pm.registerEvents(new PlayerQuitListener(plugin), plugin);
+		pm.registerEvents(new PlayerRespawnListener(plugin), plugin);
+		pm.registerEvents(new PlayerTeleportListener(plugin), plugin);
+		pm.registerEvents(new PrepareItemEnchantListener(), plugin);
+		pm.registerEvents(new TimeSkipListener(plugin), plugin);
+		Messenger me = getServer().getMessenger();
+		me.registerOutgoingPluginChannel(this, StaticValues.CMDTB_TOBUNGEE);
+		if(ppmApi != null)
+		{
+			me.registerOutgoingPluginChannel(this, StaticValues.PP_TOBUNGEE);
+			me.registerIncomingPluginChannel(this, StaticValues.PP_TOSPIGOT, ppmApi);
+		}
 	}
 	
 	public ConfigHandler getConfigHandler()
@@ -385,6 +482,16 @@ public class MIM extends JavaPlugin
 		return ecoConsumer;
 	}
 	
+	public CommandToBungeeApi getCmdToBungeeApi()
+	{
+		return cmdToBungeeApi;
+	}
+	
+	public PlayerParameterApi getPlayerParameterApi()
+	{
+		return ppmApi;
+	}
+	
 	public boolean reload() throws IOException
 	{
 		yamlHandler = new YamlHandler(this);
@@ -395,6 +502,8 @@ public class MIM extends JavaPlugin
 	{
 		setupBase64();
 		setupEconomy();
+		setupCommandToBungee();
+		setupPlayerParameter();
 	}
 	
 	//Hier IFH implementieren für später
@@ -410,6 +519,42 @@ public class MIM extends JavaPlugin
     	plugin.getServer().getServicesManager().register(
         main.java.me.avankziar.ifh.spigot.serializer.Base64.class,
         base64Api,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> Base64.class is provided!");
+		return true;
+	}
+	
+	private boolean setupCommandToBungee()
+	{      
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "! Disable plugin!");
+			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
+	    	return false;
+	    }
+		cmdToBungeeApi = new CommandToBungeeApi(plugin);
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.tobungee.commands.CommandToBungee.class,
+        cmdToBungeeApi,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> CommandToBungee.class is provided!");
+		return true;
+	}
+	
+	private boolean setupPlayerParameter()
+	{      
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "! Disable plugin!");
+			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
+	    	return false;
+	    }
+		ppmApi = new PlayerParameterApi(plugin);
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.synchronization.PlayerParameter.class,
+        ppmApi,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> Base64.class is provided!");

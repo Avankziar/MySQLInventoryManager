@@ -1,5 +1,7 @@
 package main.java.me.avankziar.mim.spigot.objects;
 
+import java.util.UUID;
+
 import javax.annotation.Nullable;
 
 import org.bukkit.GameMode;
@@ -18,7 +20,7 @@ public class SyncTask extends BukkitRunnable
 	public enum RunType
 	{
 		CLEAR_AND_RESET,
-		LOAD, SAVE, 
+		LOAD, SAVE, SAVEANDKICK,
 		LOAD_DEATHSTATE, SAVE_DEATHSTATE,
 		LOAD_PREDEFINESTATE, SAVE_PREDEFINESTATE;
 	}
@@ -73,11 +75,16 @@ public class SyncTask extends BukkitRunnable
 	@Override
 	public void run()
 	{
-		plugin.playerSyncComplete.remove(player.getUniqueId());
-		plugin.playerInSync.add(player.getUniqueId());
+		final UUID uuid = player.getUniqueId();
+		plugin.playerSyncComplete.remove(uuid);
+		plugin.playerInSync.add(uuid);
 		if(runType == RunType.SAVE)
 		{
 			PlayerDataHandler.save(syncType, player);
+		} else if(runType == RunType.SAVEANDKICK)
+		{
+			PlayerDataHandler.save(syncType, player);
+			player.kickPlayer(plugin.getYamlHandler().getLang().getString("SyncTask.SavedAndKicked"));
 		} else if(runType == RunType.LOAD)
 		{
 			if(!new ConfigHandler(plugin).inSleepMode())
@@ -106,7 +113,7 @@ public class SyncTask extends BukkitRunnable
 		{
 			ClearAndResetHandler.clearAndReset(syncType, player); //DO ONLY If the player DONT quit the server!
 		}
-		plugin.playerInSync.remove(player.getUniqueId());
-		plugin.playerSyncComplete.add(player.getUniqueId());
+		plugin.playerInSync.remove(uuid);
+		plugin.playerSyncComplete.add(uuid);
 	}
 }

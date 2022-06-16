@@ -11,11 +11,11 @@ import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
 
-public class MiMSaveAndKick extends ArgumentModule
+public class MiMSave extends ArgumentModule
 {
 	private MIM plugin;
 	
-	public MiMSaveAndKick(ArgumentConstructor ac)
+	public MiMSave(ArgumentConstructor ac)
 	{
 		super(ac);
 		this.plugin = BaseConstructor.getPlugin();
@@ -37,13 +37,13 @@ public class MiMSaveAndKick extends ArgumentModule
 		}
 		if(server != null)
 		{
-			plugin.getPlayerParameterApi().saveAndKickServer(server);
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickServer").replace("%server%", server)));
+			plugin.getPlayerParameterApi().saveServer(server);
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveServer").replace("%server%", server)));
 			return;
 		} else
 		{
-			plugin.getPlayerParameterApi().saveAndKickAll();
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickAll")));
+			plugin.getPlayerParameterApi().saveAll();
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SavekAll")));
 			return;
 		}
 	}

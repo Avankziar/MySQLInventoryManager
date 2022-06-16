@@ -2,4 +2,18 @@ Build 1-0-0 -------------------------------------------------------------
 - Shulkers in CustomPlayerInventory mit perm öffnen können.
 - Shulker in Enderchest mit perm öffnen können.
 - Shulker in normalen mit perm öffnen können.
-+ 
+- Schilder per Item und Event "Bearbeitbar machen" HumanEntity.openSign(Sign, boolean)
++ /mim | Infoseite für alle Befehle.
++ /mim saveandkick [servername] | Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.
++ /mim save [servername] | Speichert den vollen Spielstand aller Spieler. Optional nur für einen Server.
++ /gm <Zahl> [Spielername] | Wechselt den GameMode. Optional für andere Spieler.
++ /wbench [Spielername] | Öffnet eine Werkbank. Optional für andere Spieler.
++ /enderchest [Spielername] | Öffnet deine Enderchest. Optional für andere Spieler.
++ /enchantingtable [Spielername] | Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.
++ /anvil [Spielername] | Öffnet einen Amboss. Optional für andere Spieler.
++ xyz steht für die CustomPlayerInventory Befehlsreplacer.
++ /xyz | Öffnet das Benutzerdefinierte Spielerinventar.
++ /xyz buy [Spielername] | Kauft die nächsthöhere Reihe des CustomSpielerInventars, wenn es möglich ist.
++ /xyz drop [bestätigen] | Dropt alle Items des Custom Spieler Inventars auf dem Boden.
++ /xyz info | Gibt Infos bezüglich der defaultbox aus.
++ /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.

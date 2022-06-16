@@ -178,20 +178,43 @@ public class YamlManager
 		 */	
 	}
 	
-	@SuppressWarnings("unused") //INFO:Commands
 	public void initCommands()
 	{
 		comBypass();
-		String path = "";
-		commandsInput("path", "base", "perm.command.perm", 
-				"/base [pagenumber]", "/base ",
-				"&c/base &f| Infoseite für alle Befehle.",
-				"&c/base &f| Info page for all commands.");
-		String basePermission = "perm.base.";
-		argumentInput("base_argument", "argument", basePermission,
-				"/base argument <id>", "/econ deletelog ",
-				"&c/base argument &f| Ein Unterbefehl",
-				"&c/base argument &f| A Subcommand.");
+		commandsInput("mim", "mim", "mim.cmd.mim", 
+				"/mim [pagenumber]", "/mim ",
+				"&c/mim &f| Infoseite für alle Befehle.",
+				"&c/mim &f| Info page for all commands.");
+		String basePermission = "mim.cmd.mim.";
+		argumentInput("mim_saveandkick", "saveandkick", basePermission,
+				"/mim saveandkick [servername]", "/mim saveandkick ",
+				"&c/mim saveandkick [servername] &f| Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.",
+				"&c/mim saveandkick [servername] &f| Saves the full score of all players and then kick those. Optional for one server only.");
+		argumentInput("mim_save", "save", basePermission,
+				"/mim save [servername]", "/mim save ",
+				"&c/mim save [servername] &f| Speichert den vollen Spielstand aller Spieler. Optional nur für einen Server.",
+				"&c/mim save [servername] &f| Saves the full score of all players. Optional for one server only.");
+		commandsInput("gm", "gm", "gm.cmd.gm", 
+				"/gm <number> [playername]", "/gm ",
+				"&c/gm <Zahl> [Spielername] &f| Wechselt den GameMode. Optional für andere Spieler.",
+				"&c/gm <number> [playername] &f| Switches the GameMode. Optional for other players.");
+		commandsInput("workbench", "wbench", "workbench.cmd.wbench", 
+				"/wbench [playername]", "/wbench ",
+				"&c/wbench [Spielername] &f| Öffnet eine Werkbank. Optional für andere Spieler.",
+				"&c/wbench [playername] &f| Opens a workbench. Optional for other players.");
+		commandsInput("enderchest", "enderchest", "enderchest.cmd.enderchest", 
+				"/enderchest [playername]", "/enderchest ",
+				"&c/enderchest [Spielername] &f| Öffnet deine Enderchest. Optional für andere Spieler.",
+				"&c/enderchest [playername] &f| Opens your enderchest. Optional for other players.");
+		commandsInput("enchantingtable", "enchantingtable", "enchantingtable.cmd.enchantingtable", 
+				"/enchantingtable [playername]", "/enchantingtable ",
+				"&c/enchantingtable [Spielername] &f| Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.",
+				"&c/enchantingtable [playername] &f| Opens a enchanting table of the maximum level. Optional for other players.");
+		commandsInput("anvil", "anvil", "anvil.cmd.anvil", 
+				"/anvil [playername]", "/anvil ",
+				"&c/anvil [Spielername] &f| Öffnet einen Amboss. Optional für andere Spieler.",
+				"&c/anvil [playername] &f| Opens a anvil. Optional for other players.");
+		
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -267,11 +290,101 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Spieler ist nicht online!",
 				"&cThe player is not online!"}));
+		languageKeys.put("CommandWorkOnlyForPlayer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBefehl, wie er angegeben ist, wirk nur für Spieler!",
+				"&cCommand as it is specified, work only for players!"}));
+		languageKeys.put("DidYouMean"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cMeintest du:",
+				"&cDid you mean:"}));
+		initLangSyncTask();
+		initLangGameMode();
+		initLangOpenableBlocks();
 		initLangCustomPlayerInventory();
 		/*languageKeys.put(""
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}))*/
+	}
+	
+	private void initLangSyncTask()
+	{
+		String path = "SyncTask.";
+		languageKeys.put(path+"SavedAndKicked"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDein Spielstand wurde erfolgreich gespeichert und du wurdest vom Server gekickt!",
+				"&eYour game state was successfully saved and you were kicked from the server!"}));
+		languageKeys.put(path+"SaveAndKickAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAlle Server werden angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
+				"&eAll servers are instructed to save all currently existing players in time and then kick them. &cBeware, without active whitelist or similar, but they can join again!"}));
+		languageKeys.put(path+"SaveAndKickServer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Server %server% wurde angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
+				"&eThe server %server% are instructed to save all currently existing players in time and then kick them. &cBeware, without active whitelist or similar, but they can join again!"}));
+		languageKeys.put(path+"SaveAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAlle Server werden angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern.",
+				"&eAll servers are instructed to save all currently existing players in time."}));
+		languageKeys.put(path+"SaveServer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Server %server% wurde angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
+				"&eThe server %server% are instructed to save all currently existing players in time and then kick them. &cBeware, without active whitelist or similar, but they can join again!"}));
+	}
+	
+	private void initLangGameMode()
+	{
+		String path = "GameMode.";
+		languageKeys.put(path+"SURVIVAL",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Überleben",
+				"Survival"}));
+		languageKeys.put(path+"CREATIVE",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Kreativ",
+				"Creative"}));
+		languageKeys.put(path+"ADVENTURE",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Adventure",
+				"Adventure"}));
+		languageKeys.put(path+"SPECTATOR",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Beobachter",
+				"Spectator"}));
+		languageKeys.put(path+"SetGameMode",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu bist in den GameMode &f%gamemode% &egewechselt.",
+				"&eYou have changed to the GameMode &f%gamemode%&e."}));
+		languageKeys.put(path+"SetOtherGameMode",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast Spieler &f%player% &ein den GameMode &f%gamemode% &egewechselt.",
+				"&eYou have changed player &f%player% &eto GameMode &f%gamemode%&e."}));
+		languageKeys.put(path+"SettedGameMode",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu wurdest von &f%sender% &ein den GameMode &f%gamemode% &egesetzt.",
+				"&eYou have been set by &f%sender% &to GameMode &f%gamemode%."}));
+	}
+	
+	private void initLangOpenableBlocks()
+	{
+		String path = "Openable.";
+		languageKeys.put(path+"WorkbenchOther",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast für den Spieler &f%player% &edie Werkbank geöffnet!",
+				"&eYou have opened for the &f%player% &ethe workbench!"}));
+		languageKeys.put(path+"EnderchestOther",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast die Enderchest des Spielers &f%player% &egeöffnet!",
+				"&eYou have opened the enderchest of the player &f%player% &e!"}));
+		languageKeys.put(path+"EnchantingTableOther",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast für den Spieler &f%player% &eden Verzauberungstisch geöffnet!",
+				"&eYou have opened for the &f%player% &ethe enchanting table!"}));
+		languageKeys.put(path+"AnvilOther",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast für den Spieler &f%player% &eden Amboss geöffnet!",
+				"&eYou have opened for the &f%player% &ethe anvil!"}));
 	}
 	
 	private void initLangCustomPlayerInventory()
@@ -289,10 +402,6 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDas Custom Spieler Inventar ist nicht aktiv oder existiert nicht!",
 				"&cThe Custom Player Inventory is not active or does not exist!"}));
-		languageKeys.put(path+"InventoryIsAlreadyInUse",
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDas Custom Spieler Inventar wird gerade schon benutzt!",
-				"&cThe Custom Player Inventory is already being used right now!"}));
 		languageKeys.put(path+"DoNotHaveAccess",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu hast kein Zugriff auf dieses Custom Spieler Inventar!",

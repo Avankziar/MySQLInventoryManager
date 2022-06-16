@@ -30,7 +30,7 @@ public class PlayerJoinListener extends BaseListener
 		Player player = event.getPlayer();
 		if(plugin.getConfigHandler().loadPredefineOnFirstJoin(world)
 				&& !plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player), player.getGameMode().toString()))
+						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false), player.getGameMode().toString()))
 		{ //Info Wenn der Spieler zum ersten Mal mit dem GameMode und dem SynchroKey Joint
 			addCooldown(player.getUniqueId());
 			new SyncTask(plugin, SyncType.FULL, RunType.LOAD_PREDEFINESTATE, player, 

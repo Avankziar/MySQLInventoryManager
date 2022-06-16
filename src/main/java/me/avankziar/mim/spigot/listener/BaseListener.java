@@ -15,6 +15,8 @@ public class BaseListener implements Listener
 {
 	public enum Type
 	{
+		IFH_API("EMPTY"),
+		
 		BLOCK_CANBUILD("Block.CanBuild.SaveInvOnly"),
 		BLOCK_IGNITE("Block.Ignite.SaveInvOnly"),
 		BLOCK_SIGNCHANGE("Block.SignChange.SaveFull"),

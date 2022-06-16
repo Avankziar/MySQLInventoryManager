@@ -154,7 +154,7 @@ public class PlayerDataHandler
 	 */
 	public static void save(SyncType syncType, final Player player)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 		GameMode gm = player.getGameMode();
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
@@ -327,6 +327,90 @@ public class PlayerDataHandler
 				MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
 			}
 			return;
+		case INV_ARMOR:
+			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+			{
+				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+					+ "` SET `player_name` = ?,"
+					+ " `armor_content` = ?"
+					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+		        ps.setString(1, pd.getName());
+		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pd.getArmorContents()));
+		        
+		        ps.setString(3, pd.getSynchroKey());
+		        ps.setString(4, pd.getGameMode().toString());
+		        ps.setString(5, player.getUniqueId().toString());		
+				int u = ps.executeUpdate();
+				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+			} catch (SQLException e)
+			{
+				MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+			}
+			return;
+		case INV_ENDERCHEST:
+			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+			{
+				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+					+ "` SET `player_name` = ?,"
+					+ " `enderchest_content` = ?"
+					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+		        ps.setString(1, pd.getName());
+		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pd.getEnderchestContents()));
+		        
+		        ps.setString(3, pd.getSynchroKey());
+		        ps.setString(4, pd.getGameMode().toString());
+		        ps.setString(5, player.getUniqueId().toString());		
+				int u = ps.executeUpdate();
+				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+			} catch (SQLException e)
+			{
+				MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+			}
+			return;
+		case INV_OFFHAND:
+			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+			{
+				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+					+ "` SET `player_name` = ?,"
+					+ " `off_hand` = ?"
+					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+		        ps.setString(1, pd.getName());
+		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(pd.getOffHand()));
+		        
+		        ps.setString(3, pd.getSynchroKey());
+		        ps.setString(4, pd.getGameMode().toString());
+		        ps.setString(5, player.getUniqueId().toString());		
+				int u = ps.executeUpdate();
+				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+			} catch (SQLException e)
+			{
+				MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+			}
+			return;
+		case INV_ONLY:
+			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+			{
+				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+					+ "` SET `player_name` = ?,"
+					+ " `inventory_content` = ?"
+					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+				PreparedStatement ps = conn.prepareStatement(sql);
+		        ps.setString(1, pd.getName());
+		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pd.getInventoryStorageContents()));
+		        
+		        ps.setString(3, pd.getSynchroKey());
+		        ps.setString(4, pd.getGameMode().toString());
+		        ps.setString(5, player.getUniqueId().toString());		
+				int u = ps.executeUpdate();
+				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+			} catch (SQLException e)
+			{
+				MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+			}
+			return;
 		case EFFECT:
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
@@ -384,7 +468,7 @@ public class PlayerDataHandler
 	 */
 	public static void load(SyncType syncType, Player player, GameMode gm)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
 				player.getUniqueId().toString(), synchroKey, gm.toString());

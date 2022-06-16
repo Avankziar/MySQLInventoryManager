@@ -154,7 +154,7 @@ public class DeathMemoryStateHandler
 	 */
 	public static void save(SyncType syncType, final Player player)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 		GameMode gm = player.getGameMode();
 		int count = MIM.getPlugin().getMysqlHandler().getCount(MysqlHandler.Type.DEATHMEMORYSTATE, 
 				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",

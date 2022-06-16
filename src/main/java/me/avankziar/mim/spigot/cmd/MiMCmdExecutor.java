@@ -21,15 +21,15 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class MiMCommandExecutor implements CommandExecutor
+public class MiMCmdExecutor implements CommandExecutor
 {
 	private MIM plugin;
 	private static CommandConstructor cc;
 	
-	public MiMCommandExecutor(MIM plugin, CommandConstructor cc)
+	public MiMCmdExecutor(MIM plugin, CommandConstructor cc)
 	{
 		this.plugin = plugin;
-		MiMCommandExecutor.cc = cc;
+		MiMCmdExecutor.cc = cc;
 	}
 	
 	@Override
@@ -51,8 +51,7 @@ public class MiMCommandExecutor implements CommandExecutor
 			{
 				if(!player.hasPermission(cc.getPermission()))
 				{
-					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
 				baseCommands(player, Integer.parseInt(args[0]));
@@ -62,8 +61,7 @@ public class MiMCommandExecutor implements CommandExecutor
 		{
 			if(!player.hasPermission(cc.getPermission()))
 			{
-				///Du hast dafür keine Rechte!
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
 			baseCommands(player, 0);
@@ -197,5 +195,4 @@ public class MiMCommandExecutor implements CommandExecutor
 		MSG.setExtra(pages);	
 		player.spigot().sendMessage(MSG);
 	}
-
 }

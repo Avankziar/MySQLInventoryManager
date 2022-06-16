@@ -376,7 +376,7 @@ public class PredefinePlayerStateHandler
 	 */
 	public static void load(SyncType syncType, Player player, String statename)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 		GameMode gm = player.getGameMode();
 		PredefinePlayerState pps = (PredefinePlayerState) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PREDEFINEPLAYERSTATE,
 				"`state_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",

@@ -1,6 +1,5 @@
 package main.java.me.avankziar.mim.spigot.assistance;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ public class Utility
 		Utility.plugin = plugin;
 	}
 	
-	public static String convertUUIDToName(String uuid) throws IOException
+	public static String convertUUIDToName(String uuid)
 	{
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "player_uuid = ?", uuid))
 		{
@@ -26,7 +25,7 @@ public class Utility
 		return null;
 	}
 	
-	public static UUID convertNameToUUID(String playername) throws IOException
+	public static UUID convertNameToUUID(String playername)
 	{
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername))
 		{
