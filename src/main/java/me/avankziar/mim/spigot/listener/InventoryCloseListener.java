@@ -3,11 +3,13 @@ package main.java.me.avankziar.mim.spigot.listener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -46,10 +48,13 @@ public class InventoryCloseListener extends BaseListener
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
+		if(inExternInventory(event.getPlayer().getUniqueId()))
 		{
-			return;
-		}
+			if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
+			{
+				return;
+			}
+		}		
 		if(EnchantingTableCmdExecutor.inEnchantingTable.contains(event.getPlayer().getUniqueId()))
 		{
 			EnchantingTableCmdExecutor.inEnchantingTable.remove(event.getPlayer().getUniqueId());
@@ -148,6 +153,65 @@ public class InventoryCloseListener extends BaseListener
 			{
 			default:
 				return false;
+			case "INV":
+				Player target = Bukkit.getPlayer(targetPlayer);
+				if(target != null)
+				{
+					target.getInventory().setStorageContents(inv.getContents());
+				} else
+				{
+					try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+					{
+						String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+							+ "` SET `inventory_content` = ?"
+							+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+						PreparedStatement ps = conn.prepareStatement(sql);
+				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
+				        
+				        ps.setString(2, synchroKey);
+				        ps.setString(3, targetMode.toString());
+				        ps.setString(4, targetPlayer.toString());
+						int u = ps.executeUpdate();
+						MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+					} catch (SQLException e)
+					{
+						MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+					}
+				}
+				break;
+			case "ARMOR":
+				ArrayList<ItemStack> armor = new ArrayList<>();
+				ItemStack offhand = null;
+				for(int i = 0; i < inv.getContents().length; i++)
+				{
+					ItemStack is = inv.getContents()[i];
+					if(i == 0)
+					{
+						offhand = is;
+					} else
+					{
+						armor.add(is);
+					}
+				}
+				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+				{
+					String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+						+ "` SET `armor_content` = ?, `off_hand` = ?"
+						+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					PreparedStatement ps = conn.prepareStatement(sql);
+			        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
+			        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(offhand));
+			        
+			        ps.setString(3, synchroKey);
+			        ps.setString(4, targetMode.toString());
+			        ps.setString(5, targetPlayer.toString());	
+					int u = ps.executeUpdate();
+					MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+				} catch (SQLException e)
+				{
+					MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+				}
+				break;
 			case "EC": //Enderchest
 				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 				{

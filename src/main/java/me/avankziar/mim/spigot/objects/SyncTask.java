@@ -69,6 +69,7 @@ public class SyncTask extends BukkitRunnable
 		this.syncType = syncType;
 		this.runType = runType;
 		this.player = player;
+		this.statename = statename;
 		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
 

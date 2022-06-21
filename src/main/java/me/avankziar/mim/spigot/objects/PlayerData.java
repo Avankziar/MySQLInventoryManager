@@ -51,8 +51,11 @@ public class PlayerData implements MysqlHandable
 	private float flySpeed; //getFlySpeed
 	private int fireTicks; //getFireTicks
 	private int freezeTicks; //getFreezeTicks
+	private boolean flying; //isFlying
 	private boolean glowing; //isGlowing
 	private boolean gravity; //hasGravity
+	private boolean invisible; //isInvisible
+	private boolean invulnerable; //isInvulnerable
 	private ArrayList<PotionEffect> activeEffects; //getActivePotionEffects
 	private EntityCategory entityCategory; //getCategory || Interessant für Schadensverz. BANN etc.
 	//LivingEntity
@@ -74,7 +77,9 @@ public class PlayerData implements MysqlHandable
 			ItemStack[] enderchestContents, int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, LinkedHashMap<Attribute, Double> attributes, double health, 
 			double absorptionAmount, float expTowardsNextLevel, int expLevel, int totalExperience, float walkSpeed,
-			float flySpeed, int fireTicks, int freezeTicks, boolean glowing, boolean gravity, ArrayList<PotionEffect> activeEffects,
+			float flySpeed, int fireTicks, int freezeTicks, 
+			boolean flying, boolean glowing, boolean gravity, boolean invisible, boolean invulnerable,
+			ArrayList<PotionEffect> activeEffects,
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
@@ -105,8 +110,11 @@ public class PlayerData implements MysqlHandable
 		setFlySpeed(flySpeed);
 		setFireTicks(fireTicks);
 		setFreezeTicks(freezeTicks);
+		setFlying(flying);
 		setGlowing(glowing);
 		setGravity(gravity);
+		setInvisible(invisible);
+		setInvulnerable(invulnerable);
 		setActiveEffects(activeEffects);
 		setEntityCategory(entityCategory);
 		setArrowsInBody(arrowsInBody);
@@ -122,7 +130,9 @@ public class PlayerData implements MysqlHandable
 			String enderchestContents, int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, String attributes, double health, 
 			double absorptionAmount, float expTowardsNextLevel, int expLevel, int totalExperience, float walkSpeed,
-			float flySpeed, int fireTicks, int freezeTicks, boolean glowing, boolean gravity, String activeEffects,
+			float flySpeed, int fireTicks, int freezeTicks,
+			boolean flying, boolean glowing, boolean gravity, boolean invisible, boolean invulnerable,
+			String activeEffects,
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
@@ -177,8 +187,11 @@ public class PlayerData implements MysqlHandable
 		setFlySpeed(flySpeed);
 		setFireTicks(fireTicks);
 		setFreezeTicks(freezeTicks);
+		setFlying(flying);
 		setGlowing(glowing);
 		setGravity(gravity);
+		setInvisible(invisible);
+		setInvulnerable(invulnerable);
 		ArrayList<PotionEffect> pe = new ArrayList<>();
 		for(Object o : plugin.getBase64Api().fromBase64Array(activeEffects))
 		{
@@ -454,6 +467,22 @@ public class PlayerData implements MysqlHandable
 		this.freezeTicks = freezeTicks;
 	}
 
+	/**
+	 * @return the flying
+	 */
+	public boolean isFlying()
+	{
+		return flying;
+	}
+
+	/**
+	 * @param flying the flying to set
+	 */
+	public void setFlying(boolean flying)
+	{
+		this.flying = flying;
+	}
+
 	public boolean isGlowing()
 	{
 		return glowing;
@@ -472,6 +501,32 @@ public class PlayerData implements MysqlHandable
 	public void setGravity(boolean gravity)
 	{
 		this.gravity = gravity;
+	}
+
+	/**
+	 * @return the invisible
+	 */
+	public boolean isInvisible()
+	{
+		return invisible;
+	}
+
+	/**
+	 * @param invisible the invisible to set
+	 */
+	public void setInvisible(boolean invisible)
+	{
+		this.invisible = invisible;
+	}
+
+	public boolean isInvulnerable()
+	{
+		return invulnerable;
+	}
+
+	public void setInvulnerable(boolean invulnerable)
+	{
+		this.invulnerable = invulnerable;
 	}
 
 	public ArrayList<PotionEffect> getActiveEffects()
@@ -572,16 +627,19 @@ public class PlayerData implements MysqlHandable
 					+ " `food_level`, `saturation`, `saturated_regen_rate`, `unsaturated_regen_rate`,"
 					+ " `starvation_rate`, `exhaustion`, `attributes`, `health`, `absorption_amount`,"
 					+ " `exp_towards_next_level`, `exp_level`, `total_experience`,"
-					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`, `glowing`, `gravity`,"
+					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`,"
+					+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
 					+ " `potion_effects`, `entity_category`, `arrows_in_body`, `maximum_air`, `remaining_air`, `custom_name`,"
 					+ " `persistent_data`, `clear_toggle`) " 
-					+ "VALUES(?, ?, "
+					+ "VALUES("
+					+ "?, ?, "
 					+ "?, ?, "
 					+ "?, ?, ?, ?, "
 					+ "?, ?, ?, ?, "
 					+ "?, ?, ?, ?, ?, "
 					+ "?, ?, ?, "
-					+ "?, ?, ?, ?, ?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?"
 					+ "?, ?, ?, ?, ?, ?, "
 					+ "?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -614,20 +672,23 @@ public class PlayerData implements MysqlHandable
 	        ps.setFloat(22, getFlySpeed());
 	        ps.setInt(23, getFireTicks());
 	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isGlowing());
-	        ps.setBoolean(26, isGravity());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(28, getEntityCategory().toString());
-	        ps.setInt(29, getArrowsInBody());
-	        ps.setInt(30, getMaximumAir());
-	        ps.setInt(31, getRemainingAir());
+	        ps.setBoolean(25, isFlying());
+	        ps.setBoolean(26, isGlowing());
+	        ps.setBoolean(27, isGravity());
+	        ps.setBoolean(28, isInvisible());
+	        ps.setBoolean(29, isInvulnerable());
+	        ps.setString(30, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(31, getEntityCategory().toString());
+	        ps.setInt(32, getArrowsInBody());
+	        ps.setInt(33, getMaximumAir());
+	        ps.setInt(34, getRemainingAir());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(32, pd.toString());
-	        ps.setBoolean(33, isClearToggle());
+	        ps.setString(35, pd.toString());
+	        ps.setBoolean(36, isClearToggle());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -651,7 +712,8 @@ public class PlayerData implements MysqlHandable
 				+ " `food_level` = ?, `saturation` = ?, `saturated_regen_rate` = ?, `unsaturated_regen_rate` = ?,"
 				+ " `starvation_rate` = ?, `exhaustion` = ?, `attributes` = ?, `health` = ?, `absorption_amount` = ?,"
 				+ " `exp_towards_next_level` = ?, `exp_level` = ?, `total_experience` = ?,"
-				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?, `glowing` = ?, `gravity` = ?,"
+				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?, "
+				+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 				+ " `potion_effects` = ?, `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?, `remaining_air` = ?, `custom_name` = ?,"
 				+ " `persistent_data` = ?, `clear_toggle` = ?" 
 				+ " WHERE "+whereColumn;
@@ -685,21 +747,24 @@ public class PlayerData implements MysqlHandable
 	        ps.setFloat(22, getFlySpeed());
 	        ps.setInt(23, getFireTicks());
 	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isGlowing());
-	        ps.setBoolean(26, isGravity());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(28, getEntityCategory().toString());
-	        ps.setInt(29, getArrowsInBody());
-	        ps.setInt(30, getMaximumAir());
-	        ps.setInt(31, getRemainingAir());
+	        ps.setBoolean(25, isFlying());
+	        ps.setBoolean(26, isGlowing());
+	        ps.setBoolean(27, isGravity());
+	        ps.setBoolean(28, isInvisible());
+	        ps.setBoolean(29, isInvulnerable());
+	        ps.setString(30, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(31, getEntityCategory().toString());
+	        ps.setInt(32, getArrowsInBody());
+	        ps.setInt(33, getMaximumAir());
+	        ps.setInt(34, getRemainingAir());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(32, pd.toString());
-	        ps.setBoolean(33, isClearToggle());
-			int i = 34;
+	        ps.setString(35, pd.toString());
+	        ps.setBoolean(36, isClearToggle());
+			int i = 37;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -760,9 +825,12 @@ public class PlayerData implements MysqlHandable
 						rs.getFloat("walk_speed"),
 						rs.getFloat("fly_speed"),
 						rs.getInt("fire_ticks"),
-						rs.getInt("freeze_ticks"),
+						rs.getInt("freeze_ticks"), 
+						rs.getBoolean("flying"),
 						rs.getBoolean("glowing"),
 						rs.getBoolean("gravity"),
+						rs.getBoolean("invisible"),
+						rs.getBoolean("invulnerable"),
 						rs.getString("potion_effects"),
 						EntityCategory.valueOf(rs.getString("entity_category")),
 						rs.getInt("arrows_in_body"),

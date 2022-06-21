@@ -67,6 +67,7 @@ public class ClearAndResetHandler
 			{
 				player.getPersistentDataContainer().remove(nsk);
 			}
+			player.updateInventory();
 			return;
 		case ATTRIBUTE:
 			player.setFoodLevel(20);
@@ -100,6 +101,7 @@ public class ClearAndResetHandler
 			//player.getInventory().setArmorContents(pd.getArmorContents());
 			//player.getInventory().setItemInOffHand(pd.getOffHand());
 			player.getEnderChest().clear();
+			player.updateInventory();
 			return;
 		case INV_ONLY:
 			final ItemStack[] armor = player.getInventory().getArmorContents();
@@ -107,12 +109,15 @@ public class ClearAndResetHandler
 			player.getInventory().clear();
 			player.getInventory().setArmorContents(armor);
 			player.getInventory().setItemInOffHand(offhand);
+			player.updateInventory();
 			return;
 		case INV_OFFHAND:
 			player.getInventory().setItemInOffHand(null);
+			player.updateInventory();
 			return;
 		case INV_ARMOR:
 			player.getInventory().setArmorContents(null);
+			player.updateInventory();
 			return;
 		case INV_ENDERCHEST:
 			player.getEnderChest().clear();

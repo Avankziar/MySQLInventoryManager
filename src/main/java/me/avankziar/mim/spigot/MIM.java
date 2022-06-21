@@ -29,18 +29,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
+import main.java.me.avankziar.ifh.spigot.position.LastKnownPosition;
 import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmd.AnvilCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.ArmorSeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
+import main.java.me.avankziar.mim.spigot.cmd.WhoIsCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.WorkbenchCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.clear.ClearSub;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIBuy;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIDrop;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIInfo;
@@ -83,8 +89,10 @@ import main.java.me.avankziar.mim.spigot.listener.PlayerRespawnListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerTeleportListener;
 import main.java.me.avankziar.mim.spigot.listener.PrepareItemEnchantListener;
 import main.java.me.avankziar.mim.spigot.listener.TimeSkipListener;
+import main.java.me.avankziar.mim.spigot.listener.WhoIsListener;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
+import main.java.me.avankziar.mim.spigot.objects.SyncType;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class MIM extends JavaPlugin
@@ -115,6 +123,9 @@ public class MIM extends JavaPlugin
 	private CommandToBungeeApi cmdToBungeeApi;
 	private PlayerParameterApi ppmApi;
 	private Economy ecoConsumer;
+	private net.milkbowl.vault.economy.Economy ecoVault;
+	private PlayerTimes playerTimesConsumer;
+	private LastKnownPosition lastKnownPositionConsumer;
 	
 	public void onEnable()
 	{
@@ -146,6 +157,7 @@ public class MIM extends JavaPlugin
 		backgroundTask = new BackgroundTask(this);
 		
 		setupIFH();
+		setupVaultEconomy();
 		setupBypassPerm();
 		setupCommandTree();
 		setupListeners();
@@ -258,7 +270,62 @@ public class MIM extends JavaPlugin
 		getCommand(anvil.getName()).setExecutor(new AnvilCmdExecutor(plugin, anvil));
 		getCommand(anvil.getName()).setTabCompleter(tab);
 		
+		CommandConstructor invsee = new CommandConstructor(CommandExecuteType.INVSEE, "invsee", false);
+		registerCommand(invsee.getPath(), invsee.getName());
+		getCommand(invsee.getName()).setExecutor(new InventorySeeCmdExecutor(plugin, invsee));
+		getCommand(invsee.getName()).setTabCompleter(tab);
+		
+		CommandConstructor armorsee = new CommandConstructor(CommandExecuteType.ARMORSEE, "armorsee", false);
+		registerCommand(armorsee.getPath(), armorsee.getName());
+		getCommand(armorsee.getName()).setExecutor(new ArmorSeeCmdExecutor(plugin, armorsee));
+		getCommand(armorsee.getName()).setTabCompleter(tab);
+		
+		CommandConstructor whois = new CommandConstructor(CommandExecuteType.WHOIS, "whois", false);
+		registerCommand(whois.getPath(), whois.getName());
+		getCommand(whois.getName()).setExecutor(new WhoIsCmdExecutor(plugin, whois));
+		getCommand(whois.getName()).setTabCompleter(tab);
+		
+		setupCmdClear(tab);
 		setupCmdCustomPlayerInventory(tab);
+	}
+	
+	private void setupCmdClear(TabCompletion tab)
+	{
+		ArgumentConstructor armor = new ArgumentConstructor(CommandExecuteType.CLEAR_ARMOR, "clear_armor", 0, 1, 2, false, null);
+		new ClearSub(armor, SyncType.INV_ARMOR);
+		
+		ArgumentConstructor attribute = new ArgumentConstructor(CommandExecuteType.CLEAR_ATTRIBUTE, "clear_attribute", 0, 1, 2, false, null);
+		new ClearSub(attribute, SyncType.ATTRIBUTE);
+		
+		ArgumentConstructor ec = new ArgumentConstructor(CommandExecuteType.CLEAR_EC, "clear_ec", 0, 1, 2, false, null);
+		new ClearSub(ec, SyncType.INV_ENDERCHEST);
+		
+		ArgumentConstructor effect = new ArgumentConstructor(CommandExecuteType.CLEAR_EFFECT, "clear_effect", 0, 1, 2, false, null);
+		new ClearSub(effect, SyncType.EFFECT);
+		
+		ArgumentConstructor exp = new ArgumentConstructor(CommandExecuteType.CLEAR_EXP, "clear_exp", 0, 1, 2, false, null);
+		new ClearSub(exp, SyncType.EXP);
+		
+		ArgumentConstructor full = new ArgumentConstructor(CommandExecuteType.CLEAR_FULL, "clear_full", 0, 1, 2, false, null);
+		new ClearSub(full, SyncType.FULL);
+		
+		ArgumentConstructor offhand = new ArgumentConstructor(CommandExecuteType.CLEAR_OFFHAND, "clear_offhand", 0, 1, 2, false, null);
+		new ClearSub(offhand, SyncType.INV_OFFHAND);
+		
+		ArgumentConstructor invonly = new ArgumentConstructor(CommandExecuteType.CLEAR_INVONLY, "clear_invonly", 0, 1, 2, false, null);
+		new ClearSub(invonly, SyncType.INV_ONLY);
+		
+		ArgumentConstructor inv = new ArgumentConstructor(CommandExecuteType.CLEAR_INV, "clear_inv", 0, 1, 2, false, null);
+		new ClearSub(inv, SyncType.INVENTORY);
+		
+		ArgumentConstructor pd = new ArgumentConstructor(CommandExecuteType.CLEAR_PERSISTENTDATA, "clear_persistentdata", 0, 1, 2, false, null);
+		new ClearSub(pd, SyncType.PERSITENTDATA);
+		
+		CommandConstructor clear = new CommandConstructor(CommandExecuteType.CLEAR, "clear", false,
+				armor, attribute, ec, effect, exp, full, offhand, invonly, inv, pd);
+		registerCommand(clear.getPath(), clear.getName());
+		getCommand(clear.getName()).setExecutor(new ArmorSeeCmdExecutor(plugin, clear));
+		getCommand(clear.getName()).setTabCompleter(tab);
 	}
 	
 	private void setupCmdCustomPlayerInventory(TabCompletion tab)
@@ -465,6 +532,8 @@ public class MIM extends JavaPlugin
 			me.registerOutgoingPluginChannel(this, StaticValues.PP_TOBUNGEE);
 			me.registerIncomingPluginChannel(this, StaticValues.PP_TOSPIGOT, ppmApi);
 		}
+		me.registerOutgoingPluginChannel(this, StaticValues.WHOIS_TOBUNGEE);
+		me.registerIncomingPluginChannel(this, StaticValues.WHOIS_TOSPIGOT, new WhoIsListener());
 	}
 	
 	public ConfigHandler getConfigHandler()
@@ -482,6 +551,11 @@ public class MIM extends JavaPlugin
 		return ecoConsumer;
 	}
 	
+	public net.milkbowl.vault.economy.Economy getVaultEconomy()
+	{
+		return ecoVault;
+	}
+	
 	public CommandToBungeeApi getCmdToBungeeApi()
 	{
 		return cmdToBungeeApi;
@@ -490,6 +564,16 @@ public class MIM extends JavaPlugin
 	public PlayerParameterApi getPlayerParameterApi()
 	{
 		return ppmApi;
+	}
+	
+	public PlayerTimes getPlayerTimes()
+	{
+		return playerTimesConsumer;
+	}
+	
+	public LastKnownPosition getLastKnownPosition()
+	{
+		return lastKnownPositionConsumer;
 	}
 	
 	public boolean reload() throws IOException
@@ -503,7 +587,10 @@ public class MIM extends JavaPlugin
 		setupBase64();
 		setupEconomy();
 		setupCommandToBungee();
+		
 		setupPlayerParameter();
+		setupPlayerTimes();
+		setupLastKnownPosition();
 	}
 	
 	//Hier IFH implementieren für später
@@ -587,6 +674,102 @@ public class MIM extends JavaPlugin
 			    }
 			    ecoConsumer = rsp.getProvider();
 			    log.info(pluginName + " detected InterfaceHub >>> Economy.class is consumed!");
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+        return;
+    }
+	
+	private void setupVaultEconomy()
+    {
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = 
+		                         getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+			    if (rsp == null) 
+			    {
+			    	i++;
+			        return;
+			    }
+			    ecoVault = rsp.getProvider();
+			    log.info(pluginName + " detected Vault >>> Economy.class is consumed!");
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+        return;
+    }
+	
+	private void setupPlayerTimes()
+    {
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    RegisteredServiceProvider<main.java.me.avankziar.ifh.general.interfaces.PlayerTimes> rsp = 
+		                         getServer().getServicesManager().getRegistration(PlayerTimes.class);
+			    if (rsp == null) 
+			    {
+			    	i++;
+			        return;
+			    }
+			    playerTimesConsumer = rsp.getProvider();
+			    log.info(pluginName + " detected InterfaceHub >>> PlayerTimes.class is consumed!");
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+        return;
+    }
+	
+	private void setupLastKnownPosition()
+    {
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.position.LastKnownPosition> rsp = 
+		                         getServer().getServicesManager().getRegistration(LastKnownPosition.class);
+			    if (rsp == null) 
+			    {
+			    	i++;
+			        return;
+			    }
+			    lastKnownPositionConsumer = rsp.getProvider();
+			    log.info(pluginName + " detected InterfaceHub >>> LastKnownPosition.class is consumed!");
 			    cancel();
 			}
         }.runTaskTimer(plugin, 20L, 20*2);

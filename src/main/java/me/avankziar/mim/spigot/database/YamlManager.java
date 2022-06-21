@@ -199,22 +199,73 @@ public class YamlManager
 				"&c/gm <Zahl> [Spielername] &f| Wechselt den GameMode. Optional für andere Spieler.",
 				"&c/gm <number> [playername] &f| Switches the GameMode. Optional for other players.");
 		commandsInput("workbench", "wbench", "workbench.cmd.wbench", 
-				"/wbench [playername]", "/wbench ",
-				"&c/wbench [Spielername] &f| Öffnet eine Werkbank. Optional für andere Spieler.",
-				"&c/wbench [playername] &f| Opens a workbench. Optional for other players.");
+				"/wbench", "/wbench ",
+				"&c/wbench &f| Öffnet eine Werkbank. Optional für andere Spieler.",
+				"&c/wbench &f| Opens a workbench. Optional for other players.");
 		commandsInput("enderchest", "enderchest", "enderchest.cmd.enderchest", 
 				"/enderchest [playername]", "/enderchest ",
 				"&c/enderchest [Spielername] &f| Öffnet deine Enderchest. Optional für andere Spieler.",
 				"&c/enderchest [playername] &f| Opens your enderchest. Optional for other players.");
 		commandsInput("enchantingtable", "enchantingtable", "enchantingtable.cmd.enchantingtable", 
-				"/enchantingtable [playername]", "/enchantingtable ",
-				"&c/enchantingtable [Spielername] &f| Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.",
-				"&c/enchantingtable [playername] &f| Opens a enchanting table of the maximum level. Optional for other players.");
+				"/enchantingtable", "/enchantingtable ",
+				"&c/enchantingtable &f| Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.",
+				"&c/enchantingtable &f| Opens a enchanting table of the maximum level. Optional for other players.");
 		commandsInput("anvil", "anvil", "anvil.cmd.anvil", 
-				"/anvil [playername]", "/anvil ",
-				"&c/anvil [Spielername] &f| Öffnet einen Amboss. Optional für andere Spieler.",
-				"&c/anvil [playername] &f| Opens a anvil. Optional for other players.");
-		
+				"/anvil", "/anvil ",
+				"&c/anvil &f| Öffnet einen Amboss. Optional für andere Spieler.",
+				"&c/anvil &f| Opens a anvil. Optional for other players.");
+		commandsInput("invsee", "invsee", "invsee.cmd.invsee", 
+				"/invsee <playername>", "/invsee ",
+				"&c/invsee <Spielername> &f| Öffnet das Inventar des Spielers.",
+				"&c/invsee <playername> &f| Opens the inventory of that player.");
+		commandsInput("armorsee", "armorsee", "armorsee.cmd.armorsee", 
+				"/armorsee <playername>", "/armorsee ",
+				"&c/armorsee <Spielername> &f| Öffnet die Rüstungs- und Offhand Ansicht des Spielers.",
+				"&c/armorsee <playername> &f| Opens the armor and offhand view of the player.");
+		commandsInput("clear", "clear", "clear.cmd.clear", 
+				"/clear <type> [playername]", "/clear ",
+				"&c/clear <Type> [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear <type> [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_armor", "armor", basePermission,
+				"/clear armor [playername]", "/clear armor ",
+				"&c/clear armor [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear armor [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_ec", "enderchest", basePermission,
+				"/clear enderchest [playername]", "/clear enderchest ",
+				"&c/clear enderchest [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear enderchest [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_effect", "effect", basePermission,
+				"/clear effect [playername]", "/clear effect ",
+				"&c/clear effect [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear effect [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_exp", "exp", basePermission,
+				"/clear exp [playername]", "/clear exp ",
+				"&c/clear exp [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear exp [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_full", "full", basePermission,
+				"/clear full [playername]", "/clear full ",
+				"&c/clear full [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear full [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_offhand", "offhand", basePermission,
+				"/clear offhand [playername]", "/clear offhand ",
+				"&c/clear offhand [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear offhand [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_invonly", "inventoryonyl", basePermission,
+				"/clear inventoryonyl [playername]", "/clear inventoryonyl ",
+				"&c/clear inventoryonyl [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear inventoryonyl [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_inv", "inv", basePermission,
+				"/clear inv [playername]", "/clear inv ",
+				"&c/clear inv [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear inv [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_persistentdata", "persistentdata", basePermission,
+				"/clear persistentdata [playername]", "/clear persistentdata ",
+				"&c/clear persistentdata [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear persistentdata [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		commandsInput("whois", "whois", "whois.cmd.whois", 
+				"/whois [playername]", "/whois ",
+				"&c/whois [Spielername] &f| Öffnet generalisierte Infos zu dem Spieler.",
+				"&c/whois [playername] &f| Opens generalized info about the player.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -298,6 +349,59 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cMeintest du:",
 				"&cDid you mean:"}));
+		languageKeys.put("Boolean.True"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aJa",
+				"&aYes"}));
+		languageKeys.put("Boolean.False"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cNein",
+				"&cNo"}));
+		languageKeys.put("NotOnline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cNicht Online",
+				"&cNot online"}));
+		languageKeys.put("WhoIs.List"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f=====&cWer ist: &6%player%&f=====",
+				"&cUUID: &e%uuid%",
+				"&cSpielzeiten: &f%totaltime% &f<> &a%onlinetime% &f<> &c%afktime%",
+				"&cUrlaub: &f%vacation%",
+				"&cKontostände: &f%money%",
+				"&cLetzte Position: &e%backpos%",
+				
+				"&f=====&cWho is: &6%player%&f=====",
+				"&cUUID: &e%uuid%",
+				"&cPlaytimes: &f%totaltime% &f<> &a%onlinetime% &f<> &c%afktime%",
+				"&cVacation: &f%vacation%",
+				"&cAccount balances: &f%money%",
+				"&cLast Position: &e%backpos%"}));
+		languageKeys.put("WhoIs.OnlineList"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAktuelle Position: &e%pos%",
+				"&cIP: &f%ip%",
+				"&cGameMode: %gm%",
+				"&cLP & Rüstung: &f%lp%/%lpmax% <> %armor%/20",
+				"&cHunger: &f%hunger%/20 &cSättigung: &f%saturation%",
+				"&cGesamtExp: &f%exp% <> &cLevel: &f%level%",
+				"&cUnberwundbar: &f%invun%",
+				"&cUnsichtbar: &f%invis%",
+				"&cFlugmodus: &f%flying%",
+				"&cLauf- & Fluggeschwindigkeit: &f%walkspeed% <> &f%flyspeed%",
+				"&cAktive Effekte: &f%effect%",
+				"&cPersistent Daten: &f%perdata%",
+				
+				"&cCurrent Position: &e%pos%",
+				"&cIP: &f%ip%",
+				"&cLP & Armor: &f%lp%/%lpmax% <> %armor%/%armormax%",
+				"&cHunger: &f%hunger%/%hungermax% &cSättigung: &f%saturation%",
+				"&cTotalExp: &f%exp% <> &cLevel: &f%level%",
+				"&cInvulnerable: &f%invun%",
+				"&cInvisible: &f%invis%",
+				"&cFlymodus: &f%flying%",
+				"&cWalk- & Flyspeed: &f%walkspeed% <> &f%flyspeed%",
+				"&cActive Effects: &f%effect%",
+				"&cPersistent Data: &f%perdata%",}));		
 		initLangSyncTask();
 		initLangGameMode();
 		initLangOpenableBlocks();
@@ -331,6 +435,50 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Server %server% wurde angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
 				"&eThe server %server% are instructed to save all currently existing players in time and then kick them. &cBeware, without active whitelist or similar, but they can join again!"}));
+		languageKeys.put(path+"PleaseConfirm"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte bestätige den Befehl mit &fbestätigen &cam Ende des Befehls.",
+				"&cPlease confirm the command with &fconfirm &cat the end of the command."}));
+		languageKeys.put(path+"Clear.ATTRIBUTE"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Attribute wurden zurückgesetzt.",
+				"&e%player% attributes have been reset."}));
+		languageKeys.put(path+"Clear.FULL"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Inventar, Enderchest, Rüstung, Attribute, Exp, Effekte und PersistentData wurden gelöscht und zurückgesetzt.",
+				"&e%player% Inventory, Enderchest, Armor, Attributes, Exp, Effects and PersistentData have been cleared and reset."}));
+		languageKeys.put(path+"Clear.EXP"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Exp wurden zurückgesetzt.",
+				"&e%player% Exp have been reset."}));
+		languageKeys.put(path+"Clear.INVENTORY"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Inventar, Enderkiste und Rüstung wurden zurückgesetzt.",
+				"&e%player% Inventory, Enderchest and Armors have been reset."}));
+		languageKeys.put(path+"Clear.INV_ONLY"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Inventar wurden zurückgesetzt.",
+				"&e%player% Inventory have been reset."}));
+		languageKeys.put(path+"Clear.INV_ARMOR"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Rüstung wurden zurückgesetzt.",
+				"&e%player% Armor have been reset."}));
+		languageKeys.put(path+"Clear.INV_OFFHAND"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Zweithand wurden zurückgesetzt.",
+				"&e%player% OffHand have been reset."}));
+		languageKeys.put(path+"Clear.INV_ENDERCHEST"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Enderkiste wurden zurückgesetzt.",
+				"&e%player% Enderchest have been reset."}));
+		languageKeys.put(path+"Clear.EFFECT"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% Effekte wurden zurückgesetzt.",
+				"&e%player% effects have been reset."}));
+		languageKeys.put(path+"Clear.PERSISTENTDATA"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%player% PersistentData wurden zurückgesetzt.",
+				"&e%player% PersistentData have been reset."}));
 	}
 	
 	private void initLangGameMode()
@@ -369,22 +517,14 @@ public class YamlManager
 	private void initLangOpenableBlocks()
 	{
 		String path = "Openable.";
-		languageKeys.put(path+"WorkbenchOther",
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDu hast für den Spieler &f%player% &edie Werkbank geöffnet!",
-				"&eYou have opened for the &f%player% &ethe workbench!"}));
 		languageKeys.put(path+"EnderchestOther",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast die Enderchest des Spielers &f%player% &egeöffnet!",
-				"&eYou have opened the enderchest of the player &f%player% &e!"}));
-		languageKeys.put(path+"EnchantingTableOther",
+				"&eYou have opened the enderchest of the player &f%player%&e!"}));
+		languageKeys.put(path+"InventoryOther",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDu hast für den Spieler &f%player% &eden Verzauberungstisch geöffnet!",
-				"&eYou have opened for the &f%player% &ethe enchanting table!"}));
-		languageKeys.put(path+"AnvilOther",
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDu hast für den Spieler &f%player% &eden Amboss geöffnet!",
-				"&eYou have opened for the &f%player% &ethe anvil!"}));
+				"&eDu hast das Inventar des Spielers &f%player% &egeöffnet!",
+				"&eYou have opened the inventory of the player &f%player%&e!"}));
 	}
 	
 	private void initLangCustomPlayerInventory()

@@ -187,7 +187,7 @@ public class CPIBuy extends ArgumentModule
 					{
 						 continue;
 					}
-					int texp = getTotalExperience(player);
+					int texp = getTotalExperience(player.getLevel(), player.getExp());
 					if(texp < amount)
 					{
 						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoEnoughExp")
@@ -305,7 +305,7 @@ public class CPIBuy extends ArgumentModule
 						{
 							 continue;
 						}
-						int texp = getTotalExperience(player)-amount;
+						int texp = getTotalExperience(player.getLevel(), player.getExp())-amount;
 						setTotalExperience(player, texp);
 					}
 				}
@@ -327,29 +327,28 @@ public class CPIBuy extends ArgumentModule
 	}
 	
 	//Thank you, https://www.spigotmc.org/threads/how-to-calculate-exp-and-levels.510074/#post-4184467
-	public int getTotalExperience(Player player) 
+	public static int getTotalExperience(int level, float exp) 
 	{
 	    int experience = 0;
-	    int level = player.getLevel();
 	    if(level >= 0 && level <= 15) 
 	    {
 	        experience = (int) Math.ceil(Math.pow(level, 2) + (6 * level));
 	        int requiredExperience = 2 * level + 7;
-	        double currentExp = Double.parseDouble(Float.toString(player.getExp()));
+	        double currentExp = Double.parseDouble(Float.toString(exp));
 	        experience += Math.ceil(currentExp * requiredExperience);
 	        return experience;
 	    } else if(level > 15 && level <= 30) 
 	    {
 	        experience = (int) Math.ceil((2.5 * Math.pow(level, 2) - (40.5 * level) + 360));
 	        int requiredExperience = 5 * level - 38;
-	        double currentExp = Double.parseDouble(Float.toString(player.getExp()));
+	        double currentExp = Double.parseDouble(Float.toString(exp));
 	        experience += Math.ceil(currentExp * requiredExperience);
 	        return experience;
 	    } else 
 	    {
 	        experience = (int) Math.ceil(((4.5 * Math.pow(level, 2) - (162.5 * level) + 2220)));
 	        int requiredExperience = 9 * level - 158;
-	        double currentExp = Double.parseDouble(Float.toString(player.getExp()));
+	        double currentExp = Double.parseDouble(Float.toString(exp));
 	        experience += Math.ceil(currentExp * requiredExperience);
 	        return experience;
 	    }

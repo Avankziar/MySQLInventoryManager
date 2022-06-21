@@ -95,7 +95,6 @@ public class PlayerDataHandler
 		PersistentDataContainer pdc = player.getPersistentDataContainer();
 		for(PersistentData pd : list)
 		{
-			@SuppressWarnings("deprecation")
 			NamespacedKey n = new NamespacedKey(pd.getNamespaced(), pd.getKey());
 			switch(pd.getPersistentType())
 			{
@@ -197,8 +196,11 @@ public class PlayerDataHandler
 			pd.setFlySpeed(player.getFlySpeed());
 			pd.setFireTicks(player.getFireTicks());
 			pd.setFreezeTicks(player.getFreezeTicks());
+			pd.setFlying(player.isFlying());
 			pd.setGlowing(player.isGlowing());
 			pd.setGravity(player.hasGravity());
+			pd.setInvisible(player.isInvisible());
+			pd.setInvulnerable(player.isInvulnerable());
 			pd.setActiveEffects(pe);
 			pd.setEntityCategory(player.getCategory());
 			pd.setArrowsInBody(player.getArrowsInBody());
@@ -219,7 +221,8 @@ public class PlayerDataHandler
 					attributes, player.getHealth(), player.getAbsorptionAmount(), 
 					player.getExp(), player.getLevel(), player.getTotalExperience(), 
 					player.getWalkSpeed(), player.getFlySpeed(), player.getFireTicks(), player.getFreezeTicks(),
-					player.isGlowing(), player.hasGravity(), pe, player.getCategory(), player.getArrowsInBody(), 
+					player.isFlying(), player.isGlowing(), player.hasGravity(), player.isInvisible(), player.isInvulnerable(),
+					pe, player.getCategory(), player.getArrowsInBody(), 
 					player.getMaximumAir(), player.getRemainingAir(), player.getCustomName(), getPersitentData(player),
 					MIM.getPlugin().getConfigHandler().getDefaultClearToggle());
 			MIM.getPlugin().getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, pd);
@@ -239,8 +242,8 @@ public class PlayerDataHandler
 					+ "` SET `food_level` = ?, `saturation` = ?, `saturated_regen_rate` = ?,"
 					+ " `unsaturated_regen_rate` = ?, `starvation_rate` = ?, `exhaustion` = ?,"
 					+ " `attributes` = ?, `health` = ?, `absorption_amount` = ?,"
-					+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?,"
-					+ " `freeze_ticks` = ?, `glowing` = ?, `gravity` = ?,"
+					+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?,"
+					+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 					+ " `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?,"
 					+ " `remaining_air` = ?, `custom_name` = ?,"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
@@ -263,16 +266,19 @@ public class PlayerDataHandler
 		        ps.setFloat(11, pd.getFlySpeed());
 		        ps.setInt(12, pd.getFireTicks());
 		        ps.setInt(13, pd.getFreezeTicks());
-		        ps.setBoolean(14, pd.isGlowing());
-		        ps.setBoolean(15, pd.isGravity());
-		        ps.setString(16, pd.getEntityCategory().toString());
-		        ps.setInt(17, pd.getArrowsInBody());
-		        ps.setInt(18, pd.getMaximumAir());
-		        ps.setInt(19, pd.getRemainingAir());
+		        ps.setBoolean(14, pd.isFlying());
+		        ps.setBoolean(15, pd.isGlowing());
+		        ps.setBoolean(16, pd.isGravity());
+		        ps.setBoolean(17, pd.isInvisible());
+		        ps.setBoolean(18, pd.isInvulnerable());
+		        ps.setString(19, pd.getEntityCategory().toString());
+		        ps.setInt(20, pd.getArrowsInBody());
+		        ps.setInt(21, pd.getMaximumAir());
+		        ps.setInt(22, pd.getRemainingAir());
 		        
-		        ps.setString(20, pd.getSynchroKey());
-		        ps.setString(21, pd.getGameMode().toString());
-		        ps.setString(22, player.getUniqueId().toString());		
+		        ps.setString(23, pd.getSynchroKey());
+		        ps.setString(24, pd.getGameMode().toString());
+		        ps.setString(25, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -508,8 +514,11 @@ public class PlayerDataHandler
 		player.setFlySpeed(pd.getFlySpeed());
 		player.setFireTicks(pd.getFireTicks());
 		player.setFreezeTicks(pd.getFreezeTicks());
+		player.setFlying(pd.isFlying());
 		player.setGlowing(pd.isGlowing());
 		player.setGravity(pd.isGravity());
+		player.setInvisible(pd.isInvisible());
+		player.setInvulnerable(pd.isInvulnerable());
 		for(PotionEffect pe : pd.getActiveEffects())
 		{
 			player.addPotionEffect(pe);
@@ -546,8 +555,11 @@ public class PlayerDataHandler
 			player.setFlySpeed(pd.getFlySpeed());
 			player.setFireTicks(pd.getFireTicks());
 			player.setFreezeTicks(pd.getFreezeTicks());
+			player.setFlying(pd.isFlying());
 			player.setGlowing(pd.isGlowing());
 			player.setGravity(pd.isGravity());
+			player.setInvisible(pd.isInvisible());
+			player.setInvulnerable(pd.isInvulnerable());
 			player.setArrowsInBody(pd.getArrowsInBody());
 			player.setMaximumAir(pd.getMaximumAir());
 			player.setRemainingAir(pd.getRemainingAir());

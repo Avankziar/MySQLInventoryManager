@@ -9,7 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.assistance.Utility;
+import main.java.me.avankziar.mim.spigot.objects.SyncTask;
+import main.java.me.avankziar.mim.spigot.objects.SyncType;
+import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 
 public class BaseListener implements Listener
 {
@@ -96,6 +101,25 @@ public class BaseListener implements Listener
 		cooldown.remove(uuid);
 	}
 	
+	public static void removeCooldown(UUID uuid, BaseListener.Type bType)
+	{
+		Player player = Bukkit.getPlayer(uuid);
+		if(player != null)
+		{
+			int tdrc = MIM.getPlugin().getConfigHandler().getTimeDelayInSecsRemoveCooldown(player.getWorld(), bType);
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					cooldown.remove(uuid);
+				}
+			}.runTaskLaterAsynchronously(MIM.getPlugin(), 20*tdrc);
+			return;
+		}
+		cooldown.remove(uuid);
+	}
+	
 	public boolean preChecks(Player player)
 	{
 		if(!player.isOnline())
@@ -107,5 +131,51 @@ public class BaseListener implements Listener
 			return false;
 		}
 		return true;
+	}
+	
+	public static void clearAndReset(final Player player, String args[], SyncType syncType)
+	{
+		String playername = player.getName();
+		if(args.length == 1)
+		{
+			player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("SyncTask.PleaseConfirm")));	
+			return;
+		} else if(args.length == 2)
+		{
+			if(!"bestätigen".equalsIgnoreCase(args[1]) && !"confirm".equalsIgnoreCase(args[1]))
+			{
+				player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("SyncTask.PleaseConfirm")));	
+				return;
+			}
+			cooldown.add(player.getUniqueId());
+			new SyncTask(MIM.getPlugin(), syncType, RunType.CLEAR_AND_RESET, player).run();
+			removeCooldown(player.getUniqueId(), Type.INVENTORY_CLOSE);
+		} else if(args.length == 3)
+		{
+			if(!"bestätigen".equalsIgnoreCase(args[2]) && !"confirm".equalsIgnoreCase(args[2]))
+			{
+				player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("SyncTask.PleaseConfirm")));	
+				return;
+			}
+			String othername = args[1];
+			UUID otheruuid = Utility.convertNameToUUID(othername);
+			if(otheruuid == null)
+			{
+				player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("PlayerNotExist")));
+				return;
+			}
+			Player other = Bukkit.getPlayer(otheruuid);
+			if(other == null)
+			{
+				player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("PlayerNotOnline")));
+				return;
+			}
+			playername = other.getName();
+			cooldown.add(other.getUniqueId());
+			new SyncTask(MIM.getPlugin(), syncType, RunType.CLEAR_AND_RESET, other).run();
+			removeCooldown(other.getUniqueId(), Type.INVENTORY_CLOSE);
+		}
+		player.sendMessage(ChatApi.tl(MIM.getPlugin().getYamlHandler().getLang().getString("SyncTask.Clear."+syncType.toString())
+				.replace("%player%", playername)));	
 	}
 }

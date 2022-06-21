@@ -3,6 +3,7 @@ Build 1-0-0 -------------------------------------------------------------
 - Shulker in Enderchest mit perm öffnen können.
 - Shulker in normalen mit perm öffnen können.
 - Schilder per Item und Event "Bearbeitbar machen" HumanEntity.openSign(Sign, boolean)
+- Prüfen ob beim externen öffnen eines anderen Spielerinventars, dies auch korrekt geupdatet wird.
 + /mim | Infoseite für alle Befehle.
 + /mim saveandkick [servername] | Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.
 + /mim save [servername] | Speichert den vollen Spielstand aller Spieler. Optional nur für einen Server.
