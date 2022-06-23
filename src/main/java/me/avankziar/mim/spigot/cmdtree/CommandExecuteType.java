@@ -24,6 +24,7 @@ public enum CommandExecuteType
 	CLEAR_OFFHAND,
 	CLEAR_PERSISTENTDATA,
 	WHOIS,
+	ONLINE,
 	CUSTOMPLAYERINVENTORY, // /xyz | Alle Befehle für die CPI gemeint sind.
 	CPI_DROP,
 	CPI_SEE,

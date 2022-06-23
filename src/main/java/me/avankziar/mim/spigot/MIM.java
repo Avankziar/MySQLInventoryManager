@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
+import main.java.me.avankziar.ifh.spigot.interfaces.Vanish;
 import main.java.me.avankziar.ifh.spigot.position.LastKnownPosition;
 import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
@@ -43,6 +44,7 @@ import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
 import main.java.me.avankziar.mim.spigot.cmd.WhoIsCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.WorkbenchCmdExecutor;
@@ -73,6 +75,7 @@ import main.java.me.avankziar.mim.spigot.listener.EntityPickupItemListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
+import main.java.me.avankziar.mim.spigot.listener.OnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerDeathListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerDropItemListener;
@@ -94,6 +97,7 @@ import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
+import net.luckperms.api.LuckPerms;
 
 public class MIM extends JavaPlugin
 {
@@ -126,6 +130,9 @@ public class MIM extends JavaPlugin
 	private net.milkbowl.vault.economy.Economy ecoVault;
 	private PlayerTimes playerTimesConsumer;
 	private LastKnownPosition lastKnownPositionConsumer;
+	private Vanish vanishconsumer;
+	
+	private LuckPerms lpapi;
 	
 	public void onEnable()
 	{
@@ -158,6 +165,7 @@ public class MIM extends JavaPlugin
 		
 		setupIFH();
 		setupVaultEconomy();
+		setupLuckPerm();
 		setupBypassPerm();
 		setupCommandTree();
 		setupListeners();
@@ -284,6 +292,11 @@ public class MIM extends JavaPlugin
 		registerCommand(whois.getPath(), whois.getName());
 		getCommand(whois.getName()).setExecutor(new WhoIsCmdExecutor(plugin, whois));
 		getCommand(whois.getName()).setTabCompleter(tab);
+		
+		CommandConstructor online = new CommandConstructor(CommandExecuteType.ONLINE, "online", false);
+		registerCommand(online.getPath(), online.getName());
+		getCommand(online.getName()).setExecutor(new OnlineCmdExecutor(plugin, online));
+		getCommand(online.getName()).setTabCompleter(tab);
 		
 		setupCmdClear(tab);
 		setupCmdCustomPlayerInventory(tab);
@@ -534,6 +547,8 @@ public class MIM extends JavaPlugin
 		}
 		me.registerOutgoingPluginChannel(this, StaticValues.WHOIS_TOBUNGEE);
 		me.registerIncomingPluginChannel(this, StaticValues.WHOIS_TOSPIGOT, new WhoIsListener());
+		me.registerOutgoingPluginChannel(this, StaticValues.ONLINE_TOBUNGEE);
+		me.registerIncomingPluginChannel(this, StaticValues.ONLINE_TOSPIGOT, new OnlineListener());
 	}
 	
 	public ConfigHandler getConfigHandler()
@@ -576,6 +591,16 @@ public class MIM extends JavaPlugin
 		return lastKnownPositionConsumer;
 	}
 	
+	public LuckPerms getLP()
+	{
+		return lpapi;
+	}
+	
+	public Vanish getVanish()
+	{
+		return this.vanishconsumer;
+	}
+	
 	public boolean reload() throws IOException
 	{
 		yamlHandler = new YamlHandler(this);
@@ -591,6 +616,7 @@ public class MIM extends JavaPlugin
 		setupPlayerParameter();
 		setupPlayerTimes();
 		setupLastKnownPosition();
+		setupVanisch();
 	}
 	
 	//Hier IFH implementieren für später
@@ -712,6 +738,37 @@ public class MIM extends JavaPlugin
         return;
     }
 	
+	private void setupLuckPerm()
+	{
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("LuckPerms")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    RegisteredServiceProvider<LuckPerms> rsp = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			    if (rsp == null) 
+			    {
+			    	i++;
+			        return;
+			    }
+			    lpapi = rsp.getProvider();
+			    log.info(pluginName + " detected LuckPerms >>> Hooking!");
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+        return;
+	}
+	
 	private void setupPlayerTimes()
     {
 		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
@@ -775,6 +832,40 @@ public class MIM extends JavaPlugin
         }.runTaskTimer(plugin, 20L, 20*2);
         return;
     }
+	
+	private void setupVanisch()
+	{ 
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+        if(yamlHandler.getConfig().getBoolean("Enable.InterfaceHub.Consuming.Vanish", false))
+		{
+            new BukkitRunnable()
+            {
+            	int i = 0;
+    			@Override
+    			public void run()
+    			{
+    			    if(i == 20)
+    			    {
+    				cancel();
+    				return;
+    			    }
+    			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.interfaces.Vanish> rsp = 
+    		                         getServer().getServicesManager().getRegistration(Vanish.class);
+    			    if (rsp == null) 
+    			    {
+    			    	i++;
+    			        return;
+    			    }
+    			    vanishconsumer = rsp.getProvider();
+    			    log.info(pluginName + " detected InterfaceHub >>> Vanish.class is consumed!");
+    			    cancel();
+    			}
+            }.runTaskTimer(plugin, 20L, 20*2);
+		}
+	}
 	
 	public ArrayList<String> getPlayers()
 	{

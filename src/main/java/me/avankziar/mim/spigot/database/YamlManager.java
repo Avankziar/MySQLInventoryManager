@@ -266,6 +266,10 @@ public class YamlManager
 				"/whois [playername]", "/whois ",
 				"&c/whois [Spielername] &f| Öffnet generalisierte Infos zu dem Spieler.",
 				"&c/whois [playername] &f| Opens generalized info about the player.");
+		commandsInput("online", "online", "online.cmd.online", 
+				"/online", "/whois ",
+				"&c/online &f| Zeigt alle Onlinespieler in Proxynetzwerk an.",
+				"&c/online &f| Shows all online player in the proxy network.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -401,7 +405,23 @@ public class YamlManager
 				"&cFlymodus: &f%flying%",
 				"&cWalk- & Flyspeed: &f%walkspeed% <> &f%flyspeed%",
 				"&cActive Effects: &f%effect%",
-				"&cPersistent Data: &f%perdata%",}));		
+				"&cPersistent Data: &f%perdata%",}));
+		languageKeys.put("Online.FirstLine"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f=====[&6Online &f| &7Anzahl: &f%amount%]=====",
+				"&f=====[&6Online &f| &7Amount: &f%amount%]====="}));
+		languageKeys.put("Online.SecondLine"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&bGleicher Server &f| &cAnderer Server",
+				"&bSame Server &f| &cOther Server"}));
+		languageKeys.put("Online.SameServer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&b",
+				"&b"}));
+		languageKeys.put("Online.OtherServer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c",
+				"&c"}));
 		initLangSyncTask();
 		initLangGameMode();
 		initLangOpenableBlocks();

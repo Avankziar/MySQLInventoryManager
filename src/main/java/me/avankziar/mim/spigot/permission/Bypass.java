@@ -16,6 +16,7 @@ public class Bypass
 		ARMORSEE_OTHERPLAYER,
 		CUSTOMPLAYERINVENTORY_BUY,
 		CUSTOMPLAYERINVENTORY_COST,
+		ONLINE_GROUP,
 	}
 	private static LinkedHashMap<Bypass.Permission, String> mapPerm = new LinkedHashMap<>();
 	
