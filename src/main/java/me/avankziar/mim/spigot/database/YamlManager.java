@@ -36,6 +36,7 @@ public class YamlManager
 		initCommands();
 		initLanguage();
 		initSync();
+		initCustomPlayerInventory();
 	}
 	
 	public ISO639_2B getLanguageType()

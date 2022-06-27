@@ -93,6 +93,7 @@ public class YamlHandler
 		return yaml;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap)
 	{
 		yml.options().header("For more explanation see \n Your pluginsite");

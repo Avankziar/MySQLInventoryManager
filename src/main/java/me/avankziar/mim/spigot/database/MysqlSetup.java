@@ -1,20 +1,18 @@
 package main.java.me.avankziar.mim.spigot.database;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 
 public class MysqlSetup 
 {
 	private MIM plugin;
-	private static HikariDataSource dataSource;
+	private Connection conn = null;
 	
 	public MysqlSetup(MIM plugin)
 	{
@@ -24,7 +22,7 @@ public class MysqlSetup
 	
 	public boolean loadMysqlSetup()
 	{
-		if(!connectToDatabase())
+		if(!connectToDatabase(false))
 		{
 			return false;
 		}
@@ -47,37 +45,63 @@ public class MysqlSetup
 		return true;
 	}
 	
-	public boolean connectToDatabase() 
+	public boolean connectToDatabase(boolean reconnect) 
 	{
-		MIM.log.info("Connecting to the database...");
+		if(reconnect)
+		{
+			MIM.log.info("Connecting to the database...");
+		}
 		boolean bool = false;
-		Properties props = new Properties();
 	    try
 	    {
 	    	// Load new Drivers for papermc
-	    	props.setProperty("dataSourceClassName", "com.mysql.cj.jdbc.Driver");
+	    	Class.forName("com.mysql.cj.jdbc.Driver");
 	    	bool = true;
 	    } catch (Exception e)
 	    {
 	    	bool = false;
-	    }
-	    if (bool == false)
-		{
-			// Load old Drivers for spigot
-			props.setProperty("dataSourceClassName", "com.mysql.jdbc.Driver");
-		}
-		props.setProperty("dataSource.serverName", plugin.getYamlHandler().getConfig().getString("Mysql.Host"));
-		props.setProperty("dataSource.portNumber", String.valueOf(plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306)));
-		props.setProperty("dataSource.user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
-		props.setProperty("dataSource.password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
-		props.setProperty("dataSource.databaseName", plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"));
-
-		HikariConfig config = new HikariConfig(props);
-
-		config.setMaximumPoolSize(10);
-		dataSource = new HikariDataSource(config);
-		MIM.log.info("Database connection successful!");
-		return true;
+	    } 
+	    try
+	    {
+	    	if (bool == false)
+	    	{
+	    		// Load old Drivers for spigot
+	    		Class.forName("com.mysql.jdbc.Driver");
+	    	}
+	    	long start = System.currentTimeMillis();
+			long end = 0;
+	        Properties properties = new Properties();
+            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
+            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
+            properties.setProperty("autoReconnect", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
+            properties.setProperty("verifyServerCertificate", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
+            properties.setProperty("useSSL", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("requireSSL", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            //Connect to database
+            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
+            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
+            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
+            if(reconnect)
+            {
+            	end = System.currentTimeMillis();
+    		    MIM.log.info("Reconnection to MySQL server established! It took " + ((end - start)) + "ms!");
+            }
+            return true;
+        } catch (Exception e) 
+	    {
+        	if(reconnect)
+        	{
+        		MIM.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
+        	} else
+        	{
+        		MIM.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
+        	}
+            return false;
+        }		
 	}
 	
 	public boolean setupDatabaseI() 
@@ -235,8 +259,29 @@ public class MysqlSetup
 		return true;
 	}
 	
-	public Connection getConnection() throws SQLException 
+	public Connection getConnection() 
 	{
-		return dataSource.getConnection();
+		try 
+		{
+			if (conn == null) 
+			{
+				MIM.log.warning("Connection failed. Reconnecting...");
+				connectToDatabase(true);
+			}
+			if (!conn.isValid(3))
+			{
+				MIM.log.warning("Connection is idle or terminated. Reconnecting...");
+				connectToDatabase(true);
+			}
+			if (conn.isClosed() == true) 
+			{
+				MIM.log.warning("Connection is closed. Reconnecting...");
+				connectToDatabase(true);
+			}
+		} catch (Exception e) 
+		{
+			MIM.log.severe("Could not reconnect to Database! Error: " + e.getMessage());
+		}
+		return conn;
 	}
 }

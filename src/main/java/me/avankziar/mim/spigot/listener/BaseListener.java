@@ -13,8 +13,8 @@ import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
-import main.java.me.avankziar.mim.spigot.objects.SyncType;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
+import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
 public class BaseListener implements Listener
 {
