@@ -670,7 +670,7 @@ public class MIM extends JavaPlugin
         ppmApi,
         this,
         ServicePriority.Normal);
-    	log.info(pluginName + " detected InterfaceHub >>> Base64.class is provided!");
+    	log.info(pluginName + " detected InterfaceHub >>> PlayerParameter.class is provided!");
 		return true;
 	}
 	

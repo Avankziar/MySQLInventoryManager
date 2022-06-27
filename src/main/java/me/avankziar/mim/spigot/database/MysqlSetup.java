@@ -22,7 +22,7 @@ public class MysqlSetup
 	
 	public boolean loadMysqlSetup()
 	{
-		if(!connectToDatabase(false))
+		if(!connectToDatabase())
 		{
 			return false;
 		}
@@ -45,12 +45,8 @@ public class MysqlSetup
 		return true;
 	}
 	
-	public boolean connectToDatabase(boolean reconnect) 
+	public boolean connectToDatabase() 
 	{
-		if(reconnect)
-		{
-			MIM.log.info("Connecting to the database...");
-		}
 		boolean bool = false;
 	    try
 	    {
@@ -68,8 +64,6 @@ public class MysqlSetup
 	    		// Load old Drivers for spigot
 	    		Class.forName("com.mysql.jdbc.Driver");
 	    	}
-	    	long start = System.currentTimeMillis();
-			long end = 0;
 	        Properties properties = new Properties();
             properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
             properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
@@ -85,21 +79,10 @@ public class MysqlSetup
             conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
             		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
             		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
-            if(reconnect)
-            {
-            	end = System.currentTimeMillis();
-    		    MIM.log.info("Reconnection to MySQL server established! It took " + ((end - start)) + "ms!");
-            }
             return true;
         } catch (Exception e) 
 	    {
-        	if(reconnect)
-        	{
-        		MIM.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
-        	} else
-        	{
-        		MIM.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
-        	}
+        	MIM.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
             return false;
         }		
 	}
@@ -261,27 +244,81 @@ public class MysqlSetup
 	
 	public Connection getConnection() 
 	{
-		try 
-		{
+		checkConnection();
+		return conn;
+	}
+	
+	public void checkConnection() 
+	{
+		try {
 			if (conn == null) 
 			{
-				MIM.log.warning("Connection failed. Reconnecting...");
-				connectToDatabase(true);
+				//MIM.log.warning("Connection failed. Reconnecting...");
+				reConnect();
 			}
-			if (!conn.isValid(3))
+			if (!conn.isValid(3)) 
 			{
-				MIM.log.warning("Connection is idle or terminated. Reconnecting...");
-				connectToDatabase(true);
+				//MIM.log.warning("Connection is idle or terminated. Reconnecting...");
+				reConnect();
 			}
 			if (conn.isClosed() == true) 
 			{
-				MIM.log.warning("Connection is closed. Reconnecting...");
-				connectToDatabase(true);
+				//MIM.log.warning("Connection is closed. Reconnecting...");
+				reConnect();
 			}
 		} catch (Exception e) 
 		{
 			MIM.log.severe("Could not reconnect to Database! Error: " + e.getMessage());
 		}
-		return conn;
+	}
+	
+	public boolean reConnect() 
+	{
+		boolean bool = false;
+	    try
+	    {
+	    	// Load new Drivers for papermc
+	    	Class.forName("com.mysql.cj.jdbc.Driver");
+	    	bool = true;
+	    } catch (Exception e)
+	    {
+	    	bool = false;
+	    } 
+	    try
+	    {
+	    	if (bool == false)
+	    	{
+	    		// Load old Drivers for spigot
+	    		Class.forName("com.mysql.jdbc.Driver");
+	    	}            
+            long start = 0;
+			long end = 0;
+			
+		    start = System.currentTimeMillis();
+		    MIM.log.info("Attempting to establish a connection to the MySQL server!");
+            Properties properties = new Properties();
+            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
+            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
+            properties.setProperty("autoReconnect", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
+            properties.setProperty("verifyServerCertificate", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
+            properties.setProperty("useSSL", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("requireSSL", 
+            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            //Connect to database
+            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
+            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
+            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
+		    end = System.currentTimeMillis();
+		    MIM.log.info("Connection to MySQL server established!");
+		    MIM.log.info("Connection took " + ((end - start)) + "ms!");
+            return true;
+		} catch (Exception e) 
+		{
+			MIM.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
+			return false;
+		}
 	}
 }
