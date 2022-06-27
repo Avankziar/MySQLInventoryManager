@@ -155,7 +155,7 @@ public class MysqlSetup
 	{
 		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		  		+ " time_stamp BIGINT"
+		  		+ " time_stamp BIGINT,"
 		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " synchro_key text,"
 		  		+ " game_mode text,"
@@ -196,7 +196,7 @@ public class MysqlSetup
 	{
 		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		  		+ " state_name text"
+		  		+ " state_name text,"
 		  		+ " synchro_key text,"
 		  		+ " game_mode text,"
 		  		
@@ -237,7 +237,7 @@ public class MysqlSetup
 	{
 		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.CUSTOMPLAYERINVENTORY.getValue()
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		  		+ " cpi_name text"
+		  		+ " cpi_name text,"
 		  		+ " owner_uuid text,"
 		  		+ " actual_row_amount int,"
 		  		+ " target_row_amount int,"
