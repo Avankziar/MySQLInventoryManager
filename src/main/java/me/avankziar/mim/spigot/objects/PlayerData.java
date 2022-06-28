@@ -682,13 +682,14 @@ public class PlayerData implements MysqlHandable
 	        ps.setInt(32, getArrowsInBody());
 	        ps.setInt(33, getMaximumAir());
 	        ps.setInt(34, getRemainingAir());
+	        ps.setString(35, getCustomName());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(35, pd.toString());
-	        ps.setBoolean(36, isClearToggle());
+	        ps.setString(36, pd.toString());
+	        ps.setBoolean(37, isClearToggle());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -757,14 +758,15 @@ public class PlayerData implements MysqlHandable
 	        ps.setInt(32, getArrowsInBody());
 	        ps.setInt(33, getMaximumAir());
 	        ps.setInt(34, getRemainingAir());
+	        ps.setString(35, getCustomName());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(35, pd.toString());
-	        ps.setBoolean(36, isClearToggle());
-			int i = 37;
+	        ps.setString(36, pd.toString());
+	        ps.setBoolean(37, isClearToggle());
+			int i = 38;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);

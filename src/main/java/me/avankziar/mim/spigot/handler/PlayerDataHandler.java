@@ -162,7 +162,10 @@ public class PlayerDataHandler
 		LinkedHashMap<Attribute, Double> attributes = new LinkedHashMap<>();
 		for(Attribute at : attributeList)
 		{
-			attributes.put(at, player.getAttribute(at).getBaseValue());
+			if(player.getAttribute(at) != null)
+			{
+				attributes.put(at, player.getAttribute(at).getBaseValue());
+			}
 		}
 		ArrayList<PotionEffect> pe = new ArrayList<>();
 		for(PotionEffect eff : player.getActivePotionEffects())
