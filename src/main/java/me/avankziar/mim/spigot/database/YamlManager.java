@@ -278,9 +278,9 @@ public class YamlManager
 		List<Bypass.Permission> list = new ArrayList<Bypass.Permission>(EnumSet.allOf(Bypass.Permission.class));
 		for(Bypass.Permission ept : list)
 		{
-			commandsKeys.put("Bypass."+ept.toString().replace("_", "")
+			commandsKeys.put("Bypass."+ept.toString().replace("_", ".")
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"aep."+ept.toString().toLowerCase().replace("_", "")}));
+					"aep."+ept.toString().toLowerCase().replace("_", ".")}));
 		}
 	}
 	

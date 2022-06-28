@@ -90,6 +90,7 @@ public class PlayerDataHandler
 		return list;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static void setPersitentData(Player player, ArrayList<PersistentData> list)
 	{
 		PersistentDataContainer pdc = player.getPersistentDataContainer();

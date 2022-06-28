@@ -373,12 +373,12 @@ public class MIM extends JavaPlugin
 		String path = "Count.";
 		for(Bypass.CountPermission bypass : new ArrayList<Bypass.CountPermission>(EnumSet.allOf(Bypass.CountPermission.class)))
 		{
-			Bypass.set(bypass, yamlHandler.getCommands().getString(path+bypass.toString()));
+			Bypass.set(bypass, yamlHandler.getCommands().getString(path+bypass.toString().replace("_", ".")));
 		}
 		path = "Bypass.";
 		for(Bypass.Permission bypass : new ArrayList<Bypass.Permission>(EnumSet.allOf(Bypass.Permission.class)))
 		{
-			Bypass.set(bypass, yamlHandler.getCommands().getString(path+bypass.toString()));
+			Bypass.set(bypass, yamlHandler.getCommands().getString(path+bypass.toString().replace("_", ".")));
 		}
 	}
 	

@@ -346,7 +346,7 @@ public class YamlHandler
 		File[] listOfFiles = directory.listFiles();
 		if(listOfFiles.length == 0)
 		{
-			File defaults = new File(plugin.getDataFolder(), "default.yml");
+			File defaults = new File(directory.getPath(), "defaultbox.yml");
 			if(!defaults.exists()) 
 			{
 				MIM.log.info("Create default.yml...");

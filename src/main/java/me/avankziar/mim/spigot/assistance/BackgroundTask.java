@@ -14,7 +14,7 @@ public class BackgroundTask
 	
 	public boolean initBackgroundTask()
 	{
-		
+		//ADDME eventuell ein automatisches saven machen?
 		return true;
 	}
 }

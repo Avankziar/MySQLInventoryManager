@@ -47,6 +47,7 @@ public class MysqlSetup
 	
 	public boolean connectToDatabase() 
 	{
+		MIM.log.info("Connecting to the database...");
 		boolean bool = false;
 	    try
 	    {
@@ -79,6 +80,7 @@ public class MysqlSetup
             conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
             		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
             		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
+            MIM.log.info("Database connection successful!");
             return true;
         } catch (Exception e) 
 	    {
@@ -291,11 +293,11 @@ public class MysqlSetup
 	    		// Load old Drivers for spigot
 	    		Class.forName("com.mysql.jdbc.Driver");
 	    	}            
-            long start = 0;
-			long end = 0;
+            //long start = 0;
+			//long end = 0;
 			
-		    start = System.currentTimeMillis();
-		    MIM.log.info("Attempting to establish a connection to the MySQL server!");
+		    //start = System.currentTimeMillis();
+		    //MIM.log.info("Attempting to establish a connection to the MySQL server!");
             Properties properties = new Properties();
             properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
             properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
@@ -311,9 +313,9 @@ public class MysqlSetup
             conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
             		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
             		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
-		    end = System.currentTimeMillis();
-		    MIM.log.info("Connection to MySQL server established!");
-		    MIM.log.info("Connection took " + ((end - start)) + "ms!");
+		    //end = System.currentTimeMillis();
+		    //MIM.log.info("Connection to MySQL server established!");
+		    //MIM.log.info("Connection took " + ((end - start)) + "ms!");
             return true;
 		} catch (Exception e) 
 		{
