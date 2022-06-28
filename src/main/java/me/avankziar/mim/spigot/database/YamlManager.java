@@ -681,9 +681,6 @@ public class YamlManager
 		List<BaseListener.Type> events = new ArrayList<BaseListener.Type>(EnumSet.allOf(BaseListener.Type.class));
 		for(BaseListener.Type event : events)
 		{
-			syncKeys.put("SyncEvents."+event.getName(),
-					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					true}));
 			int i = 5;
 			switch(event)
 			{
@@ -706,6 +703,9 @@ public class YamlManager
 				i = 60;
 				break;
 			}
+			syncKeys.put("SyncEvents."+event.getName()+".Enabled",
+					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
 			syncKeys.put("SyncEvents."+event.getName()+".TimeDelayInSecs.RemoveCooldown",
 					new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					i}));

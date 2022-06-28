@@ -76,7 +76,7 @@ public class ConfigHandler
 		{
 			return false;
 		}
-		return w.getBoolean("SyncEvents."+event, false);
+		return w.getBoolean("SyncEvents."+event+".Enabled", false);
 	}
 	
 	public boolean inSleepMode()
