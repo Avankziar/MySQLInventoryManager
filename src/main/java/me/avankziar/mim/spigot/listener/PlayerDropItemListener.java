@@ -6,7 +6,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -29,12 +28,6 @@ public class PlayerDropItemListener extends BaseListener
 			return;
 		}
 		Player player = event.getPlayer();
-		if(!preChecks(player))
-		{
-			return;
-		}
-		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.INVENTORY, RunType.SAVE, player).run();
-		removeCooldown(player.getUniqueId());
+		doSync(player, SyncType.INVENTORY, RunType.SAVE);
 	}
 }

@@ -25,6 +25,7 @@ public class PlayerDeathListener extends BaseListener
 			return;
 		}
 		final Player player = event.getEntity();
+		//Ausnahme!
 		new SyncTask(plugin, SyncType.FULL, RunType.SAVE_DEATHSTATE, player).run();
 	}
 }

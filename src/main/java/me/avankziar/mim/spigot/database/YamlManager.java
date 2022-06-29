@@ -129,6 +129,9 @@ public class YamlManager
 	
 	public void initConfig() //INFO:Config
 	{		
+		configSpigotKeys.put("Language"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"ENG"}));
 		configSpigotKeys.put("Mysql.Status"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

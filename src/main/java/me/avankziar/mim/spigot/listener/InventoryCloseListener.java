@@ -24,7 +24,6 @@ import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -64,13 +63,7 @@ public class InventoryCloseListener extends BaseListener
 			return;
 		}
 		Player player = (Player) event.getPlayer();
-		if(!preChecks(player))
-		{
-			return;
-		}
-		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.INVENTORY, RunType.SAVE, player).run();
-		removeCooldown(player.getUniqueId());	
+		doSync(player, SyncType.INVENTORY, RunType.SAVE);
 	}
 	
 	public static boolean inExternInventory(UUID executorPlayer)

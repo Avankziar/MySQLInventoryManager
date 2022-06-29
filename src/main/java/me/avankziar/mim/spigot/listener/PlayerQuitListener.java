@@ -7,7 +7,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.handler.ClearAndResetHandler;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -31,8 +30,6 @@ public class PlayerQuitListener extends BaseListener
 			ClearAndResetHandler.clearAndReset(SyncType.FULL, player);
 			return;
 		}
-		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
-		removeCooldown(player.getUniqueId());
+		doSync(player, SyncType.FULL, RunType.SAVE);
 	}
 }

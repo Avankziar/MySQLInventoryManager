@@ -18,7 +18,7 @@ public class PlayerGameModeChangeListener extends BaseListener
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void onGameModeChangeQuit(PlayerGameModeChangeEvent event)
+	public void onGameModeChange(PlayerGameModeChangeEvent event)
 	{
 		if(event.isCancelled())
 		{
@@ -28,7 +28,12 @@ public class PlayerGameModeChangeListener extends BaseListener
 		{
 			return;
 		}
+		//Dieses ist eine Ausnahme! Es macht NICHT doSync!
 		Player player = event.getPlayer();
+		if(!preChecks(player))
+		{
+			return;
+		}
 		addCooldown(player.getUniqueId());
 		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
 		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player, event.getNewGameMode()).run();

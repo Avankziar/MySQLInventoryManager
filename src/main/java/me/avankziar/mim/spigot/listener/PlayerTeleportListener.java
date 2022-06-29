@@ -5,7 +5,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -32,8 +31,6 @@ public class PlayerTeleportListener extends BaseListener
 			return;
 		}
 		Player player = event.getPlayer();
-		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
-		removeCooldown(player.getUniqueId());	
+		doSync(player, SyncType.FULL, RunType.SAVE);
 	}
 }

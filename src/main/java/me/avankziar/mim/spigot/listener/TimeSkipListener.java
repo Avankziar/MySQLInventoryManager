@@ -7,7 +7,6 @@ import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.event.world.TimeSkipEvent.SkipReason;
 
 import main.java.me.avankziar.mim.spigot.MIM;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -39,9 +38,7 @@ public class TimeSkipListener extends BaseListener
 			{
 				return;
 			}
-			addCooldown(player.getUniqueId());
-			new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
-			removeCooldown(player.getUniqueId());
+			doSync(player, SyncType.FULL, RunType.SAVE);
 		}		
 	}
 }

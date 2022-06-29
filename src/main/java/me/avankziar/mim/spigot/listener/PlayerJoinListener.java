@@ -32,6 +32,10 @@ public class PlayerJoinListener extends BaseListener
 				&& !plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
 						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false), player.getGameMode().toString()))
 		{ //Info Wenn der Spieler zum ersten Mal mit dem GameMode und dem SynchroKey Joint
+			if(!preChecks(player))
+			{
+				return;
+			}
 			addCooldown(player.getUniqueId());
 			new SyncTask(plugin, SyncType.FULL, RunType.LOAD_PREDEFINESTATE, player, 
 					plugin.getConfigHandler().getPredefineStatenameOnFristJoin(world), null).run();
@@ -39,6 +43,10 @@ public class PlayerJoinListener extends BaseListener
 			return;
 		} else if(plugin.getConfigHandler().loadPredefineAlways(world))
 		{ //Info Egal wie oft der Spieler schon gejoint ist, wird immer überschrieben
+			if(!preChecks(player))
+			{
+				return;
+			}
 			addCooldown(player.getUniqueId());
 			new SyncTask(plugin, SyncType.FULL, RunType.LOAD_PREDEFINESTATE, player, 
 					plugin.getConfigHandler().getPredefineStatenameAlways(world), null).run();
@@ -48,13 +56,9 @@ public class PlayerJoinListener extends BaseListener
 						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false), player.getGameMode().toString()))
 		{
 			//Wenn der Spieler noch nie gejoint ist und kein Vordefiniertes existiert.
-			addCooldown(player.getUniqueId());
-			new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player, player.getGameMode()).run();
-			removeCooldown(player.getUniqueId());
+			doSync(player, SyncType.FULL, RunType.SAVE);
 			return;
 		}
-		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player, player.getGameMode()).run();
-		removeCooldown(player.getUniqueId());
+		doSync(player, SyncType.FULL, RunType.LOAD);
 	}
 }
