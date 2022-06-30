@@ -172,6 +172,10 @@ public class PlayerData implements MysqlHandable
 		LinkedHashMap<Attribute, Double> at = new LinkedHashMap<>();
 		for(String s : attributes.split("@"))
 		{
+			if(!s.contains(";"))
+			{
+				continue;
+			}
 			String[] a = s.split(";");
 			Attribute att = Attribute.valueOf(a[0]);
 			Double d = Double.parseDouble(a[1]);
@@ -206,6 +210,10 @@ public class PlayerData implements MysqlHandable
 		ArrayList<PersistentData> pd = new ArrayList<>();
 		for(String s : persistentData.split("@"))
 		{
+			if(!s.contains(";"))
+			{
+				continue;
+			}
 			String[] p = s.split(";");
 			String namespaced = p[0];
 			String key = p[1];

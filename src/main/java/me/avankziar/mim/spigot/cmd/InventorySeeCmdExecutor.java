@@ -76,6 +76,10 @@ public class InventorySeeCmdExecutor implements CommandExecutor
 				}
 				inv = Bukkit.createInventory(player, 9*4, othername+"`s Inventory");
 				inv.setContents(pd.getInventoryStorageContents());
+			} else
+			{
+				inv = Bukkit.createInventory(player, 9*4, othername+"`s Inventory");
+				inv.setContents(other.getInventory().getStorageContents());
 			}
 			InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
 					"INV", "INV", player.getGameMode(), synchroKey);

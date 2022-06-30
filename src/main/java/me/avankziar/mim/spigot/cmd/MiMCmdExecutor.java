@@ -124,7 +124,7 @@ public class MiMCmdExecutor implements CommandExecutor
 		int end = page*10+9;
 		int last = 0;
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString(
-				MIM.infoCommandPath+".Headline")));
+				"Headline")));
 		for(BaseConstructor bc : plugin.getCommandHelpList())
 		{
 			if(count >= start && count <= end)
@@ -142,7 +142,7 @@ public class MiMCmdExecutor implements CommandExecutor
 		{
 			lastpage = true;
 		}
-		pastNextPage(player, MIM.infoCommandPath, page, lastpage, MIM.infoCommand);
+		pastNextPage(player, page, lastpage, MIM.infoCommand);
 	}
 	
 	private void sendInfo(Player player, BaseConstructor bc)
@@ -153,7 +153,7 @@ public class MiMCmdExecutor implements CommandExecutor
 				HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getLang().getString("GeneralHover")));
 	}
 	
-	public void pastNextPage(Player player, String path,
+	public void pastNextPage(Player player,
 			int page, boolean lastpage, String cmdstring, String...objects)
 	{
 		if(page==0 && lastpage)
@@ -167,7 +167,7 @@ public class MiMCmdExecutor implements CommandExecutor
 		if(page!=0)
 		{
 			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".Past"));
+					plugin.getYamlHandler().getLang().getString("Past"));
 			String cmd = cmdstring+" "+String.valueOf(j);
 			for(String o : objects)
 			{
@@ -179,7 +179,7 @@ public class MiMCmdExecutor implements CommandExecutor
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".Next"));
+					plugin.getYamlHandler().getLang().getString("Next"));
 			String cmd = cmdstring+" "+String.valueOf(i);
 			for(String o : objects)
 			{

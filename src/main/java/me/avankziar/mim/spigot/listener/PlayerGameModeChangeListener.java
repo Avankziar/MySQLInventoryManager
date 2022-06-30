@@ -30,10 +30,6 @@ public class PlayerGameModeChangeListener extends BaseListener
 		}
 		//Dieses ist eine Ausnahme! Es macht NICHT doSync!
 		Player player = event.getPlayer();
-		if(!preChecks(player))
-		{
-			return;
-		}
 		addCooldown(player.getUniqueId());
 		new SyncTask(plugin, SyncType.FULL, RunType.SAVE, player).run();
 		new SyncTask(plugin, SyncType.FULL, RunType.LOAD, player, event.getNewGameMode()).run();

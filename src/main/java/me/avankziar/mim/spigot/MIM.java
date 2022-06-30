@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -38,6 +39,7 @@ import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmd.AnvilCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.ArmorSeeCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.ClearCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
@@ -65,6 +67,7 @@ import main.java.me.avankziar.mim.spigot.database.MysqlSetup;
 import main.java.me.avankziar.mim.spigot.database.YamlHandler;
 import main.java.me.avankziar.mim.spigot.database.YamlManager;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
+import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
 import main.java.me.avankziar.mim.spigot.ifh.Base64Api;
 import main.java.me.avankziar.mim.spigot.ifh.CommandToBungeeApi;
 import main.java.me.avankziar.mim.spigot.ifh.PlayerParameterApi;
@@ -103,7 +106,7 @@ public class MIM extends JavaPlugin
 {
 	public static Logger log;
 	private static MIM plugin;
-	public String pluginName = "MysqlInventoryManager";
+	public String pluginName = "MysqlInventoryManagement";
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
@@ -175,6 +178,10 @@ public class MIM extends JavaPlugin
 	
 	public void onDisable()
 	{
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			PlayerDataHandler.save(SyncType.FULL, player);
+		}
 		Bukkit.getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
 		log.info(pluginName + " is disabled!");
@@ -238,8 +245,7 @@ public class MIM extends JavaPlugin
 		playerMapIV.put(4, playerarray);
 		playerMapV.put(5, playerarray);
 		
-		infoCommand += plugin.getYamlHandler().getCommands().getString("base.Name");
-		TabCompletion tab = new TabCompletion(plugin);
+		infoCommand += plugin.getYamlHandler().getCommands().getString("mim.Name");
 		
 		ArgumentConstructor saveAndKick = new ArgumentConstructor(CommandExecuteType.MIM_SAVEANDKICK, "mim_saveandkick", 0, 0, 1, false, null);
 		new MiMSaveAndKick(saveAndKick);
@@ -251,94 +257,94 @@ public class MIM extends JavaPlugin
 				saveAndKick, save);
 		registerCommand(mim.getPath(), mim.getName());
 		getCommand(mim.getName()).setExecutor(new MiMCmdExecutor(plugin, mim));
-		getCommand(mim.getName()).setTabCompleter(tab);
+		getCommand(mim.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor gm = new CommandConstructor(CommandExecuteType.GAMEMODE, "gm", false);
 		registerCommand(gm.getPath(), gm.getName());
 		getCommand(gm.getName()).setExecutor(new GameModeCmdExecutor(plugin, gm));
-		getCommand(gm.getName()).setTabCompleter(tab);
+		getCommand(gm.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor workbench = new CommandConstructor(CommandExecuteType.WORKBENCH, "workbench", false);
 		registerCommand(workbench.getPath(), workbench.getName());
 		getCommand(workbench.getName()).setExecutor(new WorkbenchCmdExecutor(plugin, workbench));
-		getCommand(workbench.getName()).setTabCompleter(tab);
+		getCommand(workbench.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor enderchest = new CommandConstructor(CommandExecuteType.ENDERCHEST, "enderchest", false);
 		registerCommand(enderchest.getPath(), enderchest.getName());
 		getCommand(enderchest.getName()).setExecutor(new EnderChestCmdExecutor(plugin, enderchest));
-		getCommand(enderchest.getName()).setTabCompleter(tab);
+		getCommand(enderchest.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor enchantingtable = new CommandConstructor(CommandExecuteType.ENCHANTINGTABLE, "enchantingtable", false);
 		registerCommand(enchantingtable.getPath(), enchantingtable.getName());
 		getCommand(enchantingtable.getName()).setExecutor(new EnchantingTableCmdExecutor(plugin, enchantingtable));
-		getCommand(enchantingtable.getName()).setTabCompleter(tab);
+		getCommand(enchantingtable.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor anvil = new CommandConstructor(CommandExecuteType.ANVIL, "anvil", false);
 		registerCommand(anvil.getPath(), anvil.getName());
 		getCommand(anvil.getName()).setExecutor(new AnvilCmdExecutor(plugin, anvil));
-		getCommand(anvil.getName()).setTabCompleter(tab);
+		getCommand(anvil.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor invsee = new CommandConstructor(CommandExecuteType.INVSEE, "invsee", false);
 		registerCommand(invsee.getPath(), invsee.getName());
 		getCommand(invsee.getName()).setExecutor(new InventorySeeCmdExecutor(plugin, invsee));
-		getCommand(invsee.getName()).setTabCompleter(tab);
+		getCommand(invsee.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor armorsee = new CommandConstructor(CommandExecuteType.ARMORSEE, "armorsee", false);
 		registerCommand(armorsee.getPath(), armorsee.getName());
 		getCommand(armorsee.getName()).setExecutor(new ArmorSeeCmdExecutor(plugin, armorsee));
-		getCommand(armorsee.getName()).setTabCompleter(tab);
+		getCommand(armorsee.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor whois = new CommandConstructor(CommandExecuteType.WHOIS, "whois", false);
 		registerCommand(whois.getPath(), whois.getName());
 		getCommand(whois.getName()).setExecutor(new WhoIsCmdExecutor(plugin, whois));
-		getCommand(whois.getName()).setTabCompleter(tab);
+		getCommand(whois.getName()).setTabCompleter(new TabCompletion(plugin));
 		
 		CommandConstructor online = new CommandConstructor(CommandExecuteType.ONLINE, "online", false);
 		registerCommand(online.getPath(), online.getName());
 		getCommand(online.getName()).setExecutor(new OnlineCmdExecutor(plugin, online));
-		getCommand(online.getName()).setTabCompleter(tab);
+		getCommand(online.getName()).setTabCompleter(new TabCompletion(plugin));
 		
-		setupCmdClear(tab);
-		setupCmdCustomPlayerInventory(tab);
+		setupCmdClear(new TabCompletion(plugin));
+		setupCmdCustomPlayerInventory(new TabCompletion(plugin));
 	}
 	
 	private void setupCmdClear(TabCompletion tab)
 	{
-		ArgumentConstructor armor = new ArgumentConstructor(CommandExecuteType.CLEAR_ARMOR, "clear_armor", 0, 1, 2, false, null);
+		ArgumentConstructor armor = new ArgumentConstructor(CommandExecuteType.CLEAR_ARMOR, "clear_armor", 0, 0, 2, false, null);
 		new ClearSub(armor, SyncType.INV_ARMOR);
 		
-		ArgumentConstructor attribute = new ArgumentConstructor(CommandExecuteType.CLEAR_ATTRIBUTE, "clear_attribute", 0, 1, 2, false, null);
+		ArgumentConstructor attribute = new ArgumentConstructor(CommandExecuteType.CLEAR_ATTRIBUTE, "clear_attribute", 0, 0, 2, false, null);
 		new ClearSub(attribute, SyncType.ATTRIBUTE);
 		
-		ArgumentConstructor ec = new ArgumentConstructor(CommandExecuteType.CLEAR_EC, "clear_ec", 0, 1, 2, false, null);
+		ArgumentConstructor ec = new ArgumentConstructor(CommandExecuteType.CLEAR_EC, "clear_ec", 0, 0, 2, false, null);
 		new ClearSub(ec, SyncType.INV_ENDERCHEST);
 		
-		ArgumentConstructor effect = new ArgumentConstructor(CommandExecuteType.CLEAR_EFFECT, "clear_effect", 0, 1, 2, false, null);
+		ArgumentConstructor effect = new ArgumentConstructor(CommandExecuteType.CLEAR_EFFECT, "clear_effect", 0, 0, 2, false, null);
 		new ClearSub(effect, SyncType.EFFECT);
 		
-		ArgumentConstructor exp = new ArgumentConstructor(CommandExecuteType.CLEAR_EXP, "clear_exp", 0, 1, 2, false, null);
+		ArgumentConstructor exp = new ArgumentConstructor(CommandExecuteType.CLEAR_EXP, "clear_exp", 0, 0, 2, false, null);
 		new ClearSub(exp, SyncType.EXP);
 		
-		ArgumentConstructor full = new ArgumentConstructor(CommandExecuteType.CLEAR_FULL, "clear_full", 0, 1, 2, false, null);
+		ArgumentConstructor full = new ArgumentConstructor(CommandExecuteType.CLEAR_FULL, "clear_full", 0, 0, 2, false, null);
 		new ClearSub(full, SyncType.FULL);
 		
-		ArgumentConstructor offhand = new ArgumentConstructor(CommandExecuteType.CLEAR_OFFHAND, "clear_offhand", 0, 1, 2, false, null);
+		ArgumentConstructor offhand = new ArgumentConstructor(CommandExecuteType.CLEAR_OFFHAND, "clear_offhand", 0, 0, 2, false, null);
 		new ClearSub(offhand, SyncType.INV_OFFHAND);
 		
-		ArgumentConstructor invonly = new ArgumentConstructor(CommandExecuteType.CLEAR_INVONLY, "clear_invonly", 0, 1, 2, false, null);
+		ArgumentConstructor invonly = new ArgumentConstructor(CommandExecuteType.CLEAR_INVONLY, "clear_invonly", 0, 0, 2, false, null);
 		new ClearSub(invonly, SyncType.INV_ONLY);
 		
-		ArgumentConstructor inv = new ArgumentConstructor(CommandExecuteType.CLEAR_INV, "clear_inv", 0, 1, 2, false, null);
+		ArgumentConstructor inv = new ArgumentConstructor(CommandExecuteType.CLEAR_INV, "clear_inv", 0, 0, 2, false, null);
 		new ClearSub(inv, SyncType.INVENTORY);
 		
-		ArgumentConstructor pd = new ArgumentConstructor(CommandExecuteType.CLEAR_PERSISTENTDATA, "clear_persistentdata", 0, 1, 2, false, null);
+		ArgumentConstructor pd = new ArgumentConstructor(CommandExecuteType.CLEAR_PERSISTENTDATA, "clear_persistentdata", 0, 0, 2, false, null);
 		new ClearSub(pd, SyncType.PERSITENTDATA);
 		
 		CommandConstructor clear = new CommandConstructor(CommandExecuteType.CLEAR, "clear", false,
 				armor, attribute, ec, effect, exp, full, offhand, invonly, inv, pd);
 		registerCommand(clear.getPath(), clear.getName());
-		getCommand(clear.getName()).setExecutor(new ArmorSeeCmdExecutor(plugin, clear));
-		getCommand(clear.getName()).setTabCompleter(tab);
+		getCommand(clear.getName()).setExecutor(new ClearCmdExecutor(plugin, clear));
+		getCommand(clear.getName()).setTabCompleter(new TabCompletion(plugin));
 	}
 	
 	private void setupCmdCustomPlayerInventory(TabCompletion tab)
@@ -364,7 +370,7 @@ public class MIM extends JavaPlugin
 					buy, drop, info, see);
 			registerCommand(xyz.getPath(), xyz.getName());
 			getCommand(xyz.getName()).setExecutor(new CustomPlayerInventoryCmdExecutor(plugin, xyz, cpiname));
-			getCommand(xyz.getName()).setTabCompleter(tab);
+			getCommand(xyz.getName()).setTabCompleter(new TabCompletion(plugin));
 		}
 	}
 	

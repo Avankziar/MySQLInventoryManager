@@ -27,6 +27,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	public PlayerParameterApi(MIM plugin)
 	{
 		super(plugin, BaseListener.Type.IFH_API);
+		this.plugin = plugin;
 	}
 	
 	private main.java.me.avankziar.mim.spigot.objects.SyncType cvSyncType(SyncType syncType)

@@ -120,16 +120,16 @@ public class InventoryCloseListener extends BaseListener
 			executorToShulkerItem.remove(executorPlayer);
 			return true;
 		}
-		if(!inExternInventory(executorPlayer))
-		{
-			return false;
-		}
 		final UUID targetPlayer = executorToOwnerInventory.get(executorPlayer);
 		final Inventory inv = ownerToInventory.get(targetPlayer); 
 		final String invType = executorToInventoryType.get(executorPlayer).split(";")[0];
 		final String subType = executorToInventoryType.get(executorPlayer).split(";")[1];
 		final GameMode targetMode = executorToGameMode.get(executorPlayer);
 		final String synchroKey = executorToSynchroKey.get(executorPlayer);
+		executorToOwnerInventory.remove(executorPlayer);
+		executorToInventoryType.remove(executorPlayer);
+		executorToGameMode.remove(executorPlayer);
+		executorToSynchroKey.remove(executorPlayer);
 		boolean exist = false;
 		for(Entry<UUID, UUID> set : executorToOwnerInventory.entrySet())
 		{
@@ -142,15 +142,16 @@ public class InventoryCloseListener extends BaseListener
 		if(!exist)
 		{
 			ownerToInventory.remove(targetPlayer);
+			Player target = Bukkit.getPlayer(targetPlayer);
 			switch(invType)
 			{
 			default:
 				return false;
 			case "INV":
-				Player target = Bukkit.getPlayer(targetPlayer);
 				if(target != null)
 				{
 					target.getInventory().setStorageContents(inv.getContents());
+					target.updateInventory();
 				} else
 				{
 					try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
@@ -178,33 +179,47 @@ public class InventoryCloseListener extends BaseListener
 				for(int i = 0; i < inv.getContents().length; i++)
 				{
 					ItemStack is = inv.getContents()[i];
-					if(i == 0)
+					switch(i)
 					{
+					default:
+						break;
+					case 0:
 						offhand = is;
-					} else
-					{
+						break;
+					case 1:
+					case 2:
+					case 3:
+					case 4:
 						armor.add(is);
 					}
 				}
-				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+				if(target != null)
 				{
-					String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
-						+ "` SET `armor_content` = ?, `off_hand` = ?"
-						+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
-					PreparedStatement ps = conn.prepareStatement(sql);
-			        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
-			        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(offhand));
-			        
-			        ps.setString(3, synchroKey);
-			        ps.setString(4, targetMode.toString());
-			        ps.setString(5, targetPlayer.toString());	
-					int u = ps.executeUpdate();
-					MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
-				} catch (SQLException e)
+					target.getInventory().setItemInOffHand(offhand);
+					target.getInventory().setArmorContents(armor.toArray(new ItemStack[armor.size()]));
+					target.updateInventory();
+				} else
 				{
-					MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+					try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+					{
+						String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+							+ "` SET `armor_content` = ?, `off_hand` = ?"
+							+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+						PreparedStatement ps = conn.prepareStatement(sql);
+				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
+				        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(offhand));
+				        
+				        ps.setString(3, synchroKey);
+				        ps.setString(4, targetMode.toString());
+				        ps.setString(5, targetPlayer.toString());	
+						int u = ps.executeUpdate();
+						MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+					} catch (SQLException e)
+					{
+						MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+					}
+					break;
 				}
-				break;
 			case "EC": //Enderchest
 				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 				{
@@ -235,10 +250,6 @@ public class InventoryCloseListener extends BaseListener
 				break;
 			}
 		}
-		executorToOwnerInventory.remove(executorPlayer);
-		executorToInventoryType.remove(executorPlayer);
-		executorToGameMode.remove(executorPlayer);
-		executorToSynchroKey.remove(executorPlayer);
 		return true;
 	}
 }

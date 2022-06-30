@@ -85,7 +85,15 @@ public class SyncTask extends BukkitRunnable
 		} else if(runType == RunType.SAVEANDKICK)
 		{
 			PlayerDataHandler.save(syncType, player);
-			player.kickPlayer(plugin.getYamlHandler().getLang().getString("SyncTask.SavedAndKicked"));
+			new BukkitRunnable()
+			{				
+				@Override
+				public void run()
+				{
+					player.kickPlayer(plugin.getYamlHandler().getLang().getString("SyncTask.SavedAndKicked"));
+				}
+			}.runTaskLater(plugin, 20L);
+			
 		} else if(runType == RunType.LOAD)
 		{
 			if(!new ConfigHandler(plugin).inSleepMode())

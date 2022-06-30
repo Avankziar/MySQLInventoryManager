@@ -23,10 +23,14 @@ public class TabCompletion implements TabCompleter
 		this.plugin = plugin;
 	}
 	
-	private void debug(Player player, String s)
+	/*private void debug(Player player, String s)
 	{
-		MIM.log.info(s);
-	}
+		boolean boo = false;
+		if(boo)
+		{
+			MIM.log.info(s);
+		}
+	}*/
 	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd,
@@ -37,22 +41,20 @@ public class TabCompletion implements TabCompleter
 			return null;
 		}
 		Player player = (Player) sender;
-		debug(player, "====================================");
-		debug(player, "CMD: "+cmd.getName());
 		CommandConstructor cc = plugin.getCommandFromPath(cmd.getName());
 		if(cc == null)
 		{
-			debug(player, "CC frist time null");
+			//debug(player, "CC frist time null");
 			cc = plugin.getCommandFromCommandString(cmd.getName());
 		}
 		if(cc == null)
 		{
-			debug(player, "CC second time null");
+			//debug(player, "CC second time null");
 			return null;
 		}
 		int length = args.length-1;
 		ArrayList<ArgumentConstructor> aclist = cc.subcommands;
-		debug(player, "CC: "+cc.getName()+" "+cc.getPath()+" | "+Arrays.toString(args)+" "+length);
+		//debug(player, "CC: "+cc.getName()+" "+cc.getPath()+" | "+Arrays.toString(args)+" "+length);
 		ArrayList<String> OneArgumentBeforeList = new ArrayList<>();
 		ArgumentConstructor lastAc = null;
 		for(ArgumentConstructor ac : aclist)
@@ -71,7 +73,6 @@ public class TabCompletion implements TabCompleter
 				 */
 				if(args[i].isEmpty())
 				{
-					debug(player, "args[i].isEmpty | i: "+i+" | j: "+j);
 					return listIfArgumentIsEmpty(aclist, player);
 				} else
 				/*
@@ -79,7 +80,6 @@ public class TabCompletion implements TabCompleter
 				 */
 				{
 					int c = countHowMuchAreStartsWithIgnoreCase(aclist, args[i]);
-					debug(player, "!args[i].isEmpty | c: "+c+" | i: "+i+" | j: "+j);
 					if(c > 1)
 					{
 						/*
@@ -118,16 +118,13 @@ public class TabCompletion implements TabCompleter
 			}
 			if(!isBreak)
 			{
-				debug(player, "isBreak");
 				if(lastAc != null)
 				{
-					debug(player, "lastAc != null");
 					return getReturnTabList(lastAc.tabList.get(length), args[length]);
 					//Return null, wenn die Tabliste nicht existiert! Aka ein halbes break;
 				}
 				if(i == length || aclist.isEmpty()) //Wenn das ende erreicht ist oder die aclist vorher leer gesetzt worden ist
 				{
-					debug(player, "==> Breaking!");
 					break;
 				}
 			}
@@ -142,7 +139,7 @@ public class TabCompletion implements TabCompleter
 		{
 			for(String s : tabList)
 			{
-				if(s.startsWith(argsi)) //TODO argsi oder tabList anscheinend null
+				if(s.startsWith(argsi))
 				{
 					list.add(s);
 				}
@@ -175,7 +172,6 @@ public class TabCompletion implements TabCompleter
 		{
 			if(ac != null)
 			{
-				debug(player, "arg: "+arg+" | ac: "+ac.getName());
 				if(ac.getName().toLowerCase().startsWith(arg.toLowerCase()))
 				{
 					if(player.hasPermission(ac.getPermission()))

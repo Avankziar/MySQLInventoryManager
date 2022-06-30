@@ -189,7 +189,7 @@ public class YamlManager
 				"/mim [pagenumber]", "/mim ",
 				"&c/mim &f| Infoseite für alle Befehle.",
 				"&c/mim &f| Info page for all commands.");
-		String basePermission = "mim.cmd.mim.";
+		String basePermission = "mim.cmd.mim";
 		argumentInput("mim_saveandkick", "saveandkick", basePermission,
 				"/mim saveandkick [servername]", "/mim saveandkick ",
 				"&c/mim saveandkick [servername] &f| Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.",
@@ -234,6 +234,10 @@ public class YamlManager
 				"/clear armor [playername]", "/clear armor ",
 				"&c/clear armor [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
 				"&c/clear armor [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
+		argumentInput("clear_attribute", "attribute", basePermission,
+				"/clear attribute [playername]", "/clear attribute ",
+				"&c/clear attribute [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
+				"&c/clear attribute [playername] &f| Deletes and resets certain sections of the player data. Target player must be on the same server.");
 		argumentInput("clear_ec", "enderchest", basePermission,
 				"/clear enderchest [playername]", "/clear enderchest ",
 				"&c/clear enderchest [Spielername] &f| Löscht und resettet bestimmte Sektionen der Spielerdaten. Zielspieler muss auf dem gleichen Server sein.",
@@ -369,6 +373,22 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cNicht Online",
 				"&cNot online"}));
+		languageKeys.put("Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f=====&cMIM&f=====",
+				"&f=====&cMIM&f====="}));
+		languageKeys.put("GeneralHover",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlick mich!",
+				"&eClick me!"}));
+		languageKeys.put("Next", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e&nnächste Seite &e==>",
+				"&e&nnext page &e==>"}));
+		languageKeys.put("Past", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e<== &nvorherige Seite",
+				"&e<== &nprevious page"}));
 		languageKeys.put("WhoIs.List"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&f=====&cWer ist: &6%player%&f=====",
@@ -457,8 +477,8 @@ public class YamlManager
 				"&eAll servers are instructed to save all currently existing players in time."}));
 		languageKeys.put(path+"SaveServer"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDer Server %server% wurde angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
-				"&eThe server %server% are instructed to save all currently existing players in time and then kick them. &cBeware, without active whitelist or similar, but they can join again!"}));
+				"&eDer Server %server% wurde angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
+				"&eThe server %server% are instructed to save all currently existing players in time. &cBeware, without active whitelist or similar, but they can join again!"}));
 		languageKeys.put(path+"PleaseConfirm"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cBitte bestätige den Befehl mit &fbestätigen &cam Ende des Befehls.",

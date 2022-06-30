@@ -132,7 +132,7 @@ public class BaseListener implements Listener
 		}
 		return true;
 	}
-	//ADDME doSync in alle Events einbauen.
+	
 	public void doSync(Player player, SyncType syncType, RunType runType)
 	{
 		if(!preChecks(player))

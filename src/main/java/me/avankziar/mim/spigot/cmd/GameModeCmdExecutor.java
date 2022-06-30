@@ -109,6 +109,7 @@ public class GameModeCmdExecutor implements CommandExecutor
 						.replace("%player%", other.getName())
 						.replace("%gamemode%", plugin.getYamlHandler().getLang().getString("GameMode."+gm.toString()))));
 				other.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("GameMode.SettedGameMode")
+						.replace("%sender%", sender.getName())
 						.replace("%gamemode%", plugin.getYamlHandler().getLang().getString("GameMode."+gm.toString()))));
 			}
 			return true;

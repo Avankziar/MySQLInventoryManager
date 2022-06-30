@@ -64,8 +64,8 @@ public class ArmorSeeCmdExecutor implements CommandExecutor
 				return false;
 			}
 			Player other = Bukkit.getPlayer(otheruuid);
-			Inventory inv = other != null ? other.getInventory() : null;
-			if(inv == null)
+			Inventory inv = null;
+			if(other == null)
 			{
 				PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 						"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
@@ -76,17 +76,30 @@ public class ArmorSeeCmdExecutor implements CommandExecutor
 					return false;
 				}
 				inv = Bukkit.createInventory(player, 9*1, othername+"`s Armor & OffHand");
-				inv.setContents(pd.getInventoryStorageContents());
-				for(ItemStack ar : pd.getArmorContents())
+				inv.addItem(pd.getOffHand());
+				for(int i = 1; i < pd.getArmorContents().length; i++)
 				{
-					inv.addItem(ar);
+					if(pd.getArmorContents()[i] != null)
+					{
+						inv.setItem(i, pd.getArmorContents()[i]);
+					}
 				}				
+			} else
+			{
+				inv = Bukkit.createInventory(player, 9*1, othername+"`s Armor & OffHand");
+				inv.addItem(other.getInventory().getItemInOffHand());
+				for(int i = 0; i < other.getInventory().getArmorContents().length; i++)
+				{
+					ItemStack is = other.getInventory().getArmorContents()[i];
+					if(is != null)
+					{
+						inv.setItem(i+1, is);
+					}
+				}		
 			}
 			InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
 					"ARMOR", "ARMOR", player.getGameMode(), synchroKey);
 			player.openInventory(inv);
-			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Openable.ArmorOther")
-					.replace("%player%", othername)));
 			return true;
 		} else
 		{

@@ -18,3 +18,4 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz drop [bestätigen] | Dropt alle Items des Custom Spieler Inventars auf dem Boden.
 + /xyz info | Gibt Infos bezüglich der defaultbox aus.
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
++ Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.

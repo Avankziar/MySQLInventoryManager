@@ -43,7 +43,7 @@ public class MiMSave extends ArgumentModule
 		} else
 		{
 			plugin.getPlayerParameterApi().saveAll();
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SavekAll")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAll")));
 			return;
 		}
 	}
