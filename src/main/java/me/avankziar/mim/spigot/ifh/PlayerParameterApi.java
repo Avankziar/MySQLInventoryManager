@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.ifh.general.assistance.ChatApi;
 import main.java.me.avankziar.ifh.spigot.synchronization.PlayerParameter;
 import main.java.me.avankziar.ifh.spigot.synchronization.SyncType;
 import main.java.me.avankziar.mim.general.StaticValues;
@@ -157,6 +158,15 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 		addCooldown(player.getUniqueId());
 		new SyncTask(plugin, main.java.me.avankziar.mim.spigot.objects.SyncType.FULL , RunType.SAVEANDKICK, player, player.getGameMode()).run();
 		removeCooldown(player.getUniqueId());
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				player.kickPlayer(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SavedAndKicked")));
+			}
+		}.runTaskLater(plugin, 20L);
+		
 	}
 	
 	@Override
@@ -221,6 +231,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 							if(i >= arr.length)
 							{
 								cancel();
+								return;
 							}
 							save((Player) arr[i]);
 							i++;
@@ -231,13 +242,14 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
             		new BukkitRunnable()
 					{
 						int i = 0;
-						Object[] arr = Bukkit.getOnlinePlayers().toArray();
+						final Object[] arr = Bukkit.getOnlinePlayers().toArray(new Object[Bukkit.getOnlinePlayers().size()]);
 						@Override
 						public void run()
 						{
 							if(i >= arr.length)
 							{
 								cancel();
+								return;
 							}
 							saveAndKick((Player) arr[i]);
 							i++;

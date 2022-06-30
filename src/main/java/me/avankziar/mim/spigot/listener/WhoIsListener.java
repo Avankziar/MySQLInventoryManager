@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.MIM;
@@ -18,7 +19,7 @@ import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 
 public class WhoIsListener implements PluginMessageListener
-{
+{	
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] bytes) 
 	{
@@ -39,7 +40,7 @@ public class WhoIsListener implements PluginMessageListener
             		Player target = Bukkit.getPlayer(UUID.fromString(targetUUID));
             		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
             				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-            				player.getUniqueId().toString(), synchroKey, target.getGameMode().toString());
+            				targetUUID, synchroKey, target.getGameMode().toString());
             		int pdid = pd.getId();
             		String worldname = target.getWorld().getName();
             		double x = target.getLocation().getX();
@@ -47,7 +48,14 @@ public class WhoIsListener implements PluginMessageListener
             		double z = target.getLocation().getZ();
             		float yaw = target.getLocation().getYaw();
             		float pitch = target.getLocation().getPitch();
-            		sendAnswer(player, requesterUUID, targetUUID, targetname, pdid, worldname, x, y, z, yaw, pitch);
+            		new BukkitRunnable()
+					{
+						@Override
+						public void run()
+						{
+							sendAnswer(target, requesterUUID, targetUUID, targetname, pdid, worldname, x, y, z, yaw, pitch);
+						}
+					}.runTaskLater(MIM.getPlugin(), 20L);
             	} else if(task.equals(StaticValues.WHOIS_ANSWEROFFLINE))
             	{
             		String requesterUUID = in.readUTF();

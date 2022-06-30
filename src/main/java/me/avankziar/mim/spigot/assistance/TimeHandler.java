@@ -106,7 +106,7 @@ public class TimeHandler
 		{
 			min += String.valueOf(0);
 		}
-		min += String.valueOf(m)+":";
+		min += String.valueOf(m);
 		int s = 0;
 		String sec = "";
 		while(ll >= ss)

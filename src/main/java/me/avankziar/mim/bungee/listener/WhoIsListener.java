@@ -47,7 +47,15 @@ public class WhoIsListener implements Listener
         	String requestUUID = in.readUTF();
         	String targetUUID = in.readUTF();
         	String targetname = in.readUTF();
-        	ProxiedPlayer target = plugin.getProxy().getPlayer(UUID.fromString(targetUUID));
+        	ProxiedPlayer target = null;
+        	for(ProxiedPlayer pp : plugin.getProxy().getPlayers())
+        	{
+        		if(pp.getUniqueId().toString().equals(targetUUID))
+        		{
+        			target = pp;
+        			break;
+        		}
+        	}
         	if(target == null)
         	{
         		sendAnswerOffline(requestUUID, targetUUID, targetname);
@@ -120,7 +128,7 @@ public class WhoIsListener implements Listener
 		ByteArrayOutputStream streamout = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(streamout);
         try {
-        	out.writeUTF(StaticValues.WHOIS_ANSWEROFFLINE);
+        	out.writeUTF(StaticValues.WHOIS_ANSWERONLINE);
         	out.writeUTF(requestUUID);
         	out.writeUTF(targetUUID);
         	out.writeUTF(targetname);

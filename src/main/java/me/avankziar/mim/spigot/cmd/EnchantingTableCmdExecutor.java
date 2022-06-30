@@ -46,7 +46,8 @@ public class EnchantingTableCmdExecutor implements CommandExecutor
 			}
 			Player player = (Player) sender;
 			inEnchantingTable.add(player.getUniqueId());
-			player.openEnchanting(player.getLocation(), true);
+			//player.openInventory(Bukkit.createInventory(null, InventoryType.ENCHANTING)); //Öffnet, aber nichts funktioniert
+			//player.openEnchanting(player.getLocation(), true); //Öffnet erst gar nicht
 			return true;
 		} else
 		{

@@ -23,6 +23,7 @@ import main.java.me.avankziar.mim.spigot.assistance.TimeHandler;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIBuy;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
+import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.listener.WhoIsListener;
 import main.java.me.avankziar.mim.spigot.objects.PersistentData;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
@@ -79,6 +80,17 @@ public class WhoIsCmdExecutor implements CommandExecutor
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("DidYouMean")));
 			sender.sendMessage(ChatApi.tl(cc.getSuggestion()));
 			return false;
+		}
+		Player target = Bukkit.getPlayer(targetuuid);
+		boolean boo = false;
+		if(target != null && boo)
+		{
+			PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
+    				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
+    				targetuuid.toString(), MIM.getPlugin().getConfigHandler().getSynchroKey(target, false), target.getGameMode().toString());
+			WhoIsCmdExecutor.sendWhoIs(player, 
+    				targetuuid.toString(), targetname, target.getAddress().getAddress().toString(),
+    				pd, true, null, null, 0.0, 0.0, 0.0, 0F, 0F);
 		}
 		//Nachricht an Bungee ob Spieler online ist.
 		//Falls ja, muss seine Position, sowie Deathbackloc, die IP und die ID der playerData mitliefern.
@@ -248,10 +260,14 @@ public class WhoIsCmdExecutor implements CommandExecutor
 					}
 					if(s.contains("%effect%"))
 					{
-						String effect = null;
+						String effect = "";
 						for(PotionEffect pe : pd.getActiveEffects())
 						{
-							effect += pe.getType().toString()+"("+pe.getAmplifier()
+							if(pe == null)
+							{
+								continue;
+							}
+							effect += pe.getType().getName()+"("+pe.getAmplifier()
 							+")["+TimeHandler.getRepeatingTime(pe.getDuration(), "HH:mm:ss")+"], ";
 						}
 						ss = ChatApi.tctl(s.replace("%effect%", effect != null ? effect : "/"));

@@ -37,11 +37,9 @@ import main.java.me.avankziar.ifh.spigot.position.LastKnownPosition;
 import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
-import main.java.me.avankziar.mim.spigot.cmd.AnvilCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.ArmorSeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.ClearCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
-import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
@@ -274,15 +272,10 @@ public class MIM extends JavaPlugin
 		getCommand(enderchest.getName()).setExecutor(new EnderChestCmdExecutor(plugin, enderchest));
 		getCommand(enderchest.getName()).setTabCompleter(new TabCompletion(plugin));
 		
-		CommandConstructor enchantingtable = new CommandConstructor(CommandExecuteType.ENCHANTINGTABLE, "enchantingtable", false);
+		/*CommandConstructor enchantingtable = new CommandConstructor(CommandExecuteType.ENCHANTINGTABLE, "enchantingtable", false);
 		registerCommand(enchantingtable.getPath(), enchantingtable.getName());
 		getCommand(enchantingtable.getName()).setExecutor(new EnchantingTableCmdExecutor(plugin, enchantingtable));
-		getCommand(enchantingtable.getName()).setTabCompleter(new TabCompletion(plugin));
-		
-		CommandConstructor anvil = new CommandConstructor(CommandExecuteType.ANVIL, "anvil", false);
-		registerCommand(anvil.getPath(), anvil.getName());
-		getCommand(anvil.getName()).setExecutor(new AnvilCmdExecutor(plugin, anvil));
-		getCommand(anvil.getName()).setTabCompleter(new TabCompletion(plugin));
+		getCommand(enchantingtable.getName()).setTabCompleter(new TabCompletion(plugin));*/
 		
 		CommandConstructor invsee = new CommandConstructor(CommandExecuteType.INVSEE, "invsee", false);
 		registerCommand(invsee.getPath(), invsee.getName());

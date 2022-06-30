@@ -214,10 +214,6 @@ public class YamlManager
 				"/enchantingtable", "/enchantingtable ",
 				"&c/enchantingtable &f| Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.",
 				"&c/enchantingtable &f| Opens a enchanting table of the maximum level. Optional for other players.");
-		commandsInput("anvil", "anvil", "anvil.cmd.anvil", 
-				"/anvil", "/anvil ",
-				"&c/anvil &f| Öffnet einen Amboss. Optional für andere Spieler.",
-				"&c/anvil &f| Opens a anvil. Optional for other players.");
 		commandsInput("invsee", "invsee", "invsee.cmd.invsee", 
 				"/invsee <playername>", "/invsee ",
 				"&c/invsee <Spielername> &f| Öffnet das Inventar des Spielers.",
@@ -408,7 +404,7 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cAktuelle Position: &e%pos%",
 				"&cIP: &f%ip%",
-				"&cGameMode: %gm%",
+				"&cGameMode: &f%gm%",
 				"&cLP & Rüstung: &f%lp%/%lpmax% <> %armor%/20",
 				"&cHunger: &f%hunger%/20 &cSättigung: &f%saturation%",
 				"&cGesamtExp: &f%exp% <> &cLevel: &f%level%",
@@ -421,6 +417,7 @@ public class YamlManager
 				
 				"&cCurrent Position: &e%pos%",
 				"&cIP: &f%ip%",
+				"&cGameMode: &f%gm%",
 				"&cLP & Armor: &f%lp%/%lpmax% <> %armor%/%armormax%",
 				"&cHunger: &f%hunger%/%hungermax% &cSättigung: &f%saturation%",
 				"&cTotalExp: &f%exp% <> &cLevel: &f%level%",
@@ -429,7 +426,7 @@ public class YamlManager
 				"&cFlymodus: &f%flying%",
 				"&cWalk- & Flyspeed: &f%walkspeed% <> &f%flyspeed%",
 				"&cActive Effects: &f%effect%",
-				"&cPersistent Data: &f%perdata%",}));
+				"&cPersistent Data: &f%perdata%"}));
 		languageKeys.put("Online.FirstLine"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&f=====[&6Online &f| &7Anzahl: &f%amount%]=====",
@@ -461,8 +458,8 @@ public class YamlManager
 		String path = "SyncTask.";
 		languageKeys.put(path+"SavedAndKicked"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDein Spielstand wurde erfolgreich gespeichert und du wurdest vom Server gekickt!",
-				"&eYour game state was successfully saved and you were kicked from the server!"}));
+				"§eDein Spielstand wurde erfolgreich gespeichert und du wurdest vom Server gekickt!",
+				"§eYour game state was successfully saved and you were kicked from the server!"}));
 		languageKeys.put(path+"SaveAndKickAll"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eAlle Server werden angewiesen, alle zurzeit vorhandenen Spieler rechtzeitig zu speichern und dann zu kicken. &cBedenke, ohne aktive Whiteliste oder ähnlichem können diese aber wieder joinen!",
