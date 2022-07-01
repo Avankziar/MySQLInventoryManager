@@ -13,6 +13,7 @@ import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.mim.general.ChatApi;
@@ -111,22 +112,30 @@ public class CPIBuy extends ArgumentModule
 					{
 						continue;
 					}
-					if(!plugin.getEconomy().existsCurrency(split[2]))
+					EconomyCurrency ec = null;
+					if(split[2].equalsIgnoreCase("default"))
+					{
+						ec = plugin.getEconomy().getDefaultCurrency(CurrencyType.DIGITAL);
+					} else
+					{
+						ec = plugin.getEconomy().getCurrency(split[2]);
+					}
+					if(ec == null)
 					{
 						continue;
 					}
-					EconomyCurrency ec = plugin.getEconomy().getCurrency(split[2]);
+					double d = Double.parseDouble(split[1]);
 					Account ac = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
 					if(ac == null || !plugin.getEconomy().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_WITHDRAW))
 					{
 						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
-								.replace("%format%", plugin.getEconomy().format(Double.parseDouble(split[1]), ec))));
+								.replace("%format%", plugin.getEconomy().format(d, ec))));
 						return;
 					}
-					if(ac.getBalance() < Double.parseDouble(split[1]))
+					if(ac.getBalance() < d)
 					{
 						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoEnoughMoneyAmount")
-								.replace("%format%", plugin.getEconomy().format(Double.parseDouble(split[1]), ec))));
+								.replace("%format%", plugin.getEconomy().format(d, ec))));
 						return;
 					}
 				} else if(a.contains("MATERIAL"))
@@ -208,29 +217,37 @@ public class CPIBuy extends ArgumentModule
 						{
 							continue;
 						}
-						if(!plugin.getEconomy().existsCurrency(split[2]))
+						EconomyCurrency ec = null;
+						if(split[2].equalsIgnoreCase("default"))
+						{
+							ec = plugin.getEconomy().getDefaultCurrency(CurrencyType.DIGITAL);
+						} else
+						{
+							ec = plugin.getEconomy().getCurrency(split[2]);
+						}
+						if(ec == null)
 						{
 							continue;
 						}
-						EconomyCurrency ec = plugin.getEconomy().getCurrency(split[2]);
+						double d = Double.parseDouble(split[1]);
 						Account ac = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
 						Account v = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.VOID);
 						if(ac == null)
 						{
 							player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
-									.replace("%format%", plugin.getEconomy().format(Double.parseDouble(split[1]), ec))));
+									.replace("%format%", plugin.getEconomy().format(d, ec))));
 							return;
 						}
 						EconomyAction ea = null;
 						if(v != null)
 						{
-							ea = plugin.getEconomy().transaction(ac, v, Double.parseDouble(split[1]),
+							ea = plugin.getEconomy().transaction(ac, v, d,
 									OrdererType.PLAYER, player.getUniqueId().toString(),
 									plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
 									plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment"));
 						} else
 						{
-							ea = plugin.getEconomy().withdraw(ac, Double.parseDouble(split[1]),
+							ea = plugin.getEconomy().withdraw(ac, d,
 									OrdererType.PLAYER, player.getUniqueId().toString(),
 									plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
 									plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment"));
@@ -238,7 +255,7 @@ public class CPIBuy extends ArgumentModule
 						if(!ea.isSuccess())
 						{
 							player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
-									.replace("%format%", plugin.getEconomy().format(Double.parseDouble(split[1]), ec))));
+									.replace("%format%", plugin.getEconomy().format(d, ec))));
 							return;
 						}
 					} else if(a.contains("MATERIAL"))

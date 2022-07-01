@@ -183,7 +183,7 @@ public class CustomPlayerInventory implements MysqlHandable
 			}
 			break;
 		}
-		return c;
+		return c > 6 ? 6 : c;
 	}
 	
 	public List<String> getCosts(int row)

@@ -765,29 +765,29 @@ public class YamlManager
 				"FREE;"}));
 		cpiKeysI.put("CostPerRow.2",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default",
-				"MONEY;5;specialcurrencyuniquename",
-				"MATERIAL;5;DIAMOND",
+				"MONEY;25.0;default",
+				"MONEY;5.0;specialcurrencyuniquename",
+				"MATERIAL;64;COAL",
 				"EXP;5"}));
 		cpiKeysI.put("CostPerRow.3",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
-				"MATERIAL;5;DIAMOND",
+				"MONEY;50.0;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;32;IRON_INGOT",
 				"EXP;5"}));
 		cpiKeysI.put("CostPerRow.4",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
-				"MATERIAL;5;DIAMOND",
+				"MONEY;75.0;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;16;GOLD_INGOT",
 				"EXP;5"}));
 		cpiKeysI.put("CostPerRow.5",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
-				"MATERIAL;5;DIAMOND",
+				"MONEY;100.0;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;8;DIAMOND",
 				"EXP;5"}));
 		cpiKeysI.put("CostPerRow.6",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"MONEY;25;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
-				"MATERIAL;5;DIAMOND",
+				"MONEY;200.0;default", //Type of Cost, Costamount, Currency or Item. For Exp(Exp isnt Level) dont need
+				"MATERIAL;4;NETHERITE_INGOT",
 				"EXP;5"}));
 		cpiKeysI.put("ShulkerOpenInInventoryPermission",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {

@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
@@ -96,7 +98,7 @@ public class CPIInfo extends ArgumentModule
 	
 	public static String getCost(MIM plugin, CustomPlayerInventory cpi, int row)
 	{
-		String s = null;
+		String s = "";
 		int i = 0;
 		for(String a : cpi.getCosts(row))
 		{
@@ -111,16 +113,24 @@ public class CPIInfo extends ArgumentModule
 				{
 					continue;
 				}
-				if(!plugin.getEconomy().existsCurrency(split[2]))
+				EconomyCurrency ec = null;
+				if(split[2].equalsIgnoreCase("default"))
+				{
+					ec = plugin.getEconomy().getDefaultCurrency(CurrencyType.DIGITAL);
+				} else
+				{
+					ec = plugin.getEconomy().getCurrency(split[2]);
+				}
+				if(ec == null)
 				{
 					continue;
 				}
 				if(i == 0)
 				{
-					s += plugin.getEconomy().format(Integer.parseInt(split[1]), plugin.getEconomy().getCurrency(split[2]));
+					s += plugin.getEconomy().format(Double.parseDouble(split[1]), ec);
 				} else 
 				{
-					s += ", "+plugin.getEconomy().format(Integer.parseInt(split[1]), plugin.getEconomy().getCurrency(split[2]));
+					s += ", "+plugin.getEconomy().format(Double.parseDouble(split[1]), ec);
 				}
 				i++;
 			} else if(a.contains("MATERIAL"))
@@ -139,6 +149,10 @@ public class CPIInfo extends ArgumentModule
 				} catch(Exception e)
 				{
 					 continue;
+				}
+				if(mat == Material.AIR)
+				{
+					continue;
 				}
 				if(i == 0)
 				{
