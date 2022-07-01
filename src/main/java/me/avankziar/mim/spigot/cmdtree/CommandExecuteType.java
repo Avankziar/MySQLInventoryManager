@@ -27,6 +27,7 @@ public enum CommandExecuteType
 	ONLINE,
 	CUSTOMPLAYERINVENTORY, // /xyz | Alle Befehle für die CPI gemeint sind.
 	CPI_DROP,
+	CPI_INFO,
 	CPI_SEE,
 	CPI_BUY
 }

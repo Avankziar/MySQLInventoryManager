@@ -297,11 +297,11 @@ public class MIM extends JavaPlugin
 		getCommand(online.getName()).setExecutor(new OnlineCmdExecutor(plugin, online));
 		getCommand(online.getName()).setTabCompleter(new TabCompletion(plugin));
 		
-		setupCmdClear(new TabCompletion(plugin));
-		setupCmdCustomPlayerInventory(new TabCompletion(plugin));
+		setupCmdClear();
+		setupCmdCustomPlayerInventory();
 	}
 	
-	private void setupCmdClear(TabCompletion tab)
+	private void setupCmdClear()
 	{
 		ArgumentConstructor armor = new ArgumentConstructor(CommandExecuteType.CLEAR_ARMOR, "clear_armor", 0, 0, 2, false, null);
 		new ClearSub(armor, SyncType.INV_ARMOR);
@@ -340,7 +340,7 @@ public class MIM extends JavaPlugin
 		getCommand(clear.getName()).setTabCompleter(new TabCompletion(plugin));
 	}
 	
-	private void setupCmdCustomPlayerInventory(TabCompletion tab)
+	private void setupCmdCustomPlayerInventory()
 	{
 		for(Entry<String, YamlConfiguration> cpi : yamlHandler.getCustomPlayerInventory().entrySet())
 		{
@@ -353,7 +353,7 @@ public class MIM extends JavaPlugin
 			ArgumentConstructor drop = new ArgumentConstructor(CommandExecuteType.CPI_DROP, "Argument_drop", 0, 0, 1, false, null);
 			new CPIDrop(drop, cpiname);
 			
-			ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.CPI_SEE, "Argument_info", 0, 0, 0, false, null);
+			ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.CPI_INFO, "Argument_info", 0, 0, 0, false, null);
 			new CPIInfo(info, cpiname);
 			
 			ArgumentConstructor see = new ArgumentConstructor(CommandExecuteType.CPI_SEE, "Argument_see", 0, 1, 1, false, null);

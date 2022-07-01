@@ -19,7 +19,7 @@ import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class OnlineListener implements PluginMessageListener
-{
+{	
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] bytes) 
 	{
@@ -84,11 +84,11 @@ public class OnlineListener implements PluginMessageListener
         DataOutputStream out = new DataOutputStream(stream);
         try 
         {
-			out.writeUTF(StaticValues.WHOIS_SENDREQUEST);
+			out.writeUTF(StaticValues.ONLINE_REQUEST);
 			out.writeUTF(player.getUniqueId().toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        player.sendPluginMessage(MIM.getPlugin(), StaticValues.WHOIS_TOBUNGEE, stream.toByteArray());
+        player.sendPluginMessage(MIM.getPlugin(), StaticValues.ONLINE_TOBUNGEE, stream.toByteArray());
 	}
 }

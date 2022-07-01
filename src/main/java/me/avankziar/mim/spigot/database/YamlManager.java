@@ -271,7 +271,7 @@ public class YamlManager
 				"&c/whois [Spielername] &f| Öffnet generalisierte Infos zu dem Spieler.",
 				"&c/whois [playername] &f| Opens generalized info about the player.");
 		commandsInput("online", "online", "online.cmd.online", 
-				"/online", "/whois ",
+				"/online", "/online ",
 				"&c/online &f| Zeigt alle Onlinespieler in Proxynetzwerk an.",
 				"&c/online &f| Shows all online player in the proxy network.");
 	}
@@ -737,16 +737,16 @@ public class YamlManager
 		LinkedHashMap<String, Language> cpiKeysI = new LinkedHashMap<>();
 		cpiKeysI.put("UniqueName",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"default"}));
+				"defaultbox"}));
 		cpiKeysI.put("InventoryName",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"%player%´s Default Inventory"}));
+				"%player%´s Defaultbox Inventory"}));
 		cpiKeysI.put("InventoryShulkerName",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"%player%´s Shulkerbox Default Inventory"}));
+				"%player%´s Shulkerbox Defaultbox Inventory"}));
 		cpiKeysI.put("IsActive",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				false}));
+				true}));
 		cpiKeysI.put("UsePredefineCustomInventory",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

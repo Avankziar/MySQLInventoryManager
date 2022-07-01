@@ -655,7 +655,7 @@ public class DeathMemoryState implements MysqlHandable
 	{
 		try
 		{
-			String sql = "SELECT * FROM `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue() 
+			String sql = "SELECT * FROM `" + tablename
 				+ "` WHERE "+whereColumn+" ORDER BY "+orderby+limit;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int i = 1;

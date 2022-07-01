@@ -122,7 +122,7 @@ public class BaseListener implements Listener
 	
 	public boolean preChecks(Player player)
 	{
-		if(!player.isOnline())
+		if(player == null || !player.isOnline())
 		{
 			return false;
 		}

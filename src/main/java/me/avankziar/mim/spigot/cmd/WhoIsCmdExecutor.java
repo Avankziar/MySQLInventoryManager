@@ -82,8 +82,7 @@ public class WhoIsCmdExecutor implements CommandExecutor
 			return false;
 		}
 		Player target = Bukkit.getPlayer(targetuuid);
-		boolean boo = false;
-		if(target != null && boo)
+		if(target != null)
 		{
 			PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
     				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
@@ -91,10 +90,12 @@ public class WhoIsCmdExecutor implements CommandExecutor
 			WhoIsCmdExecutor.sendWhoIs(player, 
     				targetuuid.toString(), targetname, target.getAddress().getAddress().toString(),
     				pd, true, null, null, 0.0, 0.0, 0.0, 0F, 0F);
+		} else
+		{
+			//Nachricht an Bungee ob Spieler online ist.
+			//Falls ja, muss seine Position, sowie Deathbackloc, die IP und die ID der playerData mitliefern.
+			WhoIsListener.sendRequest(player, targetuuid, targetname);
 		}
-		//Nachricht an Bungee ob Spieler online ist.
-		//Falls ja, muss seine Position, sowie Deathbackloc, die IP und die ID der playerData mitliefern.
-		WhoIsListener.sendRequest(player, targetuuid, targetname);
 		return true;
 	}
 	
@@ -107,6 +108,7 @@ public class WhoIsCmdExecutor implements CommandExecutor
 		TextComponent ss = null;
 		for(String s : MIM.getPlugin().getYamlHandler().getLang().getStringList("WhoIs.List"))
 		{
+			player.sendMessage(s);//TODO
 			if(s.contains("%player%"))
 			{
 				ss = ChatApi.clickEvent(s.replace("%player%", targetname), Action.RUN_COMMAND, "/bminfo "+targetname);
@@ -198,12 +200,16 @@ public class WhoIsCmdExecutor implements CommandExecutor
 					continue;
 				}
 			}
-			ArrayList<BaseComponent> bc = new ArrayList<>();
-			bc.add(ss);
-			whois.add(bc);
+			if(ss != null)
+			{
+				ArrayList<BaseComponent> bc = new ArrayList<>();
+				bc.add(ss);
+				whois.add(bc);
+			}
 		}
 		if(isOnline)
 		{
+			ss = null;
 			for(String s : MIM.getPlugin().getYamlHandler().getLang().getStringList("WhoIs.OnlineList"))
 			{
 				if(ip != null && s.contains("%ip%"))
@@ -267,8 +273,9 @@ public class WhoIsCmdExecutor implements CommandExecutor
 							{
 								continue;
 							}
-							effect += pe.getType().getName()+"("+pe.getAmplifier()
-							+")["+TimeHandler.getRepeatingTime(pe.getDuration(), "HH:mm:ss")+"], ";
+							int i = pe.getAmplifier()+1;
+							effect += pe.getType().getName()+"("+i+")["
+							+TimeHandler.getRepeatingTime(Long.parseLong(String.valueOf(pe.getDuration()))*50, "HH:mm:ss")+"], ";
 						}
 						ss = ChatApi.tctl(s.replace("%effect%", effect != null ? effect : "/"));
 					}
@@ -282,9 +289,12 @@ public class WhoIsCmdExecutor implements CommandExecutor
 						ss = ChatApi.tctl(s.replace("%perdata%", perda != null ? perda : "/"));
 					}
 				}
-				ArrayList<BaseComponent> bc = new ArrayList<>();
-				bc.add(ss);
-				whois.add(bc);
+				if(ss != null)
+				{
+					ArrayList<BaseComponent> bc = new ArrayList<>();
+					bc.add(ss);
+					whois.add(bc);
+				}
 			}
 		}
 		for(ArrayList<BaseComponent> bc : whois)
