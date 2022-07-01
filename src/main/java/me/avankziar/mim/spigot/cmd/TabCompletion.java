@@ -23,10 +23,10 @@ public class TabCompletion implements TabCompleter
 		this.plugin = plugin;
 	}
 	
-	private void debug(Player player, String s)
+	/*private void debug(Player player, String s)
 	{
 		player.sendMessage(s);
-	}
+	}*/
 	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd,
@@ -152,7 +152,6 @@ public class TabCompletion implements TabCompleter
 		{
 			if(ac != null)
 			{
-				debug(player, "ac: "+ac.getName());//TODO
 				if(player.hasPermission(ac.getPermission()))
 				{
 					returnlist.add(ac.getName());
@@ -169,7 +168,6 @@ public class TabCompletion implements TabCompleter
 		{
 			if(ac != null)
 			{
-				debug(player, "ac: "+ac.getName());//TODO
 				if(ac.getName().toLowerCase().startsWith(arg.toLowerCase()))
 				{
 					if(player.hasPermission(ac.getPermission()))

@@ -347,16 +347,16 @@ public class MIM extends JavaPlugin
 			YamlConfiguration y = cpi.getValue();
 			String cpiname = cpi.getKey();
 			
-			ArgumentConstructor buy = new ArgumentConstructor(CommandExecuteType.CPI_DROP, "Argument_buy", 0, 0, 1, false, null);
+			ArgumentConstructor buy = new ArgumentConstructor(CommandExecuteType.CPI_BUY, y, "Argument_buy", 0, 0, 1, false, null);
 			new CPIBuy(buy, cpiname);
 			
-			ArgumentConstructor drop = new ArgumentConstructor(CommandExecuteType.CPI_DROP, "Argument_drop", 0, 0, 1, false, null);
+			ArgumentConstructor drop = new ArgumentConstructor(CommandExecuteType.CPI_DROP, y, "Argument_drop", 0, 0, 1, false, null);
 			new CPIDrop(drop, cpiname);
 			
-			ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.CPI_INFO, "Argument_info", 0, 0, 0, false, null);
+			ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.CPI_INFO, y, "Argument_info", 0, 0, 0, false, null);
 			new CPIInfo(info, cpiname);
 			
-			ArgumentConstructor see = new ArgumentConstructor(CommandExecuteType.CPI_SEE, "Argument_see", 0, 1, 1, false, null);
+			ArgumentConstructor see = new ArgumentConstructor(CommandExecuteType.CPI_SEE, y, "Argument_see", 0, 1, 1, false, null);
 			new CPISee(see, cpiname);
 			
 			CommandConstructor xyz = new CommandConstructor(CommandExecuteType.CUSTOMPLAYERINVENTORY, y, "Command", false,

@@ -3,6 +3,8 @@ package main.java.me.avankziar.mim.spigot.cmdtree;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import main.java.me.avankziar.mim.spigot.MIM;
 
 public class ArgumentConstructor extends BaseConstructor
@@ -28,6 +30,50 @@ public class ArgumentConstructor extends BaseConstructor
     			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".Suggestion"),
     			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".CommandString"),
     			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".HelpInfo"),
+    			canConsoleAccess);
+        this.minArgsConstructor = minArgs;
+        this.maxArgsConstructor = maxArgs;
+        this.minArgsTablist = minArgs;
+        this.maxArgsTablist = maxArgs;
+        this.subargument = new ArrayList<>();
+        this.tabList = new LinkedHashMap<>();
+        if(tablistAddingOtherValue != null)
+        {
+        	this.tabList = tablistAddingOtherValue;
+        }
+        ArrayList<String> tl = tabList.get(position);
+        if(tl == null)
+        {
+        	tl = new ArrayList<>();
+        }
+        for(ArgumentConstructor ac : argumentConstructors)
+        {
+        	subargument.add(ac);
+        	tl.add(ac.getName());
+        }
+        if(tabList.containsKey(position))
+        {
+        	tabList.replace(position, tl);
+        } else
+        {
+        	tabList.put(position, tl);
+        }
+    }
+    
+    public ArgumentConstructor(
+    		CommandExecuteType cet, YamlConfiguration y,
+    		String path, int position, int minArgs, int maxArgs, boolean canConsoleAccess,
+    		LinkedHashMap<Integer, ArrayList<String>> tablistAddingOtherValue,
+    		ArgumentConstructor...argumentConstructors)
+    {
+    	super(
+    			cet,
+    			y.getString(path+".Argument"),
+    			path,
+    			y.getString(path+".Permission"),
+    			y.getString(path+".Suggestion"),
+    			y.getString(path+".CommandString"),
+    			y.getString(path+".HelpInfo"),
     			canConsoleAccess);
         this.minArgsConstructor = minArgs;
         this.maxArgsConstructor = maxArgs;
