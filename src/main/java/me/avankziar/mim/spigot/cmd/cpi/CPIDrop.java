@@ -51,13 +51,13 @@ public class CPIDrop extends ArgumentModule
 		if(args.length <= 1)
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.AreYouSureToDrop")
-					.replace("%cpi%", cpi.getInventoryName())));
+					.replace("%cpi%", cpi.getUniqueName())));
 			return;
 		}
 		if(!"confirm".equalsIgnoreCase(args[1]) && !"bestätigen".equalsIgnoreCase(args[1]))
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.AreYouSureToDrop")
-					.replace("%cpi%", cpi.getInventoryName())));
+					.replace("%cpi%", cpi.getUniqueName())));
 			return;
 		}
 		new CustomPlayerInventoryHandler(cpi).dropInventory(player);

@@ -57,6 +57,6 @@ public class CPISee extends ArgumentModule
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.DoNotHaveAccess")));
 			return;
 		}
-		new CustomPlayerInventoryHandler(cpi).openInventory(player);
+		new CustomPlayerInventoryHandler(cpi).openInventory(player, othername);
 	}
 }

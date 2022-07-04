@@ -23,6 +23,7 @@ import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
+import main.java.me.avankziar.mim.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
@@ -69,6 +70,7 @@ public class CPIBuy extends ArgumentModule
 		{
 			String n = null;
 			cpi = new CustomPlayerInventory(cpiUniquename, player.getUniqueId(), 0, 0, 0, n);
+			plugin.getMysqlHandler().create(Type.CUSTOMPLAYERINVENTORY, cpi);
 		}
 		if(cpi.usePredefineCustomInventory())
 		{
@@ -96,9 +98,12 @@ public class CPIBuy extends ArgumentModule
 				return;
 			}
 		}
-		if(!player.hasPermission(Bypass.get(Bypass.Permission.CUSTOMPLAYERINVENTORY_BUY)))
+		boolean isFree = false;
+		if(player.hasPermission(Bypass.get(Bypass.Permission.CUSTOMPLAYERINVENTORY_BUY)))
 		{
-			boolean isFree = false;
+			isFree = true;
+		} else
+		{
 			for(String a : cpi.getCosts(cpi.getMaxbuyedRowAmount()+1))
 			{
 				if(a.contains("FREE"))
@@ -150,7 +155,7 @@ public class CPIBuy extends ArgumentModule
 					Material mat = Material.AIR;
 					try
 					{
-						mat = Material.valueOf(split[1]);
+						mat = Material.valueOf(split[2]);
 						amount = Integer.parseInt(split[1]);
 						needed = amount;
 					} catch(Exception e)
@@ -163,6 +168,10 @@ public class CPIBuy extends ArgumentModule
 					}
 					for(ItemStack is : player.getInventory().getStorageContents())
 					{
+						if(is == null)
+						{
+							continue;
+						}
 						if(mat != is.getType())
 						{
 							continue;
@@ -178,7 +187,7 @@ public class CPIBuy extends ArgumentModule
 						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoEnoughMaterials")
 								.replace("%actual%", String.valueOf(needed-amount))
 								.replace("%needed%", String.valueOf(needed))
-								.replace("%mat%", mat.toString())));
+								.replace("%mat%", Utility.getLocalization(mat))));
 						return;
 					}
 				} else if(a.contains("EXP"))
@@ -200,147 +209,159 @@ public class CPIBuy extends ArgumentModule
 					if(texp < amount)
 					{
 						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoEnoughExp")
-								.replace("%actual%", String.valueOf(texp-amount))
-								.replace("%needed%", String.valueOf(texp))));
+								.replace("%actual%", String.valueOf(texp))
+								.replace("%needed%", String.valueOf(amount))));
 						return;
 					}
 				}
 			}
-			if(!isFree)
+		}		
+		if(!isFree)
+		{
+			for(String a : cpi.getCosts(cpi.getMaxbuyedRowAmount()+1))
 			{
-				for(String a : cpi.getCosts(cpi.getMaxbuyedRowAmount()+1))
+				if(a.contains("MONEY"))
 				{
-					if(a.contains("MONEY"))
+					String[] split = a.split(";");
+					if(split.length != 3 || plugin.getEconomy() == null)
 					{
-						String[] split = a.split(";");
-						if(split.length != 3 || plugin.getEconomy() == null)
-						{
-							continue;
-						}
-						EconomyCurrency ec = null;
-						if(split[2].equalsIgnoreCase("default"))
-						{
-							ec = plugin.getEconomy().getDefaultCurrency(CurrencyType.DIGITAL);
-						} else
-						{
-							ec = plugin.getEconomy().getCurrency(split[2]);
-						}
-						if(ec == null)
-						{
-							continue;
-						}
-						double d = Double.parseDouble(split[1]);
-						Account ac = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
-						Account v = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.VOID);
-						if(ac == null)
-						{
-							player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
-									.replace("%format%", plugin.getEconomy().format(d, ec))));
-							return;
-						}
-						EconomyAction ea = null;
-						if(v != null)
-						{
-							ea = plugin.getEconomy().transaction(ac, v, d,
-									OrdererType.PLAYER, player.getUniqueId().toString(),
-									plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
-									plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment"));
-						} else
-						{
-							ea = plugin.getEconomy().withdraw(ac, d,
-									OrdererType.PLAYER, player.getUniqueId().toString(),
-									plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
-									plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment"));
-						}
-						if(!ea.isSuccess())
-						{
-							player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
-									.replace("%format%", plugin.getEconomy().format(d, ec))));
-							return;
-						}
-					} else if(a.contains("MATERIAL"))
-					{
-						String[] split = a.split(";");
-						if(split.length != 3)
-						{
-							continue;
-						}
-						int amount = 0;
-						Material mat = Material.AIR;
-						try
-						{
-							mat = Material.valueOf(split[1]);
-							amount = Integer.parseInt(split[1]);
-						} catch(Exception e)
-						{
-							 continue;
-						}
-						if(amount < 0)
-						{
-							continue;
-						}
-						for(ItemStack is : player.getInventory().getStorageContents())
-						{
-							if(amount <= 0)
-							{
-								break;
-							}
-							if(mat != is.getType())
-							{
-								continue;
-							}
-							if(is.getItemMeta().hasDisplayName() || is.getItemMeta().hasLore())
-							{
-								continue;
-							}
-							if(is.getAmount() < amount)
-							{
-								is.setAmount(0);
-								amount = amount - is.getAmount();
-							} else if(is.getAmount() == amount)
-							{
-								is.setAmount(0);
-								amount = 0;
-							} else if(is.getAmount() > amount)
-							{
-								is.setAmount(is.getAmount()-amount);
-								amount = 0;
-							}
-						}
-					} else if(a.contains("EXP"))
-					{
-						String[] split = a.split(";");
-						if(split.length != 2)
-						{
-							continue;
-						}
-						int amount = 0;
-						try
-						{
-							amount = Integer.parseInt(split[1]);
-						} catch(Exception e)
-						{
-							 continue;
-						}
-						int texp = getTotalExperience(player.getLevel(), player.getExp())-amount;
-						setTotalExperience(player, texp);
+						continue;
 					}
+					EconomyCurrency ec = null;
+					if(split[2].equalsIgnoreCase("default"))
+					{
+						ec = plugin.getEconomy().getDefaultCurrency(CurrencyType.DIGITAL);
+					} else
+					{
+						ec = plugin.getEconomy().getCurrency(split[2]);
+					}
+					if(ec == null)
+					{
+						continue;
+					}
+					double d = Double.parseDouble(split[1]);
+					Account ac = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
+					Account v = plugin.getEconomy().getDefaultAccount(player.getUniqueId(), AccountCategory.VOID);
+					if(ac == null)
+					{
+						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
+								.replace("%format%", plugin.getEconomy().format(d, ec))));
+						return;
+					}
+					EconomyAction ea = null;
+					if(v != null)
+					{
+						ea = plugin.getEconomy().transaction(ac, v, d,
+								OrdererType.PLAYER, player.getUniqueId().toString(),
+								plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
+								plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment")
+								.replace("%format%", plugin.getEconomy().format(d, ec))
+								.replace("%cpi%", cpi.getUniqueName())
+								.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
+								);
+					} else
+					{
+						ea = plugin.getEconomy().withdraw(ac, d,
+								OrdererType.PLAYER, player.getUniqueId().toString(),
+								plugin.getYamlHandler().getLang().getString("CPI.ActionLogCategory"),
+								plugin.getYamlHandler().getLang().getString("CPI.ActionLogComment")
+								.replace("%format%", plugin.getEconomy().format(d, ec))
+								.replace("%cpi%", cpi.getUniqueName())
+								.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
+								);
+					}
+					if(!ea.isSuccess())
+					{
+						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouHaveNoAccountToWithdrawTheCost")
+								.replace("%format%", plugin.getEconomy().format(d, ec))));
+						return;
+					}
+				} else if(a.contains("MATERIAL"))
+				{
+					String[] split = a.split(";");
+					if(split.length != 3)
+					{
+						continue;
+					}
+					int amount = 0;
+					Material mat = Material.AIR;
+					try
+					{
+						mat = Material.valueOf(split[2]);
+						amount = Integer.parseInt(split[1]);
+					} catch(Exception e)
+					{
+						 continue;
+					}
+					if(amount < 0)
+					{
+						continue;
+					}
+					for(ItemStack is : player.getInventory().getStorageContents())
+					{
+						if(amount <= 0)
+						{
+							break;
+						}
+						if(is == null)
+						{
+							continue;
+						}
+						if(mat != is.getType())
+						{
+							continue;
+						}
+						if(is.getItemMeta().hasDisplayName() || is.getItemMeta().hasLore())
+						{
+							continue;
+						}
+						if(is.getAmount() < amount)
+						{
+							is.setAmount(0);
+							amount = amount - is.getAmount();
+						} else if(is.getAmount() == amount)
+						{
+							is.setAmount(0);
+							amount = 0;
+						} else if(is.getAmount() > amount)
+						{
+							is.setAmount(is.getAmount()-amount);
+							amount = 0;
+						}
+					}
+				} else if(a.contains("EXP"))
+				{
+					String[] split = a.split(";");
+					if(split.length != 2)
+					{
+						continue;
+					}
+					int amount = 0;
+					try
+					{
+						amount = Integer.parseInt(split[1]);
+					} catch(Exception e)
+					{
+						 continue;
+					}
+					int texp = getTotalExperience(player.getLevel(), player.getExp())-amount;
+					setTotalExperience(player, texp);
 				}
-				String cost = CPIInfo.getCost(plugin, cpi, cpi.getMaxbuyedRowAmount()+1);
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouPaidForTheNextRow")
-						.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
-						.replace("%cpi%", cpi.getUniqueName())
-						.replace("%cost%", cost)));
-			} else
-			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouGetTheNextRow")
-						.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
-						.replace("%cpi%", cpi.getUniqueName())));
 			}
-			cpi.setMaxbuyedRowAmount(cpi.getMaxbuyedRowAmount()+1);
-			plugin.getMysqlHandler().updateData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY, cpi, 
-					"`cpi_name` = ? AND `owner_uuid` = ?", cpiUniquename, other.toString());
+			String cost = CPIInfo.getCost(plugin, cpi, cpi.getMaxbuyedRowAmount()+1);
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouPaidForTheNextRow")
+					.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
+					.replace("%cpi%", cpi.getUniqueName())
+					.replace("%cost%", cost)));
+		} else
+		{
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CPI.YouGetTheNextRow")
+					.replace("%row%", String.valueOf(cpi.getMaxbuyedRowAmount()+1))
+					.replace("%cpi%", cpi.getUniqueName())));
 		}
+		cpi.setMaxbuyedRowAmount(cpi.getMaxbuyedRowAmount()+1);
+		plugin.getMysqlHandler().updateData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY, cpi, 
+				"`cpi_name` = ? AND `owner_uuid` = ?", cpiUniquename, other.toString());
 	}
 	
 	//Thank you, https://www.spigotmc.org/threads/how-to-calculate-exp-and-levels.510074/#post-4184467

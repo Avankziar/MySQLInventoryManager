@@ -17,6 +17,8 @@ public class Bypass
 		CUSTOMPLAYERINVENTORY_BUY,
 		CUSTOMPLAYERINVENTORY_COST,
 		ONLINE_GROUP,
+		SHULKER_OPEN_IN_INVENTORY,
+		SHULKER_OPEN_AIRCLICK,
 	}
 	private static LinkedHashMap<Bypass.Permission, String> mapPerm = new LinkedHashMap<>();
 	

@@ -283,7 +283,7 @@ public class YamlManager
 		{
 			commandsKeys.put("Bypass."+ept.toString().replace("_", ".")
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"aep."+ept.toString().toLowerCase().replace("_", ".")}));
+					"mim."+ept.toString().toLowerCase().replace("_", ".")}));
 		}
 	}
 	

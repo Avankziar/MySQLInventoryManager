@@ -134,6 +134,6 @@ public class CustomPlayerInventoryCmdExecutor implements CommandExecutor
 				return;
 			}
 		}
-		new CustomPlayerInventoryHandler(cpi).openInventory(player);
+		new CustomPlayerInventoryHandler(cpi).openInventory(player, player.getName());
 	}
 }

@@ -12,6 +12,7 @@ import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
@@ -127,10 +128,10 @@ public class CPIInfo extends ArgumentModule
 				}
 				if(i == 0)
 				{
-					s += plugin.getEconomy().format(Double.parseDouble(split[1]), ec);
+					s += plugin.getEconomy().format(Double.parseDouble(split[1]), ec)+"&f";
 				} else 
 				{
-					s += ", "+plugin.getEconomy().format(Double.parseDouble(split[1]), ec);
+					s += ", "+plugin.getEconomy().format(Double.parseDouble(split[1]), ec)+"&f";
 				}
 				i++;
 			} else if(a.contains("MATERIAL"))
@@ -144,7 +145,7 @@ public class CPIInfo extends ArgumentModule
 				Material mat = Material.AIR;
 				try
 				{
-					mat = Material.valueOf(split[1]);
+					mat = Material.valueOf(split[2]);
 					amount = Integer.parseInt(split[1]);
 				} catch(Exception e)
 				{
@@ -156,10 +157,10 @@ public class CPIInfo extends ArgumentModule
 				}
 				if(i == 0)
 				{
-					s += mat.toString()+" x "+amount;
+					s += "&b"+amount+"x "+Utility.getLocalization(mat)+"&f";
 				} else
 				{
-					s += ", "+mat.toString()+" x "+amount;
+					s += ", &b"+amount+"x "+Utility.getLocalization(mat)+"&f";
 				}
 				i++;
 			} else if(a.contains("EXP"))
@@ -179,10 +180,10 @@ public class CPIInfo extends ArgumentModule
 				}
 				if(i == 0)
 				{
-					s += amount+" Exp";
+					s += "&2"+amount+" Exp&f";
 				} else
 				{
-					s += ", "+amount+" Exp";
+					s += ", &2"+amount+" Exp&f";
 				}
 				i++;
 			}

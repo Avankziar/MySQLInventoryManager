@@ -3,6 +3,10 @@ package main.java.me.avankziar.mim.spigot.assistance;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
@@ -52,4 +56,13 @@ public class Utility
 	    	return false;
 	    }
 	}
+	
+	public static String getLocalization(Material mat)
+	{
+		ItemStack is = new ItemStack(mat);
+		ItemMeta im = is.getItemMeta();
+		return im.hasLocalizedName() ? im.getLocalizedName() : mat.toString();
+	}
+	
+	//TODO IFH anbindung für eine Sprachen
 }

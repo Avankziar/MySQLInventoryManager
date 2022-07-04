@@ -4,6 +4,7 @@ Build 1-0-0 -------------------------------------------------------------
 - Shulker in normalen mit perm öffnen können.
 - Schilder per Item und Event "Bearbeitbar machen" HumanEntity.openSign(Sign, boolean)
 - Prüfen ob beim externen öffnen eines anderen Spielerinventars, dies auch korrekt geupdatet wird.
+- Boolean und Bypass perm hinzufügen um im Creative Items zu droppen oder in Kisten zu legen.
 + /mim | Infoseite für alle Befehle.
 + /mim saveandkick [servername] | Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.
 + /mim save [servername] | Speichert den vollen Spielstand aller Spieler. Optional nur für einen Server.

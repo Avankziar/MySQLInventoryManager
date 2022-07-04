@@ -72,9 +72,12 @@ public class OnlineCmdExecutor implements CommandExecutor
 			ArrayList<String> list = entry.getValue();
 			for(String uuid : list)
 			{
-				if(MIM.getPlugin().getVanish().isInvisibleOffline(UUID.fromString(uuid)))
+				if(MIM.getPlugin().getVanish() != null)
 				{
-					continue;
+					if(MIM.getPlugin().getVanish().isInvisibleOffline(UUID.fromString(uuid)))
+					{
+						continue;
+					}
 				}
 				online++;
 				ArrayList<String> uuids = null;

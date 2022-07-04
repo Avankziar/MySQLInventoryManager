@@ -108,7 +108,6 @@ public class WhoIsCmdExecutor implements CommandExecutor
 		TextComponent ss = null;
 		for(String s : MIM.getPlugin().getYamlHandler().getLang().getStringList("WhoIs.List"))
 		{
-			player.sendMessage(s);//TODO
 			if(s.contains("%player%"))
 			{
 				ss = ChatApi.clickEvent(s.replace("%player%", targetname), Action.RUN_COMMAND, "/bminfo "+targetname);
@@ -275,7 +274,7 @@ public class WhoIsCmdExecutor implements CommandExecutor
 							}
 							int i = pe.getAmplifier()+1;
 							effect += pe.getType().getName()+"("+i+")["
-							+TimeHandler.getRepeatingTime(Long.parseLong(String.valueOf(pe.getDuration()))*50, "HH:mm:ss")+"], ";
+							+TimeHandler.getRepeatingTime(Long.parseLong(String.valueOf(pe.getDuration()*50)), "HH:mm:ss")+"], ";
 						}
 						ss = ChatApi.tctl(s.replace("%effect%", effect != null ? effect : "/"));
 					}

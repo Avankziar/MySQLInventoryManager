@@ -47,12 +47,9 @@ public class InventoryCloseListener extends BaseListener
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if(inExternInventory(event.getPlayer().getUniqueId()))
+		if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
 		{
-			if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
-			{
-				return;
-			}
+			return;
 		}		
 		if(EnchantingTableCmdExecutor.inEnchantingTable.contains(event.getPlayer().getUniqueId()))
 		{
@@ -69,6 +66,11 @@ public class InventoryCloseListener extends BaseListener
 	public static boolean inExternInventory(UUID executorPlayer)
 	{
 		return executorToOwnerInventory.containsKey(executorPlayer);
+	}
+	
+	public static boolean inShulkerInventory(UUID executorPlayer)
+	{
+		return executorToShulkerSlot.containsKey(executorPlayer);
 	}
 	
 	public static Inventory getExternInventory(UUID targetPlayer)
@@ -119,6 +121,10 @@ public class InventoryCloseListener extends BaseListener
 			executorToShulkerSlot.remove(executorPlayer);
 			executorToShulkerItem.remove(executorPlayer);
 			return true;
+		}
+		if(!inExternInventory(executor.getUniqueId()))
+		{
+			return false;
 		}
 		final UUID targetPlayer = executorToOwnerInventory.get(executorPlayer);
 		final Inventory inv = ownerToInventory.get(targetPlayer); 
@@ -224,16 +230,15 @@ public class InventoryCloseListener extends BaseListener
 				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 				{
 					String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
-						+ "` SET `player_name` = ?,"
+						+ "` SET "
 						+ " `enderchest_content` = ?"
 						+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 					PreparedStatement ps = conn.prepareStatement(sql);
-			        ps.setString(1, subType);
-			        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
+			        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
 			        
-			        ps.setString(3, synchroKey);
-			        ps.setString(4, targetMode.toString());
-			        ps.setString(5, targetPlayer.toString());		
+			        ps.setString(2, synchroKey);
+			        ps.setString(3, targetMode.toString());
+			        ps.setString(4, targetPlayer.toString());		
 					int u = ps.executeUpdate();
 					MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 				} catch (SQLException e)
@@ -246,10 +251,25 @@ public class InventoryCloseListener extends BaseListener
 						"`cpi_name` = ? AND `owner_uuid` = ?", subType, targetPlayer.toString());
 				cpi.setInventory(inv.getContents());
 				MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.CUSTOMPLAYERINVENTORY, cpi, 
-						"`cpi_name` = ? AND `owner_name`", cpi.getUniqueName(), cpi.getOwnerUUID().toString());
+						"`cpi_name` = ? AND `owner_uuid` = ?", cpi.getUniqueName(), cpi.getOwnerUUID().toString());
 				break;
 			}
 		}
 		return true;
+	}
+	
+	public static void openShulkerInInventory(Player player, UUID targetPlayer, Inventory preInventory, 
+			int slot, ItemStack shulker, ShulkerBox shulkerbox, String playername, String title)
+	{
+		InventoryCloseListener.executorToShulkerSlot.put(player.getUniqueId(), slot);
+		InventoryCloseListener.executorToShulkerItem.put(player.getUniqueId(), shulker);
+		if(targetPlayer != null && preInventory != null)
+		{
+			executorToOwnerInventory.put(player.getUniqueId(), targetPlayer);
+			ownerToInventory.put(targetPlayer, preInventory);
+		}
+		Inventory inv = Bukkit.createInventory(null, 27, title != null ? title.replace("%player%", playername) : "Shulkerbox");
+        inv.setContents(shulkerbox.getInventory().getContents());
+        player.openInventory(inv);
 	}
 }
