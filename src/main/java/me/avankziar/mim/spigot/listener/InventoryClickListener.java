@@ -3,8 +3,8 @@ package main.java.me.avankziar.mim.spigot.listener;
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,12 +15,13 @@ import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class InventoryClickListener implements Listener
 {	
-	@EventHandler (priority = EventPriority.HIGH)
+	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event)
 	{
 		Player player = (Player) event.getWhoClicked();
 		if(!player.hasPermission(Bypass.get(Bypass.Permission.SHULKER_OPEN_IN_INVENTORY))
 				|| event.getClick() != ClickType.RIGHT
+				|| InventoryCloseListener.inExternInventory(player.getUniqueId())
 				|| InventoryCloseListener.executorToShulkerSlot.containsKey(player.getUniqueId())
 				|| event.getClickedInventory() == null 
 				|| event.getCurrentItem() == null
@@ -28,6 +29,8 @@ public class InventoryClickListener implements Listener
 		{
 			return;
 		}
+		event.setCancelled(true);
+        event.setResult(Result.DENY);
 		int slot = event.getSlot();
 		final ItemStack is = event.getCurrentItem();
 		if(!(is.getItemMeta() instanceof BlockStateMeta))
@@ -38,21 +41,12 @@ public class InventoryClickListener implements Listener
         if(!(im.getBlockState() instanceof ShulkerBox))
         {
         	return;
-        }
+        }        
         ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-		if(InventoryCloseListener.inExternInventory(player.getUniqueId()))
-		{
-			InventoryCloseListener.openShulkerInInventory(player,
-	        		null, null,
-	        		slot, is, shulker, player.getName(),
-	        		im.hasDisplayName() ? im.getDisplayName() : null);			
-		} else if(!InventoryCloseListener.inExternInventory(player.getUniqueId()))
-		{
-	        InventoryCloseListener.openShulkerInInventory(player,
-	        		player.getUniqueId(), player.getInventory(),
-	        		slot, is, shulker, player.getName(),
-	        		im.hasDisplayName() ? im.getDisplayName() : null);
-		}
+        InventoryCloseListener.openShulkerInInventory(player,
+        		player.getUniqueId(), player.getInventory(),
+        		slot, is, shulker, player.getName(),
+        		im.hasDisplayName() ? im.getDisplayName() : null);
 	}
 	
 	public static boolean isShulker(Material mat)

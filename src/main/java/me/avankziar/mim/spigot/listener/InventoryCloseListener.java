@@ -16,13 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
+import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
@@ -47,19 +48,25 @@ public class InventoryCloseListener extends BaseListener
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
+		Player player = (Player) event.getPlayer();
+		if(event.getInventory().getType() == InventoryType.ENDER_CHEST)
 		{
+			//Wird direkt hier gemacht, weil der doSync das irgendwie nicht hinbekommt.
+			PlayerDataHandler.save(SyncType.INV_ENDERCHEST, player);
 			return;
-		}		
+		}
 		if(EnchantingTableCmdExecutor.inEnchantingTable.contains(event.getPlayer().getUniqueId()))
 		{
 			EnchantingTableCmdExecutor.inEnchantingTable.remove(event.getPlayer().getUniqueId());
+		}
+		if(removeToExternInventory((Player) event.getPlayer(), event.getInventory().getContents()))
+		{
+			return;
 		}
 		if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), event.getPlayer().getWorld()))
 		{
 			return;
 		}
-		Player player = (Player) event.getPlayer();
 		doSync(player, SyncType.INVENTORY, RunType.SAVE);
 	}
 	
@@ -95,33 +102,6 @@ public class InventoryCloseListener extends BaseListener
 	public static boolean removeToExternInventory(Player executor, ItemStack[] shulkerInventoryOnly)
 	{
 		UUID executorPlayer = executor.getUniqueId();
-		//Player is in a ShulkerSubInventory
-		if(executorToShulkerSlot.containsKey(executorPlayer))
-		{
-			final int slot = executorToShulkerSlot.get(executorPlayer);
-			final ItemStack is = executorToShulkerItem.get(executorPlayer);
-			if(!(is.getItemMeta() instanceof BlockStateMeta))
-			{
-				return false;
-			}
-			BlockStateMeta im = (BlockStateMeta) is.getItemMeta();
-	        if(!(im.getBlockState() instanceof ShulkerBox))
-	        {
-	        	return false;
-	        }
-	        ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-	        shulker.getInventory().clear();
-	        shulker.getInventory().addItem(shulkerInventoryOnly);
-	        im.setBlockState(shulker);
-	        is.setItemMeta(im);
-	        final UUID targetPlayer = executorToOwnerInventory.get(executorPlayer);
-			final Inventory inv = ownerToInventory.get(targetPlayer);
-			inv.setItem(slot, is);
-			executor.openInventory(inv);
-			executorToShulkerSlot.remove(executorPlayer);
-			executorToShulkerItem.remove(executorPlayer);
-			return true;
-		}
 		if(!inExternInventory(executor.getUniqueId()))
 		{
 			return false;
@@ -227,6 +207,7 @@ public class InventoryCloseListener extends BaseListener
 					break;
 				}
 			case "EC": //Enderchest
+				target.getEnderChest().setContents(inv.getContents());
 				try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 				{
 					String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
@@ -261,8 +242,8 @@ public class InventoryCloseListener extends BaseListener
 	public static void openShulkerInInventory(Player player, UUID targetPlayer, Inventory preInventory, 
 			int slot, ItemStack shulker, ShulkerBox shulkerbox, String playername, String title)
 	{
-		InventoryCloseListener.executorToShulkerSlot.put(player.getUniqueId(), slot);
-		InventoryCloseListener.executorToShulkerItem.put(player.getUniqueId(), shulker);
+		executorToShulkerSlot.put(player.getUniqueId(), slot);
+		executorToShulkerItem.put(player.getUniqueId(), shulker);
 		if(targetPlayer != null && preInventory != null)
 		{
 			executorToOwnerInventory.put(player.getUniqueId(), targetPlayer);

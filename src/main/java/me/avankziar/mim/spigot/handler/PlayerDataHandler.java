@@ -338,20 +338,16 @@ public class PlayerDataHandler
 			}
 			return;
 		case INVENTORY:
-			pd.setInventoryStorageContents(player.getInventory().getStorageContents());
-			pd.setArmorContents(player.getInventory().getArmorContents());
-			pd.setOffHand(player.getInventory().getItemInOffHand());
-			pd.setEnderchestContents(player.getEnderChest().getContents());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pd.getInventoryStorageContents()));
-		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pd.getArmorContents()));
-		        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64(pd.getOffHand()));
-		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(pd.getEnderchestContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
+		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
+		        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64(player.getInventory().getItemInOffHand()));
+		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(5, pd.getSynchroKey());
 		        ps.setString(6, pd.getGameMode().toString());
@@ -364,14 +360,13 @@ public class PlayerDataHandler
 			}
 			return;
 		case INV_ARMOR:
-			pd.setArmorContents(player.getInventory().getArmorContents());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `armor_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pd.getArmorContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, pd.getGameMode().toString());
@@ -384,14 +379,13 @@ public class PlayerDataHandler
 			}
 			return;
 		case INV_ENDERCHEST:
-			pd.setEnderchestContents(player.getEnderChest().getContents());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `enderchest_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pd.getEnderchestContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, pd.getGameMode().toString());
@@ -404,14 +398,13 @@ public class PlayerDataHandler
 			}
 			return;
 		case INV_OFFHAND:
-			pd.setOffHand(player.getInventory().getItemInOffHand());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `off_hand` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64(pd.getOffHand()));
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64(player.getInventory().getItemInOffHand()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, pd.getGameMode().toString());
@@ -424,14 +417,13 @@ public class PlayerDataHandler
 			}
 			return;
 		case INV_ONLY:
-			pd.setInventoryStorageContents(player.getInventory().getStorageContents());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `inventory_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pd.getInventoryStorageContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, pd.getGameMode().toString());
@@ -444,14 +436,13 @@ public class PlayerDataHandler
 			}
 			return;
 		case EFFECT:
-			pd.setActiveEffects(pe);
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `potion_effects` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pd.getActiveEffects().toArray(
+		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pe.toArray(
 		        		new PotionEffect[pd.getActiveEffects().size()])));
 		        
 		        ps.setString(2, pd.getSynchroKey());
@@ -465,7 +456,6 @@ public class PlayerDataHandler
 			}
 			return;
 		case PERSITENTDATA:
-			pd.setPersistentData(getPersitentData(player));
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
@@ -473,7 +463,7 @@ public class PlayerDataHandler
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        StringBuilder pds = new StringBuilder();
-		        for(PersistentData per : pd.getPersistentData())
+		        for(PersistentData per : getPersitentData(player))
 		        {
 		        	pds.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 		        }
