@@ -11,12 +11,26 @@ import main.java.me.avankziar.mim.spigot.MIM;
 
 public class MysqlSetup 
 {
-	private MIM plugin;
 	private Connection conn = null;
+	private String host;
+	private int port;
+	private String database;
+	private String user;
+	private String password;
+	private boolean isAutoConnect;
+	private boolean isVerifyServerCertificate;
+	private boolean isSSLEnabled;
 	
 	public MysqlSetup(MIM plugin)
 	{
-		this.plugin = plugin;
+		host = plugin.getYamlHandler().getConfig().getString("Mysql.Host");
+		port = plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306);
+		database = plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName");
+		user = plugin.getYamlHandler().getConfig().getString("Mysql.User");
+		password = plugin.getYamlHandler().getConfig().getString("Mysql.Password");
+		isAutoConnect = plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true);
+		isVerifyServerCertificate = plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false);
+		isSSLEnabled = plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false);
 		loadMysqlSetup();
 	}
 	
@@ -66,20 +80,13 @@ public class MysqlSetup
 	    		Class.forName("com.mysql.jdbc.Driver");
 	    	}
 	        Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
-            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
-            properties.setProperty("autoReconnect", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
-            properties.setProperty("verifyServerCertificate", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
-            properties.setProperty("useSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            properties.setProperty("requireSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
-            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
-            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
+            properties.setProperty("user", user);
+            properties.setProperty("password", password);
+            properties.setProperty("autoReconnect", String.valueOf(isAutoConnect));
+            properties.setProperty("verifyServerCertificate", String.valueOf(isVerifyServerCertificate));
+            properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
+            properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             MIM.log.info("Database connection successful!");
             return true;
         } catch (Exception e) 
@@ -292,30 +299,16 @@ public class MysqlSetup
 	    	{
 	    		// Load old Drivers for spigot
 	    		Class.forName("com.mysql.jdbc.Driver");
-	    	}            
-            //long start = 0;
-			//long end = 0;
-			
-		    //start = System.currentTimeMillis();
-		    //MIM.log.info("Attempting to establish a connection to the MySQL server!");
+	    	}
             Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
-            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
-            properties.setProperty("autoReconnect", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
-            properties.setProperty("verifyServerCertificate", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
-            properties.setProperty("useSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            properties.setProperty("requireSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("user", user);
+            properties.setProperty("password", password);
+            properties.setProperty("autoReconnect", String.valueOf(isAutoConnect));
+            properties.setProperty("verifyServerCertificate", String.valueOf(isVerifyServerCertificate));
+            properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
+            properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
             //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
-            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
-            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
-		    //end = System.currentTimeMillis();
-		    //MIM.log.info("Connection to MySQL server established!");
-		    //MIM.log.info("Connection took " + ((end - start)) + "ms!");
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             return true;
 		} catch (Exception e) 
 		{

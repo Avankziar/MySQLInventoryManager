@@ -13,9 +13,7 @@ import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
-import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
-import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class InventorySeeCmdExecutor implements CommandExecutor
@@ -66,20 +64,8 @@ public class InventorySeeCmdExecutor implements CommandExecutor
 			Inventory inv = other != null ? other.getInventory() : null;
 			if(inv == null)
 			{
-				PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
-						"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-						otheruuid.toString(), synchroKey, player.getGameMode().toString());
-				if(pd == null)
-				{
-					sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
-					return false;
-				}
-				inv = Bukkit.createInventory(player, 9*4, othername+"`s Inventory");
-				inv.setContents(pd.getInventoryStorageContents());
-			} else
-			{
-				inv = Bukkit.createInventory(player, 9*4, othername+"`s Inventory");
-				inv.setContents(other.getInventory().getStorageContents());
+				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotOnline")));
+				return false;
 			}
 			InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
 					"INV", "INV", player.getGameMode(), synchroKey);

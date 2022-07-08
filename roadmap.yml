@@ -1,3 +1,22 @@
+java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
+	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	
+java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
+	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
+
+java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
+	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
+	
+- MIM invsee, sync die Inventare nicht mit mehr als zwei spieler, crossserver, Somit nur für den gleichen Server limit einbauen.
 Build 1-0-0 -------------------------------------------------------------
 - Shulkers in CustomPlayerInventory mit perm öffnen können.
 - Shulker in Enderchest mit perm öffnen können.

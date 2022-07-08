@@ -75,7 +75,6 @@ import main.java.me.avankziar.mim.spigot.listener.BlockSignChangeListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityPickupItemListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
-import main.java.me.avankziar.mim.spigot.listener.InventoryClickListener;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
 import main.java.me.avankziar.mim.spigot.listener.OnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
@@ -84,7 +83,6 @@ import main.java.me.avankziar.mim.spigot.listener.PlayerDropItemListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerExpChangeListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerGameModeChangeListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerHarvestBlockListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerInteractListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerItemBreakListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerItemConsumeListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerItemDamageListener;
@@ -529,14 +527,14 @@ public class MIM extends JavaPlugin
 		pm.registerEvents(new EntityResurrectListener(plugin), plugin);
 		pm.registerEvents(new EntityTameListener(plugin), plugin);
 		pm.registerEvents(new InventoryCloseListener(plugin), plugin);
-		pm.registerEvents(new InventoryClickListener(), plugin);
+		//pm.registerEvents(new InventoryClickListener(), plugin); //Wird hinzugefügt, wenn es besser für Shulker läuft & mehr zeit habe.
 		pm.registerEvents(new PlayerChangedWorldListener(plugin), plugin);
 		pm.registerEvents(new PlayerDeathListener(plugin), plugin);
 		pm.registerEvents(new PlayerDropItemListener(plugin), plugin);
 		pm.registerEvents(new PlayerExpChangeListener(plugin), plugin);
 		pm.registerEvents(new PlayerGameModeChangeListener(plugin), plugin);
 		pm.registerEvents(new PlayerHarvestBlockListener(plugin), plugin);
-		pm.registerEvents(new PlayerInteractListener(), plugin);
+		//pm.registerEvents(new PlayerInteractListener(), plugin); //Wird hinzugefügt, wenn es besser für Shulker läuft & mehr zeit habe.
 		pm.registerEvents(new PlayerItemBreakListener(plugin), plugin);
 		pm.registerEvents(new PlayerItemConsumeListener(plugin), plugin);
 		pm.registerEvents(new PlayerItemDamageListener(plugin), plugin);
