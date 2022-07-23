@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import main.java.me.avankziar.mim.bungee.listener.CommandToBungeeListener;
+import main.java.me.avankziar.mim.bungee.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.bungee.listener.OnlineListener;
 import main.java.me.avankziar.mim.bungee.listener.PlayerParameterListener;
 import main.java.me.avankziar.mim.bungee.listener.WhoIsListener;
@@ -74,6 +75,7 @@ public class MIM extends Plugin
 		pm.registerListener(plugin, new PlayerParameterListener(plugin));
 		pm.registerListener(plugin, new WhoIsListener(plugin));
 		pm.registerListener(plugin, new OnlineListener(plugin));
+		pm.registerListener(plugin, new IsOnlineListener(plugin));
 		getProxy().registerChannel(StaticValues.CMDTB_TOBUNGEE);
 		getProxy().registerChannel(StaticValues.PP_TOBUNGEE);
 		getProxy().registerChannel(StaticValues.PP_TOSPIGOT);

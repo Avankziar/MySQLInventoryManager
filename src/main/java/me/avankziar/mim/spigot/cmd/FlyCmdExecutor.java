@@ -47,10 +47,12 @@ public class FlyCmdExecutor implements CommandExecutor
 		{
 			if(player.isFlying())
 			{
+				player.setAllowFlight(false);
 				player.setFlying(false);
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouFly")));
 			} else
 			{
+				player.setAllowFlight(true);
 				player.setFlying(true);
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouDontFly")));
 			}
@@ -71,11 +73,13 @@ public class FlyCmdExecutor implements CommandExecutor
 			Player other = Bukkit.getPlayer(otheruuid);
 			if(other.isFlying())
 			{
+				other.setAllowFlight(false);
 				other.setFlying(false);
 				other.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouFly")));
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.OtherFly").replace("%player%", othername)));
 			} else
 			{
+				other.setAllowFlight(true);
 				other.setFlying(true);
 				other.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouDontFly")));
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.OtherDontFly").replace("%player%", othername)));

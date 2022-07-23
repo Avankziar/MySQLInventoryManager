@@ -306,7 +306,7 @@ public class MIM extends JavaPlugin
 		getCommand(fly.getName()).setExecutor(new FlyCmdExecutor(plugin, fly));
 		getCommand(fly.getName()).setTabCompleter(new TabCompletion(plugin));
 		
-		CommandConstructor attributes = new CommandConstructor(CommandExecuteType.ATTRIBUTES, "attribute", false);
+		CommandConstructor attributes = new CommandConstructor(CommandExecuteType.ATTRIBUTES, "attributes", false);
 		registerCommand(attributes.getPath(), attributes.getName());
 		getCommand(attributes.getName()).setExecutor(new AttributeCmdExecutor(plugin, attributes));
 		getCommand(attributes.getName()).setTabCompleter(new TabCompletionOne(plugin));

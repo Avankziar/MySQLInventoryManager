@@ -58,7 +58,9 @@ public class AttributeCmdExecutor implements CommandExecutor
 			{
 			default:
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
-						.replace("%attribute%", attribute)));
+						.replace("%attribute%", attribute)
+						.replace("%value%", "flyspeed")
+						.replace("%example%", "-9.0 -> 0.0 -> 9.0")));
 				return false;
 			case "foodlevel":
 				if(!MatchApi.isInteger(value))
@@ -84,7 +86,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				float f = Float.parseFloat(value);
 				pd.setSaturation(f);
 				break;
-			case "saturatedRegenRate":
+			case "saturatedregenrate":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -96,7 +98,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				i = Integer.parseInt(value);
 				pd.setSaturatedRegenRate(i);
 				break;
-			case "unsaturatedRegenRate":
+			case "unsaturatedregenrate":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -108,7 +110,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				i = Integer.parseInt(value);
 				pd.setUnsaturatedRegenRate(i);
 				break;
-			case "starvationRate":
+			case "starvationrate":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -298,7 +300,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				}
 				pd.setHealth(d);
 				break;
-			case "absorptionAmount":
+			case "absorptionamount":
 				if(!MatchApi.isDouble(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -310,7 +312,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				d = Double.parseDouble(value);
 				pd.setAbsorptionAmount(d);
 				break;
-			case "expTowardsNextLevel":
+			case "exptowardsnextlevel":
 				if(!MatchApi.isFloat(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -322,7 +324,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				f = Float.parseFloat(value);
 				pd.setExpTowardsNextLevel(f);
 				break;
-			case "expLevel":
+			case "explevel":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -334,7 +336,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				i = Integer.parseInt(value);
 				pd.setExpLevel(i);
 				break;
-			case "totalExperience":
+			case "totalexperience":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -346,7 +348,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				i = Integer.parseInt(value);
 				pd.setTotalExperience(i);
 				break;
-			case "walkSpeed":
+			case "walkspeed":
 				if(!MatchApi.isFloat(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -358,7 +360,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				f = Float.parseFloat(value);
 				pd.setWalkSpeed(f);
 				break;
-			case "flySpeed":
+			case "flyspeed":
 				if(!MatchApi.isFloat(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
@@ -418,7 +420,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				b = Boolean.parseBoolean(value);
 				pd.setInvulnerable(b);
 				break;
-			case "entityCategory":
+			case "entitycategory":
 				EntityCategory et;
 				try
 				{
@@ -433,7 +435,7 @@ public class AttributeCmdExecutor implements CommandExecutor
 				}
 				pd.setEntityCategory(et);
 				break;
-			case "maximumAir":
+			case "maximumair":
 				if(!MatchApi.isInteger(value))
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Attribute.ValueNotExist")
