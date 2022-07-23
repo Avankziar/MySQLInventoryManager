@@ -38,14 +38,17 @@ import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmd.ArmorSeeCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.AttributeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.ClearCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.FlyCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
+import main.java.me.avankziar.mim.spigot.cmd.TabCompletionOne;
 import main.java.me.avankziar.mim.spigot.cmd.WhoIsCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.WorkbenchCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.clear.ClearSub;
@@ -76,6 +79,7 @@ import main.java.me.avankziar.mim.spigot.listener.EntityPickupItemListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
+import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.OnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerDeathListener;
@@ -296,6 +300,16 @@ public class MIM extends JavaPlugin
 		registerCommand(online.getPath(), online.getName());
 		getCommand(online.getName()).setExecutor(new OnlineCmdExecutor(plugin, online));
 		getCommand(online.getName()).setTabCompleter(new TabCompletion(plugin));
+		
+		CommandConstructor fly = new CommandConstructor(CommandExecuteType.FLY, "fly", false);
+		registerCommand(fly.getPath(), fly.getName());
+		getCommand(fly.getName()).setExecutor(new FlyCmdExecutor(plugin, fly));
+		getCommand(fly.getName()).setTabCompleter(new TabCompletion(plugin));
+		
+		CommandConstructor attributes = new CommandConstructor(CommandExecuteType.ATTRIBUTES, "attribute", false);
+		registerCommand(attributes.getPath(), attributes.getName());
+		getCommand(attributes.getName()).setExecutor(new AttributeCmdExecutor(plugin, attributes));
+		getCommand(attributes.getName()).setTabCompleter(new TabCompletionOne(plugin));
 		
 		setupCmdClear();
 		setupCmdCustomPlayerInventory();
@@ -556,6 +570,8 @@ public class MIM extends JavaPlugin
 		me.registerIncomingPluginChannel(this, StaticValues.WHOIS_TOSPIGOT, new WhoIsListener());
 		me.registerOutgoingPluginChannel(this, StaticValues.ONLINE_TOBUNGEE);
 		me.registerIncomingPluginChannel(this, StaticValues.ONLINE_TOSPIGOT, new OnlineListener());
+		me.registerOutgoingPluginChannel(this, StaticValues.ISONLINE_TOBUNGEE);
+		me.registerIncomingPluginChannel(this, StaticValues.ISONLINE_TOSPIGOT, new IsOnlineListener(plugin));
 	}
 	
 	public ConfigHandler getConfigHandler()

@@ -2,18 +2,16 @@ package main.java.me.avankziar.mim.spigot.cmd;
 
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
-import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
+import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class InventorySeeCmdExecutor implements CommandExecutor
@@ -52,7 +50,6 @@ public class InventorySeeCmdExecutor implements CommandExecutor
 				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
-			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 			String othername = args[0];
 			UUID otheruuid = Utility.convertNameToUUID(othername);
 			if(otheruuid == null)
@@ -60,18 +57,7 @@ public class InventorySeeCmdExecutor implements CommandExecutor
 				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 				return false;
 			}
-			Player other = Bukkit.getPlayer(otheruuid);
-			Inventory inv = other != null ? other.getInventory() : null;
-			if(inv == null)
-			{
-				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotOnline")));
-				return false;
-			}
-			InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
-					"INV", "INV", player.getGameMode(), synchroKey);
-			player.openInventory(inv);
-			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Openable.InventoryOther")
-					.replace("%player%", othername)));
+			IsOnlineListener.sendRequest(player, "INV", otheruuid.toString());
 			return true;
 		} else
 		{

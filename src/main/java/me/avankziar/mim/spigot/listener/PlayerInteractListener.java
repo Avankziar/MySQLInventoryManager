@@ -35,10 +35,10 @@ public class PlayerInteractListener implements Listener
 		        	return;
 		        }
 		        ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-				InventoryCloseListener.openShulkerInInventory(event.getPlayer(), event.getPlayer().getUniqueId(),
+				/*InventoryCloseListener.openShulkerInInventory(event.getPlayer(), event.getPlayer().getUniqueId(),
 						event.getPlayer().getInventory(),
 						event.getPlayer().getInventory().getHeldItemSlot(), event.getItem(),
-						shulker, event.getPlayer().getName(), im.hasDisplayName() ? im.getDisplayName() : "Shulkerbox");
+						shulker, event.getPlayer().getName(), im.hasDisplayName() ? im.getDisplayName() : "Shulkerbox");*/
 			}
 		}
 	}

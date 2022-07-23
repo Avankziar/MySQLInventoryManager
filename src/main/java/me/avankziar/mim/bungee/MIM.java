@@ -81,5 +81,7 @@ public class MIM extends Plugin
 		getProxy().registerChannel(StaticValues.WHOIS_TOSPIGOT);
 		getProxy().registerChannel(StaticValues.ONLINE_TOBUNGEE);
 		getProxy().registerChannel(StaticValues.ONLINE_TOSPIGOT);
+		getProxy().registerChannel(StaticValues.ISONLINE_TOBUNGEE);
+		getProxy().registerChannel(StaticValues.ISONLINE_TOSPIGOT);
 	}
 }

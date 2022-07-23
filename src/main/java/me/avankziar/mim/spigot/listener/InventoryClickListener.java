@@ -43,10 +43,10 @@ public class InventoryClickListener implements Listener
         	return;
         }        
         ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-        InventoryCloseListener.openShulkerInInventory(player,
+        /*InventoryCloseListener.openShulkerInInventory(player,
         		player.getUniqueId(), player.getInventory(),
         		slot, is, shulker, player.getName(),
-        		im.hasDisplayName() ? im.getDisplayName() : null);
+        		im.hasDisplayName() ? im.getDisplayName() : null);*/
 	}
 	
 	public static boolean isShulker(Material mat)

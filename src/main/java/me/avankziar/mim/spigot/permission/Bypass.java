@@ -19,6 +19,7 @@ public class Bypass
 		ONLINE_GROUP,
 		SHULKER_OPEN_IN_INVENTORY,
 		SHULKER_OPEN_AIRCLICK,
+		FLY_OTHERPLAYER,
 	}
 	private static LinkedHashMap<Bypass.Permission, String> mapPerm = new LinkedHashMap<>();
 	

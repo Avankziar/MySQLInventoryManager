@@ -4,6 +4,21 @@ import java.util.UUID;
 
 public class MatchApi
 {
+	public static boolean isBoolean(String number)
+	{
+		if(number == null)
+		{
+			return false;
+		}
+		try
+		{
+			Boolean.parseBoolean(number);
+			return true;
+		} catch (Exception e) 
+		{
+			return false;
+		}
+	}
 	
 	public static boolean isNumber(String numberstring)
 	{

@@ -3,27 +3,8 @@ java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeIns
 	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
 	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
 	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	
-java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
-	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
 
-java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
-	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	
-- MIM invsee, sync die Inventare nicht mit mehr als zwei spieler, crossserver, Somit nur für den gleichen Server limit einbauen.
 Build 1-0-0 -------------------------------------------------------------
-- Shulkers in CustomPlayerInventory mit perm öffnen können.
-- Shulker in Enderchest mit perm öffnen können.
-- Shulker in normalen mit perm öffnen können.
-- Schilder per Item und Event "Bearbeitbar machen" HumanEntity.openSign(Sign, boolean)
-- Prüfen ob beim externen öffnen eines anderen Spielerinventars, dies auch korrekt geupdatet wird.
-- Boolean und Bypass perm hinzufügen um im Creative Items zu droppen oder in Kisten zu legen.
 + /mim | Infoseite für alle Befehle.
 + /mim saveandkick [servername] | Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.
 + /mim save [servername] | Speichert den vollen Spielstand aller Spieler. Optional nur für einen Server.
@@ -31,7 +12,6 @@ Build 1-0-0 -------------------------------------------------------------
 + /wbench [Spielername] | Öffnet eine Werkbank. Optional für andere Spieler.
 + /enderchest [Spielername] | Öffnet deine Enderchest. Optional für andere Spieler.
 + /enchantingtable [Spielername] | Öffnet einen Verzauberungstisch der maximalen Stufe. Optional für andere Spieler.
-+ /anvil [Spielername] | Öffnet einen Amboss. Optional für andere Spieler.
 + xyz steht für die CustomPlayerInventory Befehlsreplacer.
 + /xyz | Öffnet das Benutzerdefinierte Spielerinventar.
 + /xyz buy [Spielername] | Kauft die nächsthöhere Reihe des CustomSpielerInventars, wenn es möglich ist.

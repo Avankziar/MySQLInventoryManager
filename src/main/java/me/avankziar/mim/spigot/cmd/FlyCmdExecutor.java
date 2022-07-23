@@ -2,29 +2,27 @@ package main.java.me.avankziar.mim.spigot.cmd;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.assistance.Utility;
 import main.java.me.avankziar.mim.spigot.cmdtree.CommandConstructor;
-import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
-import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
-public class EnderChestCmdExecutor implements CommandExecutor
+public class FlyCmdExecutor implements CommandExecutor
 {
 	private MIM plugin;
 	private static CommandConstructor cc;
 	
-	public EnderChestCmdExecutor(MIM plugin, CommandConstructor cc)
+	public FlyCmdExecutor(MIM plugin, CommandConstructor cc)
 	{
 		this.plugin = plugin;
-		EnderChestCmdExecutor.cc = cc;
+		FlyCmdExecutor.cc = cc;
 	}
 	
 	@Override
@@ -45,39 +43,44 @@ public class EnderChestCmdExecutor implements CommandExecutor
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 			return false;
 		}
-		if (args.length == 0) 
+		if(args.length == 0)
 		{
-			Inventory inv = InventoryCloseListener.getExternInventory(player.getUniqueId(), "EC", "EC");
-			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
-			if(inv == null)
+			if(player.isFlying())
 			{
-				inv = player.getEnderChest();
+				player.setFlying(false);
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouFly")));
+			} else
+			{
+				player.setFlying(true);
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouDontFly")));
 			}
-			InventoryCloseListener.addToExternInventory(player.getUniqueId(), player.getUniqueId(), inv,
-					"EC", "EC", player.getGameMode(), synchroKey);
-			player.openInventory(inv);
-			return true;
 		} else if(args.length == 1)
 		{
-			if(!sender.hasPermission(Bypass.get(Bypass.Permission.ENDERCHEST_OTHERPLAYER)))
+			if(!sender.hasPermission(Bypass.get(Bypass.Permission.FLY_OTHERPLAYER)))
 			{
 				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
 			String othername = args[0];
 			UUID otheruuid = Utility.convertNameToUUID(othername);
-			if(otheruuid == null)
+			if(otheruuid == null || Bukkit.getPlayer(otheruuid) == null)
 			{
 				sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 				return false;
 			}
-			IsOnlineListener.sendRequest(player, "EC", otheruuid.toString());
-			return true;
-		} else
-		{
-			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("DidYouMean")));
-			sender.sendMessage(ChatApi.tl(cc.getSuggestion()));
-			return false;
+			Player other = Bukkit.getPlayer(otheruuid);
+			if(other.isFlying())
+			{
+				other.setFlying(false);
+				other.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouFly")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.OtherFly").replace("%player%", othername)));
+			} else
+			{
+				other.setFlying(true);
+				other.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.YouDontFly")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Fly.OtherDontFly").replace("%player%", othername)));
+			}
 		}
+		return true;
 	}
 }

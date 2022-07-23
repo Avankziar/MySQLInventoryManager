@@ -11,7 +11,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +29,7 @@ import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
 public class InventoryCloseListener extends BaseListener
 {
-	public static LinkedHashMap<UUID, Inventory> ownerToInventory = new LinkedHashMap<>();//InventoryOwner, Inventory
+	public static LinkedHashMap<String, Inventory> ownerToInventory = new LinkedHashMap<>();//InventoryOwner+invType+";"+subType, Inventory
 	public static LinkedHashMap<UUID, UUID> executorToOwnerInventory = new LinkedHashMap<>();//CmdExecutor, InventoryOwner
 	public static LinkedHashMap<UUID, String> executorToInventoryType = new LinkedHashMap<>();//CmdExecutor, InventoryType(CPI, Enderchest etc.)
 	//Only useable for Enderchest etc. (CPI not use this)
@@ -80,11 +79,11 @@ public class InventoryCloseListener extends BaseListener
 		return executorToShulkerSlot.containsKey(executorPlayer);
 	}
 	
-	public static Inventory getExternInventory(UUID targetPlayer)
+	public static Inventory getExternInventory(UUID targetPlayer, String invType, String subType)
 	{
-		if(ownerToInventory.containsKey(targetPlayer))
+		if(ownerToInventory.containsKey(targetPlayer.toString()+invType+";"+subType))
 		{
-			return ownerToInventory.get(targetPlayer);
+			return ownerToInventory.get(targetPlayer.toString()+invType+";"+subType);
 		}
 		return null;
 	}
@@ -92,7 +91,7 @@ public class InventoryCloseListener extends BaseListener
 	public static void addToExternInventory(UUID executorPlayer, UUID targetPlayer,
 			Inventory inv, String invType, String subType, GameMode targetMode, String synchroKey)
 	{
-		ownerToInventory.put(targetPlayer, inv);
+		ownerToInventory.put(targetPlayer+invType+";"+subType, inv);
 		executorToOwnerInventory.put(executorPlayer, targetPlayer);
 		executorToInventoryType.put(executorPlayer, invType+";"+subType);
 		executorToGameMode.put(executorPlayer, targetMode);
@@ -107,9 +106,9 @@ public class InventoryCloseListener extends BaseListener
 			return false;
 		}
 		final UUID targetPlayer = executorToOwnerInventory.get(executorPlayer);
-		final Inventory inv = ownerToInventory.get(targetPlayer); 
 		final String invType = executorToInventoryType.get(executorPlayer).split(";")[0];
 		final String subType = executorToInventoryType.get(executorPlayer).split(";")[1];
+		final Inventory inv = ownerToInventory.get(targetPlayer+invType+";"+subType); 
 		final GameMode targetMode = executorToGameMode.get(executorPlayer);
 		final String synchroKey = executorToSynchroKey.get(executorPlayer);
 		executorToOwnerInventory.remove(executorPlayer);
@@ -127,7 +126,7 @@ public class InventoryCloseListener extends BaseListener
 		}
 		if(!exist)
 		{
-			ownerToInventory.remove(targetPlayer);
+			ownerToInventory.remove(targetPlayer+invType+";"+subType);
 			Player target = Bukkit.getPlayer(targetPlayer);
 			switch(invType)
 			{
@@ -239,7 +238,7 @@ public class InventoryCloseListener extends BaseListener
 		return true;
 	}
 	
-	public static void openShulkerInInventory(Player player, UUID targetPlayer, Inventory preInventory, 
+	/*public static void openShulkerInInventory(Player player, UUID targetPlayer, Inventory preInventory, 
 			int slot, ItemStack shulker, ShulkerBox shulkerbox, String playername, String title)
 	{
 		executorToShulkerSlot.put(player.getUniqueId(), slot);
@@ -252,5 +251,5 @@ public class InventoryCloseListener extends BaseListener
 		Inventory inv = Bukkit.createInventory(null, 27, title != null ? title.replace("%player%", playername) : "Shulkerbox");
         inv.setContents(shulkerbox.getInventory().getContents());
         player.openInventory(inv);
-	}
+	}*/
 }

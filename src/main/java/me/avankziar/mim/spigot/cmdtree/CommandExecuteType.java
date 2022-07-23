@@ -25,6 +25,8 @@ public enum CommandExecuteType
 	CLEAR_PERSISTENTDATA,
 	WHOIS,
 	ONLINE,
+	FLY,
+	ATTRIBUTES,
 	CUSTOMPLAYERINVENTORY, // /xyz | Alle Befehle für die CPI gemeint sind.
 	CPI_DROP,
 	CPI_INFO,

@@ -27,5 +27,9 @@ public class StaticValues
 		
 		ONLINE_TOBUNGEE = "mim:online_tobungee",
 		ONLINE_TOSPIGOT = "mim:online_tospigot",
-		ONLINE_REQUEST = "ONLINE_REQUEST";
+		ONLINE_REQUEST = "ONLINE_REQUEST",
+		ISONLINE_TOBUNGEE = "mim:isonline_tobungee",
+		ISONLINE_TOSPIGOT = "mim:isonline_tospigot",
+		ISONLINE = "ISONLINE"
+		;
 }

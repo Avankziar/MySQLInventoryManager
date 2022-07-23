@@ -274,6 +274,14 @@ public class YamlManager
 				"/online", "/online ",
 				"&c/online &f| Zeigt alle Onlinespieler in Proxynetzwerk an.",
 				"&c/online &f| Shows all online player in the proxy network.");
+		commandsInput("fly", "fly", "fly.cmd.fly", 
+				"/fly", "/fly ",
+				"&c/fly [Spielername] &f| Toggelt den Flugmodus",
+				"&c/fly [Spielername] &f| Toggle the flying modus.");
+		commandsInput("attributes", "attributes", "attributes.cmd.attributes", 
+				"/attributes <attribute> <value>", "/attributes ",
+				"&c/attributes <Attribute> <Wert> &f| Verändert einen Wert eines der Spielereigenschaften.",
+				"&c/attributes <attribute> <value> &f| Changes a value of one of the player properties.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -369,6 +377,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cNicht Online",
 				"&cNot online"}));
+		languageKeys.put("PlayerIsOnlineOnAnotherServer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &eist auf dem Server &f%server% &eonline. Bitte begib dich dorthin um in sein Inventar zu sehen.",
+				"&eThe player &f%player% &eis on the server &f%server% &eonline. Please go there to see his inventory."}));
 		languageKeys.put("Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&f=====&cMIM&f=====",
@@ -443,14 +455,32 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c",
 				"&c"}));
+		initLangAttribute();
 		initLangSyncTask();
 		initLangGameMode();
 		initLangOpenableBlocks();
+		initLangCmd();
 		initLangCustomPlayerInventory();
 		/*languageKeys.put(""
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}))*/
+	}
+	
+	private void initLangAttribute()
+	{
+		languageKeys.put("Attribute.ValueNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Attribute &f%attribute% &cexistiert nicht!",
+				"&c"}));
+		languageKeys.put("Attribute.ValueNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Attribute &f%attribute% &cbenötigt einen Wert &f%value%(Zum Bsp.: %example%)&c!",
+				"&c"}));
+		languageKeys.put("Attribute.ValueIsSet"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDas Attribute &f%attribute% &ewurde auf den Wert &f%value% &egesetzt!",
+				"&c"}));
 	}
 	
 	private void initLangSyncTask()
@@ -566,6 +596,26 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast das Inventar des Spielers &f%player% &egeöffnet!",
 				"&eYou have opened the inventory of the player &f%player%&e!"}));
+	}
+	
+	private void initLangCmd()
+	{
+		languageKeys.put("Fly.YouFly",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu fliegst nun.",
+				"&eYou are flying now."}));
+		languageKeys.put("Fly.OtherFly",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast den Flugmodus für &f%player% &eaktiviert.",
+				"&eYou have activated the flight mode for &f%player%&e."}));
+		languageKeys.put("Fly.YouDontFly",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu fliegst nun nicht mehr.",
+				"&eYou are not flying now."}));
+		languageKeys.put("Fly.OtherDontFly",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast den Flugmodus für &f%player% &edeaktiviert.",
+				"&eYou have disabled the flight mode for &f%player%&e."}));
 	}
 	
 	private void initLangCustomPlayerInventory()

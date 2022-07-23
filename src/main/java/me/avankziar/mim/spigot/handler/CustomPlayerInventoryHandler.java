@@ -39,7 +39,7 @@ public class CustomPlayerInventoryHandler
 		int targetRow = player.getUniqueId().toString().equals(cpi.getOwnerUUID().toString()) 
 				? cpi.getPermissionRowAmount(player) : cpi.getTargetRowAmount();
 		int maxbuyedRow = cpi.getMaxbuyedRowAmount();
-		Inventory inv = InventoryCloseListener.getExternInventory(cpi.getOwnerUUID());
+		Inventory inv = InventoryCloseListener.getExternInventory(cpi.getOwnerUUID(), "CPI", cpi.getUniqueName());
 		if(inv == null) 
 		{
 			if(actualRow == targetRow) 
