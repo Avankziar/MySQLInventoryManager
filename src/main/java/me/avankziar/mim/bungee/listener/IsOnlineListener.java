@@ -41,7 +41,7 @@ public class IsOnlineListener implements Listener
         }
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(event.getData()));
         String task = in.readUTF();
-        if(task.equals(StaticValues.ONLINE_REQUEST))
+        if(task.equals(StaticValues.ISONLINE))
         {
         	String mode = in.readUTF();
         	String requestuuid = in.readUTF();
@@ -63,7 +63,7 @@ public class IsOnlineListener implements Listener
         	ByteArrayOutputStream streamout = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(streamout);
             try {
-            	out.writeUTF(StaticValues.ONLINE_REQUEST);
+            	out.writeUTF(StaticValues.ISONLINE);
             	out.writeUTF(mode);
             	out.writeUTF(requestuuid);
             	out.writeUTF(targetuuid);
@@ -74,7 +74,7 @@ public class IsOnlineListener implements Listener
             {
     			e.printStackTrace();
     		}
-        	request.getServer().sendData(StaticValues.ONLINE_TOSPIGOT, streamout.toByteArray());
+        	request.getServer().sendData(StaticValues.ISONLINE_TOSPIGOT, streamout.toByteArray());
         }
 	}
 }

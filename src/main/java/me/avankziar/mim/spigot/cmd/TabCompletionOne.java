@@ -51,7 +51,7 @@ public class TabCompletionOne implements TabCompleter
 		attributes.add("gravity");
 		attributes.add("invisible");
 		attributes.add("invulnerable");
-		attributes.add("entitycategory");
+		//attributes.add("entitycategory");
 		attributes.add("maximumair");
 		Collections.sort(attributes);
 	}
