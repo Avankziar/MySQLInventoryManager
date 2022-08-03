@@ -100,5 +100,4 @@ public class BaseConstructor
 	{
 		this.helpInfo = helpInfo;
 	}
-
 }

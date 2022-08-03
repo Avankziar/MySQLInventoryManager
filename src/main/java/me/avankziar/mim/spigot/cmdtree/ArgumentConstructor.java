@@ -24,12 +24,12 @@ public class ArgumentConstructor extends BaseConstructor
     {
     	super(
     			cet,
-    			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".Argument"),
+    			getPlugin().getYamlHandler().getCommands().getString(path+".Argument"),
     			path,
-    			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".Permission"),
-    			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".Suggestion"),
-    			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".CommandString"),
-    			MIM.getPlugin().getYamlHandler().getCommands().getString(path+".HelpInfo"),
+    			getPlugin().getYamlHandler().getCommands().getString(path+".Permission"),
+    			getPlugin().getYamlHandler().getCommands().getString(path+".Suggestion"),
+    			getPlugin().getYamlHandler().getCommands().getString(path+".CommandString"),
+    			getPlugin().getYamlHandler().getCommands().getString(path+".HelpInfo"),
     			canConsoleAccess);
         this.minArgsConstructor = minArgs;
         this.maxArgsConstructor = maxArgs;

@@ -249,13 +249,13 @@ public class MIM extends JavaPlugin
 		
 		infoCommand += plugin.getYamlHandler().getCommands().getString("mim.Name");
 		
-		ArgumentConstructor saveAndKick = new ArgumentConstructor(CommandExecuteType.MIM_SAVEANDKICK, "mim_saveandkick", 0, 0, 1, false, null);
+		ArgumentConstructor saveAndKick = new ArgumentConstructor(CommandExecuteType.MIM_SAVEANDKICK, "mim_saveandkick", 0, 0, 1, true, null);
 		new MiMSaveAndKick(saveAndKick);
 		
-		ArgumentConstructor save = new ArgumentConstructor(CommandExecuteType.MIM_SAVE, "mim_save", 0, 0, 1, false, null);
+		ArgumentConstructor save = new ArgumentConstructor(CommandExecuteType.MIM_SAVE, "mim_save", 0, 0, 1, true, null);
 		new MiMSave(save);
 		
-		CommandConstructor mim = new CommandConstructor(CommandExecuteType.MIM, "mim", false,
+		CommandConstructor mim = new CommandConstructor(CommandExecuteType.MIM, "mim", true,
 				saveAndKick, save);
 		registerCommand(mim.getPath(), mim.getName());
 		getCommand(mim.getName()).setExecutor(new MiMCmdExecutor(plugin, mim));

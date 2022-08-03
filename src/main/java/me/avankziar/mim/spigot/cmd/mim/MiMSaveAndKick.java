@@ -3,7 +3,6 @@ package main.java.me.avankziar.mim.spigot.cmd.mim;
 import java.io.IOException;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.mim.general.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
@@ -24,12 +23,6 @@ public class MiMSaveAndKick extends ArgumentModule
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
-		if(!(sender instanceof Player))
-		{
-			sender.sendMessage("Cmd only for Players!");
-			return;
-		}
-		Player player = (Player) sender;
 		String server = null;
 		if(args.length >= 2)
 		{
@@ -38,12 +31,12 @@ public class MiMSaveAndKick extends ArgumentModule
 		if(server != null)
 		{
 			plugin.getPlayerParameterApi().saveAndKickServer(server);
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickServer").replace("%server%", server)));
+			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickServer").replace("%server%", server)));
 			return;
 		} else
 		{
 			plugin.getPlayerParameterApi().saveAndKickAll();
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickAll")));
+			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickAll")));
 			return;
 		}
 	}

@@ -35,18 +35,18 @@ public class MiMCmdExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
-		if (!(sender instanceof Player)) 
-		{
-			MIM.log.info("/%cmd% is only for Player!".replace("%cmd%", cc.getName()));
-			return false;
-		}
-		Player player = (Player) sender;
 		if(cc == null)
 		{
 			return false;
 		}
-		if (args.length == 1) 
+		if (args.length == 1 && MatchApi.isInteger(args[0])) 
 		{
+			if (!(sender instanceof Player)) 
+			{
+				MIM.log.info("/%cmd% is only for Player!".replace("%cmd%", cc.getName()));
+				return false;
+			}
+			Player player = (Player) sender;
 			if(MatchApi.isInteger(args[0]))
 			{
 				if(!player.hasPermission(cc.getPermission()))
@@ -59,6 +59,12 @@ public class MiMCmdExecutor implements CommandExecutor
 			}
 		} else if(args.length == 0)
 		{
+			if (!(sender instanceof Player)) 
+			{
+				MIM.log.info("/%cmd% is only for Player!".replace("%cmd%", cc.getName()));
+				return false;
+			}
+			Player player = (Player) sender;
 			if(!player.hasPermission(cc.getPermission()))
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
@@ -77,7 +83,37 @@ public class MiMCmdExecutor implements CommandExecutor
 				{
 					if(length >= ac.minArgsConstructor && length <= ac.maxArgsConstructor)
 					{
-						if(player.hasPermission(ac.getPermission()))
+						if (sender instanceof Player)
+						{
+							Player player = (Player) sender;
+							if(player.hasPermission(ac.getPermission()))
+							{
+								ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
+								if(am != null)
+								{
+									try
+									{
+										am.run(sender, args);
+									} catch (IOException e)
+									{
+										e.printStackTrace();
+									}
+								} else
+								{
+									MIM.log.info("ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
+											.replace("%ac%", ac.getName()));
+									player.spigot().sendMessage(ChatApi.tctl(
+											"ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
+											.replace("%ac%", ac.getName())));
+									return false;
+								}
+								return false;
+							} else
+							{
+								player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+								return false;
+							}
+						} else
 						{
 							ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
 							if(am != null)
@@ -93,15 +129,11 @@ public class MiMCmdExecutor implements CommandExecutor
 							{
 								MIM.log.info("ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
 										.replace("%ac%", ac.getName()));
-								player.spigot().sendMessage(ChatApi.tctl(
+								sender.spigot().sendMessage(ChatApi.tctl(
 										"ArgumentModule from ArgumentConstructor %ac% not found! ERROR!"
 										.replace("%ac%", ac.getName())));
 								return false;
 							}
-							return false;
-						} else
-						{
-							player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 							return false;
 						}
 					} else
@@ -112,7 +144,7 @@ public class MiMCmdExecutor implements CommandExecutor
 				}
 			}
 		}
-		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
+		sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 				ClickEvent.Action.RUN_COMMAND, MIM.infoCommand));
 		return false;
 	}

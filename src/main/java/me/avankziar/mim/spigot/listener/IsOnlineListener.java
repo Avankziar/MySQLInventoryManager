@@ -58,15 +58,18 @@ public class IsOnlineListener implements PluginMessageListener
             			Player other = Bukkit.getPlayer(otheruuid);
             			PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
                 				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-                				targetuuid.toString(), synchroKey,
-                				requester.getGameMode().toString());
+                				targetuuid, synchroKey,	requester.getGameMode().toString());
             			switch(mode)
             			{
             			case "INV":
-            				
             				inv = other != null ? other.getInventory() : InventoryCloseListener.getExternInventory(otheruuid,"INV","INV");
             				if(inv == null)
             				{
+            					if(pd == null)
+            					{
+            						requester.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
+            						return;
+            					}
             					inv = Bukkit.createInventory(player, 9*4, targetname+"`s Inventory");
             					inv.setContents(pd.getInventoryStorageContents());
             				}
@@ -80,6 +83,11 @@ public class IsOnlineListener implements PluginMessageListener
             				inv = other != null ? other.getEnderChest() : InventoryCloseListener.getExternInventory(otheruuid, "EC", "EC");
             				if(inv == null)
             				{
+            					if(pd == null)
+            					{
+            						requester.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
+            						return;
+            					}
             					inv = Bukkit.createInventory(player, 9*3, targetname+"`s EnderChest");
             					inv.setContents(pd.getEnderchestContents());
             				}
@@ -105,6 +113,11 @@ public class IsOnlineListener implements PluginMessageListener
             					}
             				} else
             				{
+            					if(pd == null)
+            					{
+            						requester.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
+            						return;
+            					}
             					inv = Bukkit.createInventory(player, 9*1, targetname+"`s Armor & OffHand");
             					inv.addItem(pd.getOffHand());
             					for(int i = 0; i < pd.getArmorContents().length; i++)

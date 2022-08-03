@@ -64,7 +64,8 @@ public class OnlineListener implements PluginMessageListener
             		{
             			if(request.hasPermission(Bypass.get(Bypass.Permission.ONLINE_GROUP)))
             			{
-            				OnlineCmdExecutor.onlineExpert(player, ownServer, servermap);
+            				//OnlineCmdExecutor.onlineExpert(player, ownServer, servermap);
+            				OnlineCmdExecutor.onlineSimple(player, ownServer, servermap);
             			} else
             			{
             				OnlineCmdExecutor.onlineSimple(player, ownServer, servermap);
