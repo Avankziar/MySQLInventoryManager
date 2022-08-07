@@ -178,6 +178,10 @@ public class DeathMemoryStateHandler
 		LinkedHashMap<Attribute, Double> attributes = new LinkedHashMap<>();
 		for(Attribute at : attributeList)
 		{
+			if(player.getAttribute(at) == null)
+			{
+				continue;
+			}
 			attributes.put(at, player.getAttribute(at).getBaseValue());
 		}
 		ArrayList<PotionEffect> pe = new ArrayList<>();

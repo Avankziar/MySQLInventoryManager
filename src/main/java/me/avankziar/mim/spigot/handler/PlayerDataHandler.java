@@ -200,7 +200,7 @@ public class PlayerDataHandler
 			pd.setFlySpeed(player.getFlySpeed());
 			pd.setFireTicks(player.getFireTicks());
 			pd.setFreezeTicks(player.getFreezeTicks());
-			pd.setFlying(player.isFlying());
+			pd.setFlying(player.getAllowFlight());
 			pd.setGlowing(player.isGlowing());
 			pd.setGravity(player.hasGravity());
 			pd.setInvisible(player.isInvisible());
@@ -225,7 +225,7 @@ public class PlayerDataHandler
 					attributes, player.getHealth(), player.getAbsorptionAmount(), 
 					player.getExp(), player.getLevel(), player.getTotalExperience(), 
 					player.getWalkSpeed(), player.getFlySpeed(), player.getFireTicks(), player.getFreezeTicks(),
-					player.isFlying(), player.isGlowing(), player.hasGravity(), player.isInvisible(), player.isInvulnerable(),
+					player.getAllowFlight(), player.isGlowing(), player.hasGravity(), player.isInvisible(), player.isInvulnerable(),
 					pe, player.getCategory(), player.getArrowsInBody(), 
 					player.getMaximumAir(), player.getRemainingAir(), player.getCustomName(), getPersitentData(player),
 					MIM.getPlugin().getConfigHandler().getDefaultClearToggle());
@@ -254,7 +254,7 @@ public class PlayerDataHandler
 			pd.setFlySpeed(player.getFlySpeed());
 			pd.setFireTicks(player.getFireTicks());
 			pd.setFreezeTicks(player.getFreezeTicks());
-			pd.setFlying(player.isFlying());
+			pd.setFlying(player.getAllowFlight());
 			pd.setGlowing(player.isGlowing());
 			pd.setGravity(player.hasGravity());
 			pd.setInvisible(player.isInvisible());
@@ -528,7 +528,7 @@ public class PlayerDataHandler
 		player.setFlySpeed(pd.getFlySpeed());
 		player.setFireTicks(pd.getFireTicks());
 		player.setFreezeTicks(pd.getFreezeTicks());
-		player.setFlying(pd.isFlying());
+		player.setAllowFlight(pd.isFlying());
 		player.setGlowing(pd.isGlowing());
 		player.setGravity(pd.isGravity());
 		player.setInvisible(pd.isInvisible());
@@ -569,7 +569,7 @@ public class PlayerDataHandler
 			player.setFlySpeed(pd.getFlySpeed());
 			player.setFireTicks(pd.getFireTicks());
 			player.setFreezeTicks(pd.getFreezeTicks());
-			player.setFlying(pd.isFlying());
+			player.setAllowFlight(pd.isFlying());
 			player.setGlowing(pd.isGlowing());
 			player.setGravity(pd.isGravity());
 			player.setInvisible(pd.isInvisible());
