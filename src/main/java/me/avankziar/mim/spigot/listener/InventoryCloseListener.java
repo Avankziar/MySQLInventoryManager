@@ -22,8 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.cmd.EnchantingTableCmdExecutor;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
-import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
+import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
@@ -45,13 +45,13 @@ public class InventoryCloseListener extends BaseListener
 	}
 	
 	@EventHandler (priority = EventPriority.HIGH)
-	public void onInventoryClose(InventoryCloseEvent event)
+	public void onInventoryClose(final InventoryCloseEvent event)
 	{
-		Player player = (Player) event.getPlayer();
+		final Player player = (Player) event.getPlayer();
 		if(event.getInventory().getType() == InventoryType.ENDER_CHEST)
 		{
 			//Wird direkt hier gemacht, weil der doSync das irgendwie nicht hinbekommt.
-			PlayerDataHandler.save(SyncType.INV_ENDERCHEST, player);
+			ecSave(player);
 			return;
 		}
 		if(EnchantingTableCmdExecutor.inEnchantingTable.contains(event.getPlayer().getUniqueId()))
@@ -236,6 +236,36 @@ public class InventoryCloseListener extends BaseListener
 			}
 		}
 		return true;
+	}
+	
+	private void ecSave(final Player player)
+	{
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+		GameMode gm = player.getGameMode();
+		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
+				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
+				player.getUniqueId().toString(), synchroKey, gm.toString());
+		if(pd == null)
+		{
+			return;
+		}
+		try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
+		{
+			String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+				+ "` SET `enderchest_content` = ?"
+				+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+	        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
+	        
+	        ps.setString(2, pd.getSynchroKey());
+	        ps.setString(3, pd.getGameMode().toString());
+	        ps.setString(4, player.getUniqueId().toString());		
+			int u = ps.executeUpdate();
+			MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+		} catch (SQLException e)
+		{
+			MIM.log.log(Level.WARNING, "SQLException! Could not update a PlayerData Object!", e);
+		}
 	}
 	
 	/*public static void openShulkerInInventory(Player player, UUID targetPlayer, Inventory preInventory, 

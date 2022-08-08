@@ -204,7 +204,7 @@ public class PlayerDataHandler
 			pd.setGlowing(player.isGlowing());
 			pd.setGravity(player.hasGravity());
 			pd.setInvisible(player.isInvisible());
-			pd.setInvulnerable(player.isInvulnerable());
+			pd.setInvulnerable(MIM.getPlugin().getYamlHandler().getConfig().getBoolean("SaveOption.Invulnerable", false) ? player.isInvulnerable() : false);
 			pd.setActiveEffects(pe);
 			pd.setEntityCategory(player.getCategory());
 			pd.setArrowsInBody(player.getArrowsInBody());
@@ -241,28 +241,6 @@ public class PlayerDataHandler
 		default:
 			return;
 		case ATTRIBUTE:
-			pd.setFoodLevel(player.getFoodLevel());
-			pd.setSaturation(player.getSaturation());
-			pd.setSaturatedRegenRate(player.getSaturatedRegenRate());
-			pd.setUnsaturatedRegenRate(player.getUnsaturatedRegenRate());
-			pd.setStarvationRate(player.getStarvationRate());
-			pd.setExhaustion(player.getExhaustion());
-			pd.setAttributes(attributes);
-			pd.setHealth(player.getHealth());
-			pd.setAbsorptionAmount(player.getAbsorptionAmount());
-			pd.setWalkSpeed(player.getWalkSpeed());
-			pd.setFlySpeed(player.getFlySpeed());
-			pd.setFireTicks(player.getFireTicks());
-			pd.setFreezeTicks(player.getFreezeTicks());
-			pd.setFlying(player.getAllowFlight());
-			pd.setGlowing(player.isGlowing());
-			pd.setGravity(player.hasGravity());
-			pd.setInvisible(player.isInvisible());
-			pd.setInvulnerable(player.isInvulnerable());
-			pd.setEntityCategory(player.getCategory());
-			pd.setArrowsInBody(player.getArrowsInBody());
-			pd.setMaximumAir(player.getMaximumAir());
-			pd.setRemainingAir(player.getRemainingAir());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
@@ -275,33 +253,33 @@ public class PlayerDataHandler
 					+ " `remaining_air` = ?, `custom_name` = ?,"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setInt(1, pd.getFoodLevel());
-		        ps.setFloat(2, pd.getSaturation());
-		        ps.setInt(3, pd.getSaturatedRegenRate());
-		        ps.setInt(4, pd.getUnsaturatedRegenRate());
-		        ps.setInt(5, pd.getStarvationRate());
-		        ps.setFloat(6, pd.getExhaustion());
+		        ps.setInt(1, player.getFoodLevel());
+		        ps.setFloat(2, player.getSaturation());
+		        ps.setInt(3, player.getSaturatedRegenRate());
+		        ps.setInt(4, player.getUnsaturatedRegenRate());
+		        ps.setInt(5,player.getStarvationRate());
+		        ps.setFloat(6, player.getExhaustion());
 		        StringBuilder at = new StringBuilder();
-		        for(Entry<Attribute, Double> e : pd.getAttributes().entrySet())
+		        for(Entry<Attribute, Double> e : attributes.entrySet())
 		        {
 		        	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
 		        }
 		        ps.setString(7, at.toString());
-		        ps.setDouble(8, pd.getHealth());
-		        ps.setDouble(9, pd.getAbsorptionAmount());
-		        ps.setFloat(10, pd.getWalkSpeed());
-		        ps.setFloat(11, pd.getFlySpeed());
-		        ps.setInt(12, pd.getFireTicks());
-		        ps.setInt(13, pd.getFreezeTicks());
-		        ps.setBoolean(14, pd.isFlying());
-		        ps.setBoolean(15, pd.isGlowing());
-		        ps.setBoolean(16, pd.isGravity());
-		        ps.setBoolean(17, pd.isInvisible());
-		        ps.setBoolean(18, pd.isInvulnerable());
-		        ps.setString(19, pd.getEntityCategory().toString());
-		        ps.setInt(20, pd.getArrowsInBody());
-		        ps.setInt(21, pd.getMaximumAir());
-		        ps.setInt(22, pd.getRemainingAir());
+		        ps.setDouble(8, player.getHealth());
+		        ps.setDouble(9, player.getAbsorptionAmount());
+		        ps.setFloat(10, player.getWalkSpeed());
+		        ps.setFloat(11, player.getFlySpeed());
+		        ps.setInt(12, player.getFireTicks());
+		        ps.setInt(13, player.getFreezeTicks());
+		        ps.setBoolean(14, player.getAllowFlight());
+		        ps.setBoolean(15, player.isGlowing());
+		        ps.setBoolean(16, player.hasGravity());
+		        ps.setBoolean(17, player.isInvisible());
+		        ps.setBoolean(18, MIM.getPlugin().getYamlHandler().getConfig().getBoolean("SaveOption.Invulnerable", false) ? player.isInvulnerable() : false);
+		        ps.setString(19, player.getCategory().toString());
+		        ps.setInt(20, player.getArrowsInBody());
+		        ps.setInt(21, player.getMaximumAir());
+		        ps.setInt(22, player.getRemainingAir());
 		        
 		        ps.setString(23, pd.getSynchroKey());
 		        ps.setString(24, pd.getGameMode().toString());
@@ -314,18 +292,15 @@ public class PlayerDataHandler
 			}
 			return;
 		case EXP:
-			pd.setExpTowardsNextLevel(player.getExp());
-			pd.setExpLevel(player.getLevel());
-			pd.setTotalExperience(player.getTotalExperience());
 			try (Connection conn = MIM.getPlugin().getMysqlSetup().getConnection();)
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `exp_towards_next_level` = ?, `exp_level` = ?, `total_experience` = ?"
 					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setFloat(1, pd.getExpTowardsNextLevel());
-		        ps.setInt(2, pd.getExpLevel());
-		        ps.setInt(3, pd.getTotalExperience());
+		        ps.setFloat(1, player.getExp());
+		        ps.setInt(2, player.getLevel());
+		        ps.setInt(3, player.getTotalExperience());
 		        
 		        ps.setString(4, pd.getSynchroKey());
 		        ps.setString(5, pd.getGameMode().toString());

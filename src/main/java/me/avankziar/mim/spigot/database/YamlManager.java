@@ -164,22 +164,12 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
 		
-		configSpigotKeys.put("EnableCommands.Base"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
 		configSpigotKeys.put("Default.ClearToggle"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
-		/*
-		 * The "Stringlist" are define so.
-		 */
-		configSpigotKeys.put("GuiFlatFileNames"
+		configSpigotKeys.put("SaveOption.Invulnerable"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"guiOne",
-				"guiTwo",}));
-		/*
-		 * If there was a second language, with also 2 entry, so would Entry 1 and two for the first and 3 and 4 four the second language.
-		 */	
+				false}));
 	}
 	
 	public void initCommands()
