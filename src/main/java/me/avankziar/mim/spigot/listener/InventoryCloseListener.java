@@ -135,7 +135,18 @@ public class InventoryCloseListener extends BaseListener
 			case "INV":
 				if(target != null)
 				{
-					target.getInventory().setStorageContents(inv.getContents());
+					if(inv.getContents().length > 36)
+					{
+						ItemStack[] is = new ItemStack[36];
+						for(int i = 0; i < is.length; i++)
+						{
+							is[i] = inv.getItem(i);
+						}
+						target.getInventory().setStorageContents(is);
+					} else
+					{
+						target.getInventory().setStorageContents(inv.getContents());
+					}
 					target.updateInventory();
 				} else
 				{

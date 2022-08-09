@@ -20,7 +20,11 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
-Build 0-2-6
+Build 0-2-8
+- /invsee InventarArray > 36 checkup eingefügt.
+
+Build 0-2-7
 - PlayerQuitEvent Speicherung in den main Thread gelegt.
 - Ec speicherung ausgelagert in eigene Methode.
-- InventoryCloseEvent und PlayerQuitEvent Prädikat final gesetzt sowie Player Object final gesetzt.
+- InventoryCloseEvent und PlayerQuitEvent Prädikat final gesetzt sowie Player Object final gesetzt. (hab mich da an mpdb bissle orientiert.)
+- Unverwundbarkeit Boolean per Config ausgeschaltet, sodass der nicht mehr möglich ist.
