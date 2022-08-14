@@ -1,24 +1,16 @@
 package main.java.me.avankziar.mim.spigot.listener;
 
 import org.bukkit.Material;
-import org.bukkit.block.ShulkerBox;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
-
-import main.java.me.avankziar.mim.spigot.permission.Bypass;
 
 public class InventoryClickListener implements Listener
 {	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event)
 	{
-		Player player = (Player) event.getWhoClicked();
+		/*Player player = (Player) event.getWhoClicked();
 		if(!player.hasPermission(Bypass.get(Bypass.Permission.SHULKER_OPEN_IN_INVENTORY))
 				|| event.getClick() != ClickType.RIGHT
 				|| InventoryCloseListener.inExternInventory(player.getUniqueId())

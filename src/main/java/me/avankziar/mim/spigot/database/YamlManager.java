@@ -476,6 +476,10 @@ public class YamlManager
 	private void initLangSyncTask()
 	{
 		String path = "SyncTask.";
+		languageKeys.put(path+"NotFullLoaded"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu wurdest noch nicht vollständig synchronisiert! Bitte warte ab, bevor du Befehle eingibst.",
+				"&cYou have not been fully synchronized yet! Please wait before entering commands."}));
 		languageKeys.put(path+"SavedAndKicked"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"§eDein Spielstand wurde erfolgreich gespeichert und du wurdest vom Server gekickt!",

@@ -26,7 +26,7 @@ import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
 public class PlayerDataHandler
 {
-	private static ArrayList<Attribute> attributeList = new ArrayList<>();
+	public static ArrayList<Attribute> attributeList = new ArrayList<>();
 	static
 	{
 		for(Attribute a : new ArrayList<Attribute>(EnumSet.allOf(Attribute.class)))
@@ -38,7 +38,7 @@ public class PlayerDataHandler
 		}
 	}
 	
-	private static ArrayList<PersistentData> getPersitentData(Player player)
+	public static ArrayList<PersistentData> getPersitentData(Player player)
 	{
 		ArrayList<PersistentData> list = new ArrayList<>();
 		PersistentDataContainer pdc = player.getPersistentDataContainer();

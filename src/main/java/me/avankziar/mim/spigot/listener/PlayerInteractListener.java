@@ -1,21 +1,16 @@
 package main.java.me.avankziar.mim.spigot.listener;
 
-import org.bukkit.block.ShulkerBox;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class PlayerInteractListener implements Listener
 {
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onInteract(PlayerInteractEvent event)
 	{
-		if(event.useInteractedBlock() == Result.DENY || event.useItemInHand() == Result.DENY)
+		/*if(event.useInteractedBlock() == Result.DENY || event.useItemInHand() == Result.DENY)
 		{
 			return;
 		}
@@ -35,11 +30,11 @@ public class PlayerInteractListener implements Listener
 		        	return;
 		        }
 		        ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-				/*InventoryCloseListener.openShulkerInInventory(event.getPlayer(), event.getPlayer().getUniqueId(),
+				InventoryCloseListener.openShulkerInInventory(event.getPlayer(), event.getPlayer().getUniqueId(),
 						event.getPlayer().getInventory(),
 						event.getPlayer().getInventory().getHeldItemSlot(), event.getItem(),
-						shulker, event.getPlayer().getName(), im.hasDisplayName() ? im.getDisplayName() : "Shulkerbox");*/
+						shulker, event.getPlayer().getName(), im.hasDisplayName() ? im.getDisplayName() : "Shulkerbox");
 			}
-		}
+		}*/
 	}
 }
