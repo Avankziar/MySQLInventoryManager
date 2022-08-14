@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import main.java.me.avankziar.ifh.general.assistance.ChatApi;
 import main.java.me.avankziar.mim.spigot.MIM;
@@ -47,6 +48,15 @@ public class LoadStatusListener implements Listener
 			return;
 		}
 		if(PlayerJoinListener.inLoadStatus(((Player) event.getEntity()).getUniqueId()))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onCommand(PlayerInteractEvent event)
+	{
+		if(PlayerJoinListener.inLoadStatus(event.getPlayer().getUniqueId()))
 		{
 			event.setCancelled(true);
 		}
