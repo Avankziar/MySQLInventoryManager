@@ -51,6 +51,7 @@ public class PlayerQuitListener extends BaseListener
 					"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
 					pd.getUUID().toString(), pd.getSynchroKey(), pd.getGameMode().toString());
 		}
+		PlayerJoinListener.loadstatus.remove(pd.getUUID());
 	}
 	
 	private PlayerData getPlayerData(Player player)

@@ -19,7 +19,7 @@ import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
 public class PlayerJoinListener extends BaseListener
 {
-	private static ArrayList<UUID> loadstatus = new ArrayList<>();
+	protected static ArrayList<UUID> loadstatus = new ArrayList<>();
 	
 	public PlayerJoinListener(MIM plugin)
 	{
