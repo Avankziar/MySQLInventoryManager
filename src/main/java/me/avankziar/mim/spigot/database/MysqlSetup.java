@@ -239,6 +239,16 @@ public class MysqlSetup
 		return true;
 	}
 	
+	public boolean setupDatabaseV() 
+	{
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.PLAYERDATA.getValue()
+		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		  		+ " player_uuid char(36) NOT NULL,"
+		  		+ " synchron_status text);";
+		baseSetup(data);
+		return true;
+	}
+	
 	private boolean baseSetup(String data) 
 	{
 		try (Connection conn = getConnection(); PreparedStatement query = conn.prepareStatement(data))

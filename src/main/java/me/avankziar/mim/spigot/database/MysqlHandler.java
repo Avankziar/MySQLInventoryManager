@@ -13,6 +13,7 @@ import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.DeathMemoryState;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.PredefinePlayerState;
+import main.java.me.avankziar.mim.spigot.objects.SynchronStatus;
 
 public class MysqlHandler
 {
@@ -21,7 +22,8 @@ public class MysqlHandler
 		PLAYERDATA("mimPlayerData", new PlayerData()),
 		DEATHMEMORYSTATE("mimDeathMemoryState", new DeathMemoryState()),
 		PREDEFINEPLAYERSTATE("mimPredefinePlayerState", new PredefinePlayerState()),
-		CUSTOMPLAYERINVENTORY("mimCustomPlayerInventory", new CustomPlayerInventory())
+		CUSTOMPLAYERINVENTORY("mimCustomPlayerInventory", new CustomPlayerInventory()),
+		SYNCHRONSTATUS("mimSynchronStatus", new SynchronStatus())
 		;
 		
 		private Type(String value, Object object)
