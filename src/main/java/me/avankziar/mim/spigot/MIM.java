@@ -80,6 +80,7 @@ import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
 import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
 import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
+import main.java.me.avankziar.mim.spigot.listener.LoadStatusListener;
 import main.java.me.avankziar.mim.spigot.listener.OnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerDeathListener;
@@ -542,6 +543,7 @@ public class MIM extends JavaPlugin
 		pm.registerEvents(new EntityTameListener(plugin), plugin);
 		pm.registerEvents(new InventoryCloseListener(plugin), plugin);
 		//pm.registerEvents(new InventoryClickListener(), plugin); //Wird hinzugefügt, wenn es besser für Shulker läuft & mehr zeit habe.
+		pm.registerEvents(new LoadStatusListener(plugin), plugin);
 		pm.registerEvents(new PlayerChangedWorldListener(plugin), plugin);
 		pm.registerEvents(new PlayerDeathListener(plugin), plugin);
 		pm.registerEvents(new PlayerDropItemListener(plugin), plugin);
