@@ -57,8 +57,8 @@ public class PlayerJoinListener extends BaseListener
 	public void doJoin(final Player player, final World world)
 	{
 		if(plugin.getConfigHandler().loadPredefineOnFirstJoin(world)
-				&& !plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false), player.getGameMode().toString()))
+				&& !plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ?",
+						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false)))
 		{ //Info Wenn der Spieler zum ersten Mal mit dem GameMode und dem SynchroKey Joint
 			if(!preChecks(player))
 			{
@@ -84,8 +84,8 @@ public class PlayerJoinListener extends BaseListener
 			removeCooldown(player.getUniqueId());
 			loadstatus.remove(player.getUniqueId());
 			return;
-		} else if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false), player.getGameMode().toString()))
+		} else if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ?",
+						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false)))
 		{
 			//Wenn der Spieler noch nie gejoint ist und kein Vordefiniertes existiert.
 			doSync(player, SyncType.FULL, RunType.SAVE);
@@ -120,7 +120,7 @@ public class PlayerJoinListener extends BaseListener
 	{
 		if(MIM.getPlugin().getMysqlHandler().exist(MysqlHandler.Type.SYNCHRONSTATUS, "`player_uuid` = ?", uuid.toString()))
 		{
-			MIM.getPlugin().getLogger().log(Level.INFO, "Player "+uuid.toString()+" was "+type.toString());
+			//MIM.getPlugin().getLogger().log(Level.INFO, "Player "+uuid.toString()+" was "+type.toString());
 			MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.SYNCHRONSTATUS, new SynchronStatus(uuid, type),
 					"`player_uuid` = ?", uuid.toString());
 		} else
