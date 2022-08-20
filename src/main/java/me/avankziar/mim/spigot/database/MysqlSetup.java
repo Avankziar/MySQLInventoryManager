@@ -141,7 +141,8 @@ public class MysqlSetup
 		  		+ " remaining_air int,"
 		  		+ " custom_name text,"
 		  		+ " persistent_data LONGTEXT,"
-		  		+ " clear_toggle boolean);";
+		  		+ " clear_toggle boolean,"
+		  		+ " last_game_mode text);";
 		baseSetup(data);
 		return true;
 	}

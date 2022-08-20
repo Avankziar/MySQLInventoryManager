@@ -20,6 +20,13 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
+Build 0-3-2
+- Speicherung wird durch NMS nun 150 ms nach dem Verlassen des Servers ausgeführt.
+- GameMode ist nun kein Synchronisierungskey mehr. Bedeutet, das Inventar bleibt über die GameModes erhalten.
+- DeathMemoryState grobe Fehler behoben.
+- PredefinePlayerState Object angepasst.
+- GameMode wird nun von anderen Server übernommen, wenn die Config es nicht blockiert.
+
 Build 0-2-8
 - /invsee InventarArray > 36 checkup eingefügt.
 

@@ -721,6 +721,12 @@ public class YamlManager
 		syncKeys.put("Synchrokey",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"default"}));
+		syncKeys.put("Load.OverrideGameMode.Active",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		syncKeys.put("Load.OverrideGameMode.Mode",
+				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"SURVIVAL"}));
 		syncKeys.put("Load.OnFirstJoin.PredefineState",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

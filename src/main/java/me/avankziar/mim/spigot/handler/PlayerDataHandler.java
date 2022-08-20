@@ -226,7 +226,7 @@ public class PlayerDataHandler
 					player.getAllowFlight(), player.isGlowing(), player.hasGravity(), player.isInvisible(), player.isInvulnerable(),
 					pe, player.getCategory(), player.getArrowsInBody(), 
 					player.getMaximumAir(), player.getRemainingAir(), player.getCustomName(), getPersitentData(player),
-					MIM.getPlugin().getConfigHandler().getDefaultClearToggle());
+					MIM.getPlugin().getConfigHandler().getDefaultClearToggle(), player.getGameMode());
 			MIM.getPlugin().getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, pd);
 		}
 	}
@@ -248,7 +248,7 @@ public class PlayerDataHandler
 					+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?,"
 					+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 					+ " `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?,"
-					+ " `remaining_air` = ?, `custom_name` = ?,"
+					+ " `remaining_air` = ?, `custom_name` = ?, `last_game_mode` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setInt(1, player.getFoodLevel());
@@ -278,9 +278,10 @@ public class PlayerDataHandler
 		        ps.setInt(20, player.getArrowsInBody());
 		        ps.setInt(21, player.getMaximumAir());
 		        ps.setInt(22, player.getRemainingAir());
+		        ps.setString(23, player.getGameMode().toString());
 		        
-		        ps.setString(23, pd.getSynchroKey());
-		        ps.setString(24, player.getUniqueId().toString());		
+		        ps.setString(24, pd.getSynchroKey());
+		        ps.setString(25, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -504,6 +505,13 @@ public class PlayerDataHandler
 		player.setArrowsInBody(pd.getArrowsInBody());
 		player.setMaximumAir(pd.getMaximumAir());
 		player.setRemainingAir(pd.getRemainingAir());
+		if(new ConfigHandler(MIM.getPlugin()).isOverrideGameMode(player.getWorld(), false))
+		{
+			player.setGameMode(new ConfigHandler(MIM.getPlugin()).getOverrideGameMode(player.getWorld(), false));
+		} else
+		{
+			player.setGameMode(pd.getLastGameMode());
+		}
 		setPersitentData(player, pd.getPersistentData());
 	}
 	
@@ -541,6 +549,14 @@ public class PlayerDataHandler
 			player.setArrowsInBody(pd.getArrowsInBody());
 			player.setMaximumAir(pd.getMaximumAir());
 			player.setRemainingAir(pd.getRemainingAir());
+			if(new ConfigHandler(MIM.getPlugin()).isOverrideGameMode(player.getWorld(), false))
+			{
+				player.setGameMode(new ConfigHandler(MIM.getPlugin()).getOverrideGameMode(player.getWorld(), false));
+			} else
+			{
+				player.setGameMode(pd.getLastGameMode());
+			}
+			return;
 		case EXP:
 			player.setExp(pd.getExpTowardsNextLevel());
 			player.setLevel(pd.getExpLevel());

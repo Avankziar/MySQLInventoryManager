@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityCategory;
 import org.bukkit.inventory.ItemStack;
@@ -66,6 +67,7 @@ public class PlayerData implements MysqlHandable
 	private ArrayList<PersistentData> persistentData;	
 	//NamespaceKey(Namespace, Key), PersistentType, value);
 	private boolean clearToggle;
+	private GameMode lastGameMode;
 	
 	
 	public PlayerData(){}
@@ -81,7 +83,7 @@ public class PlayerData implements MysqlHandable
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
-			ArrayList<PersistentData> persistentData, boolean clearToggle)
+			ArrayList<PersistentData> persistentData, boolean clearToggle, GameMode lastGameMode)
 	{
 		setId(id);
 		setSynchroKey(synchroKey);
@@ -120,6 +122,7 @@ public class PlayerData implements MysqlHandable
 		setCustomName(customName);
 		setPersistentData(persistentData);
 		setClearToggle(clearToggle);
+		setLastGameMode(lastGameMode);
 	}
 	
 	public PlayerData(int id, String synchroKey, UUID uuid, String name, 
@@ -133,7 +136,7 @@ public class PlayerData implements MysqlHandable
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
-			String persistentData, boolean clearToggle)
+			String persistentData, boolean clearToggle, String lastGameMode)
 	{
 		setId(id);
 		setSynchroKey(synchroKey);
@@ -219,6 +222,7 @@ public class PlayerData implements MysqlHandable
 		}
 		setPersistentData(pd);
 		setClearToggle(clearToggle);
+		setLastGameMode(GameMode.valueOf(lastGameMode));
 	}
 
 	public String getSynchroKey()
@@ -597,6 +601,16 @@ public class PlayerData implements MysqlHandable
 		this.clearToggle = clearToggle;
 	}
 
+	public GameMode getLastGameMode()
+	{
+		return lastGameMode;
+	}
+
+	public void setLastGameMode(GameMode lastGameMode)
+	{
+		this.lastGameMode = lastGameMode;
+	}
+
 	@Override
 	public boolean create(Connection conn, String tablename)
 	{
@@ -612,7 +626,7 @@ public class PlayerData implements MysqlHandable
 					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`,"
 					+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
 					+ " `potion_effects`, `entity_category`, `arrows_in_body`, `maximum_air`, `remaining_air`, `custom_name`,"
-					+ " `persistent_data`, `clear_toggle`) " 
+					+ " `persistent_data`, `clear_toggle`, `last_game_mode`) " 
 					+ "VALUES("
 					+ "?, ?, "
 					+ "?, "
@@ -623,7 +637,7 @@ public class PlayerData implements MysqlHandable
 					+ "?, ?, ?, ?, "
 					+ "?, ?, ?, ?, ?,"
 					+ "?, ?, ?, ?, ?, ?, "
-					+ "?, ?)";
+					+ "?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
@@ -671,6 +685,7 @@ public class PlayerData implements MysqlHandable
 	        }
 	        ps.setString(35, pd.toString());
 	        ps.setBoolean(36, isClearToggle());
+	        ps.setString(37, getLastGameMode().toString());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -697,7 +712,7 @@ public class PlayerData implements MysqlHandable
 				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?, "
 				+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 				+ " `potion_effects` = ?, `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?, `remaining_air` = ?, `custom_name` = ?,"
-				+ " `persistent_data` = ?, `clear_toggle` = ?" 
+				+ " `persistent_data` = ?, `clear_toggle` = ?, `last_game_mode` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
@@ -746,7 +761,8 @@ public class PlayerData implements MysqlHandable
 	        }
 	        ps.setString(35, pd.toString());
 	        ps.setBoolean(36, isClearToggle());
-			int i = 37;
+	        ps.setString(37, getLastGameMode().toString());
+			int i = 38;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -819,7 +835,8 @@ public class PlayerData implements MysqlHandable
 						rs.getInt("remaining_air"),
 						rs.getString("custom_name"),
 						rs.getString("persistent_data"),
-						rs.getBoolean("clear_toggle")
+						rs.getBoolean("clear_toggle"),
+						rs.getString("last_game_mode")
 						));
 			}
 			return al;

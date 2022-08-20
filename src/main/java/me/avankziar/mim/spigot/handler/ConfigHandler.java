@@ -1,5 +1,6 @@
 package main.java.me.avankziar.mim.spigot.handler;
 
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -72,6 +73,26 @@ public class ConfigHandler
 			return "default";
 		}
 		return w.getString("Synchrokey", "default");
+	}
+	
+	public Boolean isOverrideGameMode(World world, boolean console)
+	{
+		YamlConfiguration w = getSyncYaml(world, console);
+		if(w == null)
+		{
+			return false;
+		}
+		return w.getBoolean("Load.OverrideGameMode.Active", false);
+	}
+	
+	public GameMode getOverrideGameMode(World world, boolean console)
+	{
+		YamlConfiguration w = getSyncYaml(world, console);
+		if(w == null)
+		{
+			return GameMode.SURVIVAL;
+		}
+		return GameMode.valueOf(w.getString("Load.OverrideGameMode.Mode", "SURVIVAL"));
 	}
 	
 	public boolean getDefaultClearToggle()
