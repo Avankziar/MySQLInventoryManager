@@ -56,6 +56,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseV())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -103,7 +107,6 @@ public class MysqlSetup
 		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
 		  		+ " synchro_key text,"
-		  		+ " game_mode text,"
 		  		
 		  		+ " inventory_content LONGTEXT,"
 		  		+ " armor_content LONGTEXT,"
@@ -241,7 +244,7 @@ public class MysqlSetup
 	
 	public boolean setupDatabaseV() 
 	{
-		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.PLAYERDATA.getValue()
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.SYNCHRONSTATUS.getValue()
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
 		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " synchron_status text);";

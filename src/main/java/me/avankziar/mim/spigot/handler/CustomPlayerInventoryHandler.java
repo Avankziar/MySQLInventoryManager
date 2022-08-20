@@ -168,7 +168,7 @@ public class CustomPlayerInventoryHandler
 			}
 		}
 		InventoryCloseListener.addToExternInventory(player.getUniqueId(), cpi.getOwnerUUID(), inv,
-				"CPI", cpi.getUniqueName(), player.getGameMode(), cpi.getUniqueName());
+				"CPI", cpi.getUniqueName(), cpi.getUniqueName());
 		player.openInventory(inv);
 	}
 	

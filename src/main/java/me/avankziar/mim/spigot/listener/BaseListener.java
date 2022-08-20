@@ -1,5 +1,6 @@
 package main.java.me.avankziar.mim.spigot.listener;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,32 +23,14 @@ public class BaseListener implements Listener
 	{
 		IFH_API("EMPTY"),
 		
-		BLOCK_CANBUILD("Block.CanBuild.SaveInvOnly"),
-		BLOCK_IGNITE("Block.Ignite.SaveInvOnly"),
-		BLOCK_SIGNCHANGE("Block.SignChange.SaveFull"),
-		
-		ENTITY_PICKUPITEM("Entity.PickUpItem.SaveInventory"),
-		ENTITY_RESURRECT("Entity.Resurrect.SaveFull"),
-		ENTITY_TAME("Entity.Tame.SaveFull"),
-		
 		INVENTORY_CLOSE("Inventory.Close.SaveInventory"),
 		
 		PLAYER_CHANGEDWORLD("Player.ChangedWorld.LoadFull"),
 		PLAYER_DEATH("Player.Death.SaveDeathState"),
-		PLAYER_DROPITEM("Player.DropItem.SaveInventory"),
-		PLAYER_EXPCHANGE("Player.ExpChange.SaveExp"),
-		PLAYER_GAMEMODECHANGE("Player.GameModeChange.SaveAndLoadFull"),
-		PLAYER_HARVESTBLOCK("Player.HarvestBlock.SaveInventory"),
-		PLAYER_ITEMBREAK("Player.ItemBreak.SaveInventory"),
-		PLAYER_ITEMCONSUME("Player.ItemConsume.SaveFull"),
-		PLAYER_ITEMDAMGE("Player.ItemDamage.SaveInventory"),
 		PLAYER_JOIN("Player.Join.LoadFull"),
-		PLAYER_LEVELCHANGE("Player.LevelChange.SaveExp"),
 		PLAYER_QUIT("Player.Quit.SaveFull"),
 		PLAYER_RESPAWN("Player.Respawn.SaveFull"),
 		PLAYER_TELEPORT("Player.Teleport.SaveFull"),
-		
-		WORLD_TIMESKIP("World.TimeSkip.SaveFull"),
 		;
 		
 		private String name;
@@ -65,6 +48,7 @@ public class BaseListener implements Listener
 	public MIM plugin;
 	public BaseListener.Type bType;
 	private static Set<UUID> cooldown = new HashSet<>();
+	protected static ArrayList<UUID> loadstatus = new ArrayList<>();
 	
 	public BaseListener(MIM plugin, BaseListener.Type bType)
 	{

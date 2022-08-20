@@ -750,21 +750,12 @@ public class YamlManager
 			{
 			default:
 				break;
-			case BLOCK_SIGNCHANGE:
-			case ENTITY_RESURRECT:
-			case ENTITY_TAME:
 			case PLAYER_CHANGEDWORLD:
 			case PLAYER_JOIN:
 			case PLAYER_QUIT:
 			case PLAYER_RESPAWN:
 			case PLAYER_TELEPORT:
 				i = 15;
-				break;
-			case PLAYER_GAMEMODECHANGE:
-				i = 30;
-				break;
-			case WORLD_TIMESKIP:
-				i = 60;
 				break;
 			}
 			syncKeys.put("SyncEvents."+event.getName()+".Enabled",

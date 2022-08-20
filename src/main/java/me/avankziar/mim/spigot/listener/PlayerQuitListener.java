@@ -2,9 +2,11 @@ package main.java.me.avankziar.mim.spigot.listener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.mim.spigot.MIM;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
@@ -32,39 +35,67 @@ public class PlayerQuitListener extends BaseListener
 	@EventHandler
 	public void onPlayerQuit(final PlayerQuitEvent event)
 	{
-		final Player player = event.getPlayer();
-		PlayerJoinListener.setSynchroStatus(player.getUniqueId(), SynchronStatus.Type.SAVING);
-		final PlayerData pd = getPlayerData(player);
+		if(plugin.inShutDown)
+		{
+			return;
+		}
+		final UUID uuid = event.getPlayer().getUniqueId();
+		PlayerJoinListener.setSynchroStatus(uuid, SynchronStatus.Type.SAVING);
 		final World world = event.getPlayer().getWorld();
-		/*if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), world))
+		new BukkitRunnable()
 		{
-			return;
-		}*/
-		if(plugin.getConfigHandler().isClearAndResetByQuit(world))
-		{
-			ClearAndResetHandler.clearAndReset(SyncType.FULL, player);
-			return;
-		}
-		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA,
-				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				pd.getUUID().toString(), pd.getSynchroKey(), pd.getGameMode().toString()))
-		{
-			plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, pd);
-		} else
-		{
-			plugin.getMysqlHandler().updateData(MysqlHandler.Type.PLAYERDATA, pd,
-					"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-					pd.getUUID().toString(), pd.getSynchroKey(), pd.getGameMode().toString());
-		}
-		PlayerJoinListener.loadstatus.remove(pd.getUUID());
-		PlayerJoinListener.setSynchroStatus(player.getUniqueId(), SynchronStatus.Type.FINISH);
+			
+			@Override
+			public void run()
+			{
+				final Player player = event.getPlayer();
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+				Player playerII = null;
+				try
+				{
+					playerII = plugin.getOfflinePlayerLoader().loadPlayer(offlinePlayer);
+				} catch(Exception e)
+				{
+					MIM.log.log(Level.INFO, "Cannot get Player over NMS. Try load player over OfflinePlayer!");
+					playerII = offlinePlayer.getPlayer();
+				}
+				final PlayerData pd = getPlayerData(player, playerII, world);
+				new BukkitRunnable()
+				{
+					
+					@Override
+					public void run()
+					{
+						if(plugin.getConfigHandler().isClearAndResetByQuit(world))
+						{
+							ClearAndResetHandler.clearAndReset(SyncType.FULL, player);
+							return;
+						}
+						if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA,
+								"`player_uuid` = ? AND `synchro_key` = ?",
+								uuid.toString(), pd.getSynchroKey()))
+						{
+							plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, pd);
+						} else
+						{
+							plugin.getMysqlHandler().updateData(MysqlHandler.Type.PLAYERDATA, pd,
+									"`player_uuid` = ? AND `synchro_key` = ?",
+									uuid.toString(), pd.getSynchroKey());
+						}
+						PlayerJoinListener.loadstatus.remove(uuid);
+						PlayerJoinListener.setSynchroStatus(uuid, SynchronStatus.Type.FINISH);
+					}
+				}.runTaskAsynchronously(plugin);
+				
+			}
+		}.runTaskLater(plugin, 3L);
 	}
 	
-	private PlayerData getPlayerData(Player player)
+	private PlayerData getPlayerData(Player playerI, Player playerII, World world)
 	{
+		Player player = playerII != null ? playerII : playerI;
 		final PlayerInventory iv = player.getInventory();
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
-		final GameMode gm = player.getGameMode();
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(world, false);
 		PlayerData pd = new PlayerData();
 		final ItemStack[] inv = iv.getStorageContents();
 		final ItemStack[] armor = iv.getArmorContents();
@@ -74,7 +105,6 @@ public class PlayerQuitListener extends BaseListener
 		pd.setUUID(player.getUniqueId());
 		pd.setName(player.getName());
 		pd.setSynchroKey(synchroKey);
-		pd.setGameMode(gm);
 		pd.setInventoryStorageContents(inv);
 		pd.setArmorContents(armor);
 		pd.setOffHand(offhand);

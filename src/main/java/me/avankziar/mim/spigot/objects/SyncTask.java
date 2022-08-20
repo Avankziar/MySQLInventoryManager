@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,7 +28,6 @@ public class SyncTask extends BukkitRunnable
 	private SyncType syncType;
 	private RunType runType;
 	private Player player;
-	private GameMode targetMode;
 	
 	private int deathMemoryState;
 	
@@ -42,16 +40,6 @@ public class SyncTask extends BukkitRunnable
 		this.syncType = syncType;
 		this.runType = runType;
 		this.player = player;
-		this.targetMode = player.getGameMode();
-	}
-	
-	public SyncTask(MIM plugin, SyncType syncType, RunType runType, final Player player, @Nullable GameMode targetMode)
-	{
-		this.plugin = plugin;
-		this.syncType = syncType;
-		this.runType = runType;
-		this.player = player;
-		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
 	
 	public SyncTask(MIM plugin, SyncType syncType, int deathMemoryState, final Player player)
@@ -60,7 +48,6 @@ public class SyncTask extends BukkitRunnable
 		this.syncType = syncType;
 		this.runType = RunType.LOAD_DEATHSTATE;
 		this.player = player;
-		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
 	
 	public SyncTask(MIM plugin, SyncType syncType, RunType runType, final Player player, String statename, @Nullable String sychroKey)
@@ -70,7 +57,6 @@ public class SyncTask extends BukkitRunnable
 		this.runType = runType;
 		this.player = player;
 		this.statename = statename;
-		this.targetMode = targetMode != null ? targetMode : player.getGameMode();
 	}
 
 	@Override
@@ -89,7 +75,7 @@ public class SyncTask extends BukkitRunnable
 		{
 			if(!new ConfigHandler(plugin).inSleepMode())
 			{
-				PlayerDataHandler.load(syncType, player, targetMode);
+				PlayerDataHandler.load(syncType, player);
 			}
 		} else if(runType == RunType.SAVE_DEATHSTATE)
 		{

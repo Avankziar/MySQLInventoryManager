@@ -154,15 +154,15 @@ public class WhoIsCmdExecutor implements CommandExecutor
 			{
 				if(MIM.getPlugin().getPlayerTimes() != null)
 				{
-					ss = ChatApi.tctl(s.replace("%totaltime%", MIM.getPlugin().getPlayerTimes().format(
+					ss = ChatApi.tctl(s.replace("%totaltime%", MIM.getPlugin().getPlayerTimes().formatTimePeriod(
 							MIM.getPlugin().getPlayerTimes().getTotalTime(uuid), 
-							false, isOnline, isOnline, isOnline, false))
-						  .replace("%onlinetime%", MIM.getPlugin().getPlayerTimes().format(
-							MIM.getPlugin().getPlayerTimes().getTotalTime(uuid), 
-							false, isOnline, isOnline, isOnline, false))
-						  .replace("%afktime%", MIM.getPlugin().getPlayerTimes().format(
-							MIM.getPlugin().getPlayerTimes().getTotalTime(uuid), 
-							false, isOnline, isOnline, isOnline, false)));
+							false, true, true, true, false))
+						  .replace("%onlinetime%", MIM.getPlugin().getPlayerTimes().formatTimePeriod(
+							MIM.getPlugin().getPlayerTimes().getActiveTime(uuid), 
+							false, true, true, true, false))
+						  .replace("%afktime%", MIM.getPlugin().getPlayerTimes().formatTimePeriod(
+							MIM.getPlugin().getPlayerTimes().getInactiveTime(uuid), 
+							false, true, true, true, false)));
 				} else
 				{
 					continue;
@@ -174,9 +174,10 @@ public class WhoIsCmdExecutor implements CommandExecutor
 				{
 					if(MIM.getPlugin().getPlayerTimes().isVacacation(uuid))
 					{
-						ss = ChatApi.tctl(s.replace("%vacation%", MIM.getPlugin().getPlayerTimes().format(
-								MIM.getPlugin().getPlayerTimes().getTotalTime(uuid), 
-								false, isOnline, isOnline, isOnline, false)));
+						ss = ChatApi.tctl(s.replace("%vacation%", 
+								MIM.getPlugin().getPlayerTimes().formatDate(
+								MIM.getPlugin().getPlayerTimes().getVacation(uuid), 
+								false, true, true, true, true, false)));
 					} else
 					{
 						ss = ChatApi.tctl(s.replace("%vacation%", getBoolean(false)));
@@ -222,10 +223,6 @@ public class WhoIsCmdExecutor implements CommandExecutor
 				}
 				if(pd != null)
 				{
-					if(s.contains("%gm%"))
-					{
-						ss = ChatApi.tctl(s.replace("%gm%", pd.getGameMode().toString()));
-					}
 					if(s.contains("%lp%") || s.contains("%lpmax%") || s.contains("%armor%"))
 					{
 						ss = ChatApi.tctl(s.replace("%lp%", String.valueOf(pd.getHealth()))

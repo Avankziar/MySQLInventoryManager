@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -155,17 +154,16 @@ public class DeathMemoryStateHandler
 	public static void save(SyncType syncType, final Player player)
 	{
 		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
-		GameMode gm = player.getGameMode();
 		int count = MIM.getPlugin().getMysqlHandler().getCount(MysqlHandler.Type.DEATHMEMORYSTATE, 
-				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				player.getUniqueId().toString(), synchroKey, gm.toString());
+				"`player_uuid` = ? AND `synchro_key` = ?",
+				player.getUniqueId().toString(), synchroKey);
 		DeathMemoryState dms = new DeathMemoryState();
 		if(count >= new ConfigHandler(MIM.getPlugin()).getMaximalAmountDeathMemoryStatePerPlayer(player.getWorld()))
 		{
 			ArrayList<DeathMemoryState> list = DeathMemoryState.convert(
 					MIM.getPlugin().getMysqlHandler().getList(MysqlHandler.Type.DEATHMEMORYSTATE, "`time_stamp` ASC", 0, 1,
-					"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-					player.getUniqueId().toString(), synchroKey, gm.toString()));
+					"`player_uuid` = ? AND `synchro_key` = ?",
+					player.getUniqueId().toString(), synchroKey));
 			for(DeathMemoryState dmst : list)
 			{
 				if(dmst != null)
@@ -191,12 +189,9 @@ public class DeathMemoryStateHandler
 		}
 		if(dms != null)
 		{
-			if(syncType != SyncType.FULL)
-			{
-				save(syncType, player, dms);
-				return;
-			}
 			dms.setTimeStamp(System.currentTimeMillis());
+			dms.setUUID(player.getUniqueId());
+			dms.setSynchroKey(synchroKey);
 			dms.setInventoryStorageContents(player.getInventory().getStorageContents());
 			dms.setArmorContents(player.getInventory().getArmorContents());
 			dms.setOffHand(player.getInventory().getItemInOffHand());
@@ -215,8 +210,11 @@ public class DeathMemoryStateHandler
 			dms.setFlySpeed(player.getFlySpeed());
 			dms.setFireTicks(player.getFireTicks());
 			dms.setFreezeTicks(player.getFreezeTicks());
+			dms.setFlying(player.getAllowFlight());
 			dms.setGlowing(player.isGlowing());
 			dms.setGravity(player.hasGravity());
+			dms.setInvisible(player.isInvisible());
+			dms.setInvulnerable(player.isInvulnerable());
 			dms.setActiveEffects(pe);
 			dms.setEntityCategory(player.getCategory());
 			dms.setArrowsInBody(player.getArrowsInBody());
@@ -224,9 +222,14 @@ public class DeathMemoryStateHandler
 			dms.setRemainingAir(player.getRemainingAir());
 			dms.setCustomName(player.getCustomName());
 			dms.setPersistentData(getPersitentData(player));
+			if(syncType != SyncType.FULL)
+			{
+				save(syncType, player, dms);
+				return;
+			}
 			MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.DEATHMEMORYSTATE, dms,
-					"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				player.getUniqueId().toString(), synchroKey, gm.toString());
+					"`player_uuid` = ? AND `synchro_key` = ?",
+				player.getUniqueId().toString(), synchroKey);
 		}
 	}
 	
@@ -247,7 +250,7 @@ public class DeathMemoryStateHandler
 					+ " `freeze_ticks` = ?, `glowing` = ?, `gravity` = ?,"
 					+ " `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?,"
 					+ " `remaining_air` = ?, `custom_name` = ?,"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setInt(1, dms.getFoodLevel());
 		        ps.setFloat(2, dms.getSaturation());
@@ -275,8 +278,7 @@ public class DeathMemoryStateHandler
 		        ps.setInt(19, dms.getRemainingAir());
 		        
 		        ps.setString(20, dms.getSynchroKey());
-		        ps.setString(21, dms.getGameMode().toString());
-		        ps.setString(22, player.getUniqueId().toString());		
+		        ps.setString(21, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -290,14 +292,13 @@ public class DeathMemoryStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
 					+ "` SET "
 					+ " `exp_towards_next_level` = ?, `exp_level` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setFloat(1, dms.getExpTowardsNextLevel());
 		        ps.setInt(2, dms.getExpLevel());
 		        
 		        ps.setString(3, dms.getSynchroKey());
-		        ps.setString(4, dms.getGameMode().toString());
-		        ps.setString(5, player.getUniqueId().toString());		
+		        ps.setString(4, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -311,15 +312,14 @@ public class DeathMemoryStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
 					+ "` SET `player_name` = ?,"
 					+ " `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(dms.getInventoryStorageContents()));
 		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(dms.getArmorContents()));
 		        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64(dms.getOffHand()));
 		        
 		        ps.setString(4, dms.getSynchroKey());
-		        ps.setString(5, dms.getGameMode().toString());
-		        ps.setString(6, player.getUniqueId().toString());		
+		        ps.setString(5, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -333,14 +333,13 @@ public class DeathMemoryStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
 					+ "` SET "
 					+ " `potion_effects` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(dms.getActiveEffects().toArray(
 		        		new PotionEffect[dms.getActiveEffects().size()])));
 		        
 		        ps.setString(2, dms.getSynchroKey());
-		        ps.setString(3, dms.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -354,7 +353,7 @@ public class DeathMemoryStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.DEATHMEMORYSTATE.getValue()
 					+ "` SET "
 					+ " `persistent_data` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        StringBuilder pds = new StringBuilder();
 		        for(PersistentData per : dms.getPersistentData())
@@ -364,8 +363,7 @@ public class DeathMemoryStateHandler
 		        ps.setString(1, pds.toString());
 		        
 		        ps.setString(2, dms.getSynchroKey());
-		        ps.setString(3, dms.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -418,8 +416,11 @@ public class DeathMemoryStateHandler
 		player.setFlySpeed(dms.getFlySpeed());
 		player.setFireTicks(dms.getFireTicks());
 		player.setFreezeTicks(dms.getFreezeTicks());
+		player.setAllowFlight(dms.isFlying());
 		player.setGlowing(dms.isGlowing());
 		player.setGravity(dms.isGravity());
+		player.setInvisible(dms.isInvisible());
+		player.setInvulnerable(dms.isInvulnerable());
 		for(PotionEffect pe : dms.getActiveEffects())
 		{
 			player.addPotionEffect(pe);

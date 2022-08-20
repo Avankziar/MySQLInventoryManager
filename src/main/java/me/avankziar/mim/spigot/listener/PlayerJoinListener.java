@@ -1,7 +1,7 @@
 package main.java.me.avankziar.mim.spigot.listener;
 
-import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -20,9 +20,7 @@ import main.java.me.avankziar.mim.spigot.objects.SyncType;
 import main.java.me.avankziar.mim.spigot.objects.SynchronStatus;
 
 public class PlayerJoinListener extends BaseListener
-{
-	protected static ArrayList<UUID> loadstatus = new ArrayList<>();
-	
+{	
 	public PlayerJoinListener(MIM plugin)
 	{
 		super(plugin, BaseListener.Type.PLAYER_JOIN);
@@ -33,10 +31,6 @@ public class PlayerJoinListener extends BaseListener
 	{
 		loadstatus.add(event.getPlayer().getUniqueId());
 		World world = event.getPlayer().getWorld();
-		/*if(!plugin.getConfigHandler().isEventEnabled(this.bType.getName(), world))
-		{
-			return;
-		}*/
 		Player player = event.getPlayer();
 		if(isSychrnonStatusFinish(player.getUniqueId()))
 		{
@@ -100,7 +94,7 @@ public class PlayerJoinListener extends BaseListener
 		}
 		if(!new ConfigHandler(plugin).inSleepMode())
 		{
-			PlayerDataHandler.load(SyncType.FULL, player, player.getGameMode());
+			PlayerDataHandler.load(SyncType.FULL, player);
 		}
 		loadstatus.remove(player.getUniqueId());
 	}
@@ -114,6 +108,11 @@ public class PlayerJoinListener extends BaseListener
 	{
 		SynchronStatus sys = (SynchronStatus) MIM.getPlugin().getMysqlHandler().getData(
 				MysqlHandler.Type.SYNCHRONSTATUS, "`player_uuid` = ?", uuid.toString());
+		if(sys == null)
+		{
+			sys = new SynchronStatus(uuid, SynchronStatus.Type.FINISH);
+			MIM.getPlugin().getMysqlHandler().create(MysqlHandler.Type.SYNCHRONSTATUS, sys);
+		}
 		return sys != null ? sys.getType() == SynchronStatus.Type.FINISH : false;
 	}
 	
@@ -121,6 +120,7 @@ public class PlayerJoinListener extends BaseListener
 	{
 		if(MIM.getPlugin().getMysqlHandler().exist(MysqlHandler.Type.SYNCHRONSTATUS, "`player_uuid` = ?", uuid.toString()))
 		{
+			MIM.getPlugin().getLogger().log(Level.INFO, "Player "+uuid.toString()+" was "+type.toString());
 			MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.SYNCHRONSTATUS, new SynchronStatus(uuid, type),
 					"`player_uuid` = ?", uuid.toString());
 		} else

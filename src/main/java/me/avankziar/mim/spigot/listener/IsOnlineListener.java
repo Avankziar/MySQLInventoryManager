@@ -74,7 +74,7 @@ public class IsOnlineListener implements PluginMessageListener
             					inv.setContents(pd.getInventoryStorageContents());
             				}
             				InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
-            						"INV", "INV", player.getGameMode(), synchroKey);
+            						"INV", "INV", synchroKey);
             				player.openInventory(inv);
             				requester.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Openable.InventoryOther")
             						.replace("%player%", targetname)));
@@ -92,7 +92,7 @@ public class IsOnlineListener implements PluginMessageListener
             					inv.setContents(pd.getEnderchestContents());
             				}
             				InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
-            						"EC", "EC", player.getGameMode(), synchroKey);
+            						"EC", "EC", synchroKey);
             				player.openInventory(inv);
             				requester.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Openable.EnderchestOther")
             						.replace("%player%", targetname)));
@@ -130,7 +130,7 @@ public class IsOnlineListener implements PluginMessageListener
             					}	
             				}
             				InventoryCloseListener.addToExternInventory(player.getUniqueId(), otheruuid, inv,
-            						"ARMOR", "ARMOR", player.getGameMode(), synchroKey);
+            						"ARMOR", "ARMOR", synchroKey);
             				player.openInventory(inv);
             				break;
             			default:

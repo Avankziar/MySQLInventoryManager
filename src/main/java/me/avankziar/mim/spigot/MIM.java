@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -72,37 +73,22 @@ import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
 import main.java.me.avankziar.mim.spigot.ifh.Base64Api;
 import main.java.me.avankziar.mim.spigot.ifh.CommandToBungeeApi;
 import main.java.me.avankziar.mim.spigot.ifh.PlayerParameterApi;
-import main.java.me.avankziar.mim.spigot.listener.BlockCanBuildListener;
-import main.java.me.avankziar.mim.spigot.listener.BlockIgniteListener;
-import main.java.me.avankziar.mim.spigot.listener.BlockSignChangeListener;
-import main.java.me.avankziar.mim.spigot.listener.EntityPickupItemListener;
-import main.java.me.avankziar.mim.spigot.listener.EntityResurrectListener;
-import main.java.me.avankziar.mim.spigot.listener.EntityTameListener;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
 import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.LoadStatusListener;
 import main.java.me.avankziar.mim.spigot.listener.OnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerChangedWorldListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerDeathListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerDropItemListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerExpChangeListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerGameModeChangeListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerHarvestBlockListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerItemBreakListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerItemConsumeListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerItemDamageListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerLevelChangeListener;
 import main.java.me.avankziar.mim.spigot.listener.PlayerQuitListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerRespawnListener;
-import main.java.me.avankziar.mim.spigot.listener.PlayerTeleportListener;
 import main.java.me.avankziar.mim.spigot.listener.PrepareItemEnchantListener;
-import main.java.me.avankziar.mim.spigot.listener.TimeSkipListener;
 import main.java.me.avankziar.mim.spigot.listener.WhoIsListener;
 import main.java.me.avankziar.mim.spigot.objects.CustomPlayerInventory;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 import main.java.me.avankziar.mim.spigot.permission.Bypass;
+import main.java.me.avankziar.mim.spigot.playerloader.OfflinePlayerLoader;
+import main.java.me.avankziar.mim.spigot.playerloader.version.Version_1_19_R1;
 import net.luckperms.api.LuckPerms;
 
 public class MIM extends JavaPlugin
@@ -117,6 +103,7 @@ public class MIM extends JavaPlugin
 	private Utility utility;
 	private BackgroundTask backgroundTask;
 	private ConfigHandler configHandler;
+	private OfflinePlayerLoader opl;
 	
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
@@ -126,6 +113,7 @@ public class MIM extends JavaPlugin
 	public static String infoCommandPath = "CmdBase";
 	public static String infoCommand = "/";
 	
+	public boolean inShutDown = false;
 	public Set<UUID> playerInSync = new HashSet<>();
 	public Set<UUID> playerSyncComplete = new HashSet<>();
 	
@@ -169,6 +157,7 @@ public class MIM extends JavaPlugin
 		utility = new Utility(plugin);
 		backgroundTask = new BackgroundTask(this);
 		
+		getVersion();
 		setupIFH();
 		setupVaultEconomy();
 		setupLuckPerm();
@@ -181,6 +170,7 @@ public class MIM extends JavaPlugin
 	
 	public void onDisable()
 	{
+		inShutDown = true;
 		for(Player player : Bukkit.getOnlinePlayers())
 		{
 			PlayerDataHandler.save(SyncType.FULL, player);
@@ -228,6 +218,11 @@ public class MIM extends JavaPlugin
 	public BackgroundTask getBackgroundTask()
 	{
 		return backgroundTask;
+	}
+	
+	public OfflinePlayerLoader getOfflinePlayerLoader()
+	{
+		return opl;
 	}
 	
 	private void setupCommandTree()
@@ -535,32 +530,14 @@ public class MIM extends JavaPlugin
 	public void setupListeners()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new BlockCanBuildListener(plugin), plugin);
-		pm.registerEvents(new BlockIgniteListener(plugin), plugin);
-		pm.registerEvents(new BlockSignChangeListener(plugin), plugin);
-		pm.registerEvents(new EntityPickupItemListener(plugin), plugin);
-		pm.registerEvents(new EntityResurrectListener(plugin), plugin);
-		pm.registerEvents(new EntityTameListener(plugin), plugin);
 		pm.registerEvents(new InventoryCloseListener(plugin), plugin);
 		//pm.registerEvents(new InventoryClickListener(), plugin); //Wird hinzugefügt, wenn es besser für Shulker läuft & mehr zeit habe.
 		pm.registerEvents(new LoadStatusListener(plugin), plugin);
 		pm.registerEvents(new PlayerChangedWorldListener(plugin), plugin);
 		pm.registerEvents(new PlayerDeathListener(plugin), plugin);
-		pm.registerEvents(new PlayerDropItemListener(plugin), plugin);
-		pm.registerEvents(new PlayerExpChangeListener(plugin), plugin);
-		pm.registerEvents(new PlayerGameModeChangeListener(plugin), plugin);
-		pm.registerEvents(new PlayerHarvestBlockListener(plugin), plugin);
-		//pm.registerEvents(new PlayerInteractListener(), plugin); //Wird hinzugefügt, wenn es besser für Shulker läuft & mehr zeit habe.
-		pm.registerEvents(new PlayerItemBreakListener(plugin), plugin);
-		pm.registerEvents(new PlayerItemConsumeListener(plugin), plugin);
-		pm.registerEvents(new PlayerItemDamageListener(plugin), plugin);
 		pm.registerEvents(new PlayerJoinListener(plugin), plugin);
-		pm.registerEvents(new PlayerLevelChangeListener(plugin), plugin);
 		pm.registerEvents(new PlayerQuitListener(plugin), plugin);
-		pm.registerEvents(new PlayerRespawnListener(plugin), plugin);
-		pm.registerEvents(new PlayerTeleportListener(plugin), plugin);
 		pm.registerEvents(new PrepareItemEnchantListener(), plugin);
-		pm.registerEvents(new TimeSkipListener(plugin), plugin);
 		Messenger me = getServer().getMessenger();
 		me.registerOutgoingPluginChannel(this, StaticValues.CMDTB_TOBUNGEE);
 		if(ppmApi != null)
@@ -630,6 +607,19 @@ public class MIM extends JavaPlugin
 	{
 		yamlHandler = new YamlHandler(this);
 		return true;
+	}
+	
+	private void getVersion()
+	{
+		String[] versionsplit = Bukkit.getBukkitVersion().split("-");
+		String version = versionsplit[0];
+		if(version.matches("1.19") || version.matches("1.19.1"))
+		{
+			opl = (OfflinePlayerLoader) new Version_1_19_R1();
+			log.log(Level.INFO, "Version "+version+" detected and using.");
+			return;
+		}
+		
 	}
 	
 	private void setupIFH()

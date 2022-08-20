@@ -33,7 +33,6 @@ public class InventoryCloseListener extends BaseListener
 	public static LinkedHashMap<UUID, UUID> executorToOwnerInventory = new LinkedHashMap<>();//CmdExecutor, InventoryOwner
 	public static LinkedHashMap<UUID, String> executorToInventoryType = new LinkedHashMap<>();//CmdExecutor, InventoryType(CPI, Enderchest etc.)
 	//Only useable for Enderchest etc. (CPI not use this)
-	public static LinkedHashMap<UUID, GameMode> executorToGameMode = new LinkedHashMap<>(); //CmdExecutor, targetGamemode
 	public static LinkedHashMap<UUID, String> executorToSynchroKey = new LinkedHashMap<>(); //CmdExecutor, targetSyncorKey 
 	//Only if the person rightclick in a inv on a shulker
 	public static LinkedHashMap<UUID, Integer> executorToShulkerSlot = new LinkedHashMap<>(); //CmdExecutor, SlotInOverInventory
@@ -89,12 +88,11 @@ public class InventoryCloseListener extends BaseListener
 	}
 	
 	public static void addToExternInventory(UUID executorPlayer, UUID targetPlayer,
-			Inventory inv, String invType, String subType, GameMode targetMode, String synchroKey)
+			Inventory inv, String invType, String subType, String synchroKey)
 	{
 		ownerToInventory.put(targetPlayer+invType+";"+subType, inv);
 		executorToOwnerInventory.put(executorPlayer, targetPlayer);
 		executorToInventoryType.put(executorPlayer, invType+";"+subType);
-		executorToGameMode.put(executorPlayer, targetMode);
 		executorToSynchroKey.put(executorPlayer, synchroKey);
 	}
 	
@@ -108,12 +106,10 @@ public class InventoryCloseListener extends BaseListener
 		final UUID targetPlayer = executorToOwnerInventory.get(executorPlayer);
 		final String invType = executorToInventoryType.get(executorPlayer).split(";")[0];
 		final String subType = executorToInventoryType.get(executorPlayer).split(";")[1];
-		final Inventory inv = ownerToInventory.get(targetPlayer+invType+";"+subType); 
-		final GameMode targetMode = executorToGameMode.get(executorPlayer);
+		final Inventory inv = ownerToInventory.get(targetPlayer+invType+";"+subType);
 		final String synchroKey = executorToSynchroKey.get(executorPlayer);
 		executorToOwnerInventory.remove(executorPlayer);
 		executorToInventoryType.remove(executorPlayer);
-		executorToGameMode.remove(executorPlayer);
 		executorToSynchroKey.remove(executorPlayer);
 		boolean exist = false;
 		for(Entry<UUID, UUID> set : executorToOwnerInventory.entrySet())
@@ -154,13 +150,12 @@ public class InventoryCloseListener extends BaseListener
 					{
 						String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 							+ "` SET `inventory_content` = ?"
-							+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+							+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 						PreparedStatement ps = conn.prepareStatement(sql);
 				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
 				        
 				        ps.setString(2, synchroKey);
-				        ps.setString(3, targetMode.toString());
-				        ps.setString(4, targetPlayer.toString());
+				        ps.setString(3, targetPlayer.toString());
 						int u = ps.executeUpdate();
 						MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 					} catch (SQLException e)
@@ -200,14 +195,13 @@ public class InventoryCloseListener extends BaseListener
 					{
 						String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 							+ "` SET `armor_content` = ?, `off_hand` = ?"
-							+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+							+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 						PreparedStatement ps = conn.prepareStatement(sql);
 				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
 				        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(offhand));
 				        
 				        ps.setString(3, synchroKey);
-				        ps.setString(4, targetMode.toString());
-				        ps.setString(5, targetPlayer.toString());	
+				        ps.setString(4, targetPlayer.toString());	
 						int u = ps.executeUpdate();
 						MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 					} catch (SQLException e)
@@ -223,13 +217,12 @@ public class InventoryCloseListener extends BaseListener
 					String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 						+ "` SET "
 						+ " `enderchest_content` = ?"
-						+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+						+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 					PreparedStatement ps = conn.prepareStatement(sql);
 			        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
 			        
 			        ps.setString(2, synchroKey);
-			        ps.setString(3, targetMode.toString());
-			        ps.setString(4, targetPlayer.toString());		
+			        ps.setString(3, targetPlayer.toString());		
 					int u = ps.executeUpdate();
 					MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 				} catch (SQLException e)
@@ -264,13 +257,12 @@ public class InventoryCloseListener extends BaseListener
 		{
 			String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 				+ "` SET `enderchest_content` = ?"
-				+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+				+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
 	        
 	        ps.setString(2, pd.getSynchroKey());
-	        ps.setString(3, pd.getGameMode().toString());
-	        ps.setString(4, player.getUniqueId().toString());		
+	        ps.setString(3, player.getUniqueId().toString());		
 			int u = ps.executeUpdate();
 			MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 		} catch (SQLException e)

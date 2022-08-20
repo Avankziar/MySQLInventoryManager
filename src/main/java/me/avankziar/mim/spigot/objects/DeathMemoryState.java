@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityCategory;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +25,6 @@ public class DeathMemoryState implements MysqlHandable
 	private long timeStamp;
 	private int id;
 	private String synchroKey; //Key to synchro on different server & worlds
-	private GameMode gameMode; //Second "key"
 	private UUID uuid;
 	//Inventory
 	private ItemStack[] inventoryContents; //getStorageContents() - Returns hotbar & normal slots
@@ -49,8 +47,11 @@ public class DeathMemoryState implements MysqlHandable
 	private float flySpeed; //getFlySpeed
 	private int fireTicks; //getFireTicks
 	private int freezeTicks; //getFreezeTicks
+	private boolean flying; //isFlying
 	private boolean glowing; //isGlowing
 	private boolean gravity; //hasGravity
+	private boolean invisible; //isInvisible
+	private boolean invulnerable; //isInvulnerable
 	private ArrayList<PotionEffect> activeEffects; //getActivePotionEffects
 	private EntityCategory entityCategory; //getCategory || Interessant für Schadensverz. BANN etc.
 	//LivingEntity
@@ -65,12 +66,14 @@ public class DeathMemoryState implements MysqlHandable
 	
 	public DeathMemoryState(){}
 	
-	public DeathMemoryState(int id, long timeStamp, String synchroKey, GameMode gameMode, UUID uuid,
+	public DeathMemoryState(int id, long timeStamp, String synchroKey, UUID uuid,
 			ItemStack[] inventoryContents, ItemStack[] armorContents, ItemStack offHand, 
 			int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, LinkedHashMap<Attribute, Double> attributes, double health, 
 			double absorptionAmount, float expTowardsNextLevel, int expLevel, float walkSpeed,
-			float flySpeed, int fireTicks, int freezeTicks, boolean glowing, boolean gravity, ArrayList<PotionEffect> activeEffects,
+			float flySpeed, int fireTicks, int freezeTicks,
+			boolean flying, boolean glowing, boolean gravity, boolean invisible, boolean invulnerable,
+			ArrayList<PotionEffect> activeEffects,
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
@@ -79,7 +82,6 @@ public class DeathMemoryState implements MysqlHandable
 		setId(id);
 		setTimeStamp(timeStamp);
 		setSynchroKey(synchroKey);
-		setGameMode(gameMode);
 		setUUID(uuid);
 		setInventoryStorageContents(inventoryContents);
 		setArmorContents(armorContents);
@@ -99,8 +101,11 @@ public class DeathMemoryState implements MysqlHandable
 		setFlySpeed(flySpeed);
 		setFireTicks(fireTicks);
 		setFreezeTicks(freezeTicks);
+		setFlying(flying);
 		setGlowing(glowing);
 		setGravity(gravity);
+		setInvisible(invisible);
+		setInvulnerable(invulnerable);
 		setActiveEffects(activeEffects);
 		setEntityCategory(entityCategory);
 		setArrowsInBody(arrowsInBody);
@@ -110,12 +115,14 @@ public class DeathMemoryState implements MysqlHandable
 		setPersistentData(persistentData);
 	}
 	
-	public DeathMemoryState(int id, long timeStamp, String synchroKey, GameMode gameMode, UUID uuid,
+	public DeathMemoryState(int id, long timeStamp, String synchroKey, UUID uuid,
 			String inventoryContents, String armorContents, String offHand, 
 			int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, String attributes, double health, 
 			double absorptionAmount, float expTowardsNextLevel, int expLevel, float walkSpeed,
-			float flySpeed, int fireTicks, int freezeTicks, boolean glowing, boolean gravity, String activeEffects,
+			float flySpeed, int fireTicks, int freezeTicks, 
+			boolean flying, boolean glowing, boolean gravity, boolean invisible, boolean invulnerable,
+			String activeEffects,
 			EntityCategory entityCategory, 
 			int arrowsInBody, int maximumAir, int remainingAir,
 			String customName,
@@ -124,7 +131,6 @@ public class DeathMemoryState implements MysqlHandable
 		setId(id);
 		setTimeStamp(timeStamp);
 		setSynchroKey(synchroKey);
-		setGameMode(gameMode);
 		setUUID(uuid);
 		MIM plugin = MIM.getPlugin();
 		ArrayList<ItemStack> invc = new ArrayList<>();
@@ -163,8 +169,11 @@ public class DeathMemoryState implements MysqlHandable
 		setFlySpeed(flySpeed);
 		setFireTicks(fireTicks);
 		setFreezeTicks(freezeTicks);
+		setFlying(flying);
 		setGlowing(glowing);
 		setGravity(gravity);
+		setInvisible(invisible);
+		setInvulnerable(invulnerable);
 		ArrayList<PotionEffect> pe = new ArrayList<>();
 		for(Object o : plugin.getBase64Api().fromBase64Array(activeEffects))
 		{
@@ -207,16 +216,6 @@ public class DeathMemoryState implements MysqlHandable
 	public void setSynchroKey(String synchroKey)
 	{
 		this.synchroKey = synchroKey;
-	}
-
-	public GameMode getGameMode()
-	{
-		return gameMode;
-	}
-
-	public void setGameMode(GameMode gameMode)
-	{
-		this.gameMode = gameMode;
 	}
 
 	public UUID getUUID()
@@ -409,6 +408,16 @@ public class DeathMemoryState implements MysqlHandable
 		this.freezeTicks = freezeTicks;
 	}
 
+	public boolean isFlying()
+	{
+		return flying;
+	}
+
+	public void setFlying(boolean flying)
+	{
+		this.flying = flying;
+	}
+
 	public boolean isGlowing()
 	{
 		return glowing;
@@ -427,6 +436,26 @@ public class DeathMemoryState implements MysqlHandable
 	public void setGravity(boolean gravity)
 	{
 		this.gravity = gravity;
+	}
+
+	public boolean isInvisible()
+	{
+		return invisible;
+	}
+
+	public void setInvisible(boolean invisible)
+	{
+		this.invisible = invisible;
+	}
+
+	public boolean isInvulnerable()
+	{
+		return invulnerable;
+	}
+
+	public void setInvulnerable(boolean invulnerable)
+	{
+		this.invulnerable = invulnerable;
 	}
 
 	public ArrayList<PotionEffect> getActiveEffects()
@@ -521,51 +550,54 @@ public class DeathMemoryState implements MysqlHandable
 					+ " `food_level`, `saturation`, `saturated_regen_rate`, `unsaturated_regen_rate`,"
 					+ " `starvation_rate`, `exhaustion`, `attributes`, `health`, `absorption_amount`,"
 					+ " `exp_towards_next_level`, `exp_level`, `total_experience`,"
-					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`, `glowing`, `gravity`,"
+					+ " `walk_speed`, `fly_speed`, `fire_ticks`, `freeze_ticks`,"
+					+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
 					+ " `potion_effects`, `entity_category`, `arrows_in_body`, `maximum_air`, `remaining_air`, `custom_name`,"
 					+ " `persistent_data`, `time_stamp`) " 
 					+ "VALUES(?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
-	        ps.setString(3, getSynchroKey());
-	        ps.setString(4, getGameMode().toString());
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setInt(9, getFoodLevel());
-	        ps.setFloat(10, getSaturation());
-	        ps.setInt(11, getSaturatedRegenRate());
-	        ps.setInt(12, getUnsaturatedRegenRate());
-	        ps.setInt(13, getStarvationRate());
-	        ps.setFloat(14, getExhaustion());
+	        ps.setString(2, getSynchroKey());
+	        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+	        ps.setInt(6, getFoodLevel());
+	        ps.setFloat(7, getSaturation());
+	        ps.setInt(8, getSaturatedRegenRate());
+	        ps.setInt(9, getUnsaturatedRegenRate());
+	        ps.setInt(10, getStarvationRate());
+	        ps.setFloat(11, getExhaustion());
 	        StringBuilder at = new StringBuilder();
 	        for(Entry<Attribute, Double> e : getAttributes().entrySet())
 	        {
 	        	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
 	        }
-	        ps.setString(15, at.toString());
-	        ps.setDouble(16, getHealth());
-	        ps.setDouble(17, getAbsorptionAmount());
-	        ps.setFloat(18, getExpTowardsNextLevel());
-	        ps.setInt(19, getExpLevel());
-	        ps.setFloat(21, getWalkSpeed());
-	        ps.setFloat(22, getFlySpeed());
-	        ps.setInt(23, getFireTicks());
-	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isGlowing());
-	        ps.setBoolean(26, isGravity());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(28, getEntityCategory().toString());
-	        ps.setInt(29, getArrowsInBody());
-	        ps.setInt(30, getMaximumAir());
-	        ps.setInt(31, getRemainingAir());
+	        ps.setString(12, at.toString());
+	        ps.setDouble(13, getHealth());
+	        ps.setDouble(14, getAbsorptionAmount());
+	        ps.setFloat(15, getExpTowardsNextLevel());
+	        ps.setInt(16, getExpLevel());
+	        ps.setFloat(17, getWalkSpeed());
+	        ps.setFloat(18, getFlySpeed());
+	        ps.setInt(19, getFireTicks());
+	        ps.setInt(20, getFreezeTicks());
+	        ps.setBoolean(21, isFlying());
+	        ps.setBoolean(22, isGlowing());
+	        ps.setBoolean(23, isGravity());
+	        ps.setBoolean(24, isInvisible());
+	        ps.setBoolean(25, isInvulnerable());
+	        ps.setString(26, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(27, getEntityCategory().toString());
+	        ps.setInt(28, getArrowsInBody());
+	        ps.setInt(29, getMaximumAir());
+	        ps.setInt(30, getRemainingAir());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(32, pd.toString());
-	        ps.setLong(34, getTimeStamp());
+	        ps.setString(31, pd.toString());
+	        ps.setLong(32, getTimeStamp());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -589,52 +621,55 @@ public class DeathMemoryState implements MysqlHandable
 				+ " `food_level` = ?, `saturation` = ?, `saturated_regen_rate` = ?, `unsaturated_regen_rate` = ?,"
 				+ " `starvation_rate` = ?, `exhaustion` = ?, `attributes` = ?, `health` = ?, `absorption_amount` = ?,"
 				+ " `exp_towards_next_level` = ?, `exp_level` = ?,"
-				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?, `glowing` = ?, `gravity` = ?,"
+				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?,"
+				+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
 				+ " `potion_effects` = ?, `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?, `remaining_air` = ?, `custom_name` = ?,"
 				+ " `persistent_data` = ?, `time_stamp` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
-	        ps.setString(3, getSynchroKey());
-	        ps.setString(4, getGameMode().toString());
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setInt(9, getFoodLevel());
-	        ps.setFloat(10, getSaturation());
-	        ps.setInt(11, getSaturatedRegenRate());
-	        ps.setInt(12, getUnsaturatedRegenRate());
-	        ps.setInt(13, getStarvationRate());
-	        ps.setFloat(14, getExhaustion());
-	        StringBuilder at = new StringBuilder();
-	        for(Entry<Attribute, Double> e : getAttributes().entrySet())
-	        {
-	        	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
-	        }
-	        ps.setString(15, at.toString());
-	        ps.setDouble(16, getHealth());
-	        ps.setDouble(17, getAbsorptionAmount());
-	        ps.setFloat(18, getExpTowardsNextLevel());
-	        ps.setInt(19, getExpLevel());
-	        ps.setFloat(21, getWalkSpeed());
-	        ps.setFloat(22, getFlySpeed());
-	        ps.setInt(23, getFireTicks());
-	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isGlowing());
-	        ps.setBoolean(26, isGravity());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(28, getEntityCategory().toString());
-	        ps.setInt(29, getArrowsInBody());
-	        ps.setInt(30, getMaximumAir());
-	        ps.setInt(31, getRemainingAir());
-	        StringBuilder pd = new StringBuilder();
-	        for(PersistentData per : getPersistentData())
-	        {
-	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
-	        }
-	        ps.setString(32, pd.toString());
-	        ps.setLong(34, getTimeStamp());
-			int i = 35;
+		    ps.setString(2, getSynchroKey());
+		    ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
+		    ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
+		    ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+		    ps.setInt(6, getFoodLevel());
+		    ps.setFloat(7, getSaturation());
+		    ps.setInt(8, getSaturatedRegenRate());
+		    ps.setInt(9, getUnsaturatedRegenRate());
+		    ps.setInt(10, getStarvationRate());
+		    ps.setFloat(11, getExhaustion());
+		    StringBuilder at = new StringBuilder();
+		    for(Entry<Attribute, Double> e : getAttributes().entrySet())
+		    {
+		       	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
+		    }
+		    ps.setString(12, at.toString());
+		    ps.setDouble(13, getHealth());
+		    ps.setDouble(14, getAbsorptionAmount());
+		    ps.setFloat(15, getExpTowardsNextLevel());
+		    ps.setInt(16, getExpLevel());
+		    ps.setFloat(17, getWalkSpeed());
+		    ps.setFloat(18, getFlySpeed());
+		    ps.setInt(19, getFireTicks());
+		    ps.setInt(20, getFreezeTicks());
+		    ps.setBoolean(21, isFlying());
+		    ps.setBoolean(22, isGlowing());
+		    ps.setBoolean(23, isGravity());
+		    ps.setBoolean(24, isInvisible());
+		    ps.setBoolean(25, isInvulnerable());
+		    ps.setString(26, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+		    ps.setString(27, getEntityCategory().toString());
+		    ps.setInt(28, getArrowsInBody());
+		    ps.setInt(29, getMaximumAir());
+		    ps.setInt(30, getRemainingAir());
+		    StringBuilder pd = new StringBuilder();
+		    for(PersistentData per : getPersistentData())
+		    {
+		       	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
+		    }
+		    ps.setString(31, pd.toString());
+		    ps.setLong(32, getTimeStamp());
+			int i = 33;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -674,7 +709,6 @@ public class DeathMemoryState implements MysqlHandable
 						rs.getInt("id"),
 						rs.getLong("time_stamp"),
 						rs.getString("synchro_key"),
-						GameMode.valueOf(rs.getString("game_mode")),
 						UUID.fromString(rs.getString("player_uuid")),
 						rs.getString("inventory_content"),
 						rs.getString("armor_content"),
@@ -694,8 +728,11 @@ public class DeathMemoryState implements MysqlHandable
 						rs.getFloat("fly_speed"),
 						rs.getInt("fire_ticks"),
 						rs.getInt("freeze_ticks"),
+						rs.getBoolean("flying"),
 						rs.getBoolean("glowing"),
 						rs.getBoolean("gravity"),
+						rs.getBoolean("invisible"),
+						rs.getBoolean("invulnerable"),
 						rs.getString("potion_effects"),
 						EntityCategory.valueOf(rs.getString("entity_category")),
 						rs.getInt("arrows_in_body"),

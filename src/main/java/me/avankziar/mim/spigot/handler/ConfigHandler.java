@@ -64,6 +64,16 @@ public class ConfigHandler
 		return w.getString("Synchrokey", "default");
 	}
 	
+	public String getSynchroKey(World world, boolean console)
+	{
+		YamlConfiguration w = getSyncYaml(world, console);
+		if(w == null)
+		{
+			return "default";
+		}
+		return w.getString("Synchrokey", "default");
+	}
+	
 	public boolean getDefaultClearToggle()
 	{
 		return plugin.getYamlHandler().getConfig().getBoolean("Default.ClearToggle");

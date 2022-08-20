@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -155,10 +154,9 @@ public class PlayerDataHandler
 	public static void save(SyncType syncType, final Player player)
 	{
 		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
-		GameMode gm = player.getGameMode();
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
-				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				player.getUniqueId().toString(), synchroKey, gm.toString());
+				"`player_uuid` = ? AND `synchro_key` = ?",
+				player.getUniqueId().toString(), synchroKey);
 		LinkedHashMap<Attribute, Double> attributes = new LinkedHashMap<>();
 		for(Attribute at : attributeList)
 		{
@@ -213,11 +211,11 @@ public class PlayerDataHandler
 			pd.setCustomName(player.getCustomName());
 			pd.setPersistentData(getPersitentData(player));
 			MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.PLAYERDATA, pd,
-					"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				player.getUniqueId().toString(), synchroKey, gm.toString());
+					"`player_uuid` = ? AND `synchro_key` = ?",
+				player.getUniqueId().toString(), synchroKey);
 		} else
 		{
-			pd = new PlayerData(0, synchroKey, gm, player.getUniqueId(), player.getName(),
+			pd = new PlayerData(0, synchroKey, player.getUniqueId(), player.getName(),
 					player.getInventory().getStorageContents(), player.getInventory().getArmorContents(),
 					player.getInventory().getItemInOffHand(), player.getEnderChest().getContents(),
 					player.getFoodLevel(), player.getSaturation(), player.getSaturatedRegenRate(),
@@ -251,7 +249,7 @@ public class PlayerDataHandler
 					+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 					+ " `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?,"
 					+ " `remaining_air` = ?, `custom_name` = ?,"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setInt(1, player.getFoodLevel());
 		        ps.setFloat(2, player.getSaturation());
@@ -282,8 +280,7 @@ public class PlayerDataHandler
 		        ps.setInt(22, player.getRemainingAir());
 		        
 		        ps.setString(23, pd.getSynchroKey());
-		        ps.setString(24, pd.getGameMode().toString());
-		        ps.setString(25, player.getUniqueId().toString());		
+		        ps.setString(24, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -296,15 +293,14 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `exp_towards_next_level` = ?, `exp_level` = ?, `total_experience` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setFloat(1, player.getExp());
 		        ps.setInt(2, player.getLevel());
 		        ps.setInt(3, player.getTotalExperience());
 		        
 		        ps.setString(4, pd.getSynchroKey());
-		        ps.setString(5, pd.getGameMode().toString());
-		        ps.setString(6, player.getUniqueId().toString());		
+		        ps.setString(5, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -317,7 +313,7 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
 		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
@@ -325,8 +321,7 @@ public class PlayerDataHandler
 		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(5, pd.getSynchroKey());
-		        ps.setString(6, pd.getGameMode().toString());
-		        ps.setString(7, player.getUniqueId().toString());		
+		        ps.setString(6, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -339,13 +334,12 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `armor_content` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -358,13 +352,12 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `enderchest_content` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -377,13 +370,12 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `off_hand` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64(player.getInventory().getItemInOffHand()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -396,13 +388,12 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `inventory_content` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -415,14 +406,13 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `potion_effects` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pe.toArray(
 		        		new PotionEffect[pd.getActiveEffects().size()])));
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -435,7 +425,7 @@ public class PlayerDataHandler
 			{
 				String sql = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
 					+ "` SET `persistent_data` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `player_uuid` = ?";
+					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        StringBuilder pds = new StringBuilder();
 		        for(PersistentData per : getPersitentData(player))
@@ -445,8 +435,7 @@ public class PlayerDataHandler
 		        ps.setString(1, pds.toString());
 		        
 		        ps.setString(2, pd.getSynchroKey());
-		        ps.setString(3, pd.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -461,12 +450,12 @@ public class PlayerDataHandler
 	 * Load the playerData on the player. Always sync
 	 * @param player
 	 */
-	public static void load(SyncType syncType, Player player, GameMode gm)
+	public static void load(SyncType syncType, Player player)
 	{
 		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
-				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				player.getUniqueId().toString(), synchroKey, gm.toString());
+				"`player_uuid` = ? AND `synchro_key` = ?",
+				player.getUniqueId().toString(), synchroKey);
 		if(pd == null)
 		{
 			save(SyncType.FULL, player);

@@ -83,7 +83,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	public void load(Player player, String synchroKey, SyncType syncType)
 	{
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, cvSyncType(syncType), RunType.LOAD, player, player.getGameMode()).run();
+		new SyncTask(plugin, cvSyncType(syncType), RunType.LOAD, player).run();
 		removeCooldown(player.getUniqueId());
 	}
 	
@@ -109,7 +109,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	public void save(Player player, String synchroKey, SyncType syncType)
 	{
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, cvSyncType(syncType), RunType.SAVE, player, player.getGameMode()).run();
+		new SyncTask(plugin, cvSyncType(syncType), RunType.SAVE, player).run();
 		removeCooldown(player.getUniqueId());
 	}
 	
@@ -156,7 +156,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	public void saveAndKick(Player player)
 	{
 		addCooldown(player.getUniqueId());
-		new SyncTask(plugin, main.java.me.avankziar.mim.spigot.objects.SyncType.FULL , RunType.SAVEANDKICK, player, player.getGameMode()).run();
+		new SyncTask(plugin, main.java.me.avankziar.mim.spigot.objects.SyncType.FULL , RunType.SAVEANDKICK, player).run();
 		removeCooldown(player.getUniqueId());
 		new BukkitRunnable()
 		{

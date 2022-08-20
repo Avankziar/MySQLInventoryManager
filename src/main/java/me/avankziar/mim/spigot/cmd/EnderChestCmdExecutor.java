@@ -54,7 +54,7 @@ public class EnderChestCmdExecutor implements CommandExecutor
 				inv = player.getEnderChest();
 			}
 			InventoryCloseListener.addToExternInventory(player.getUniqueId(), player.getUniqueId(), inv,
-					"EC", "EC", player.getGameMode(), synchroKey);
+					"EC", "EC", synchroKey);
 			player.openInventory(inv);
 			return true;
 		} else if(args.length == 1)

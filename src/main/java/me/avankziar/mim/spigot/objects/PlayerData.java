@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityCategory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,6 @@ public class PlayerData implements MysqlHandable
 {	
 	private int id;
 	private String synchroKey; //Key to synchro on different server & worlds
-	private GameMode gameMode; //Second "key"
 	private UUID uuid;
 	private String name;
 	//Inventory
@@ -72,7 +70,7 @@ public class PlayerData implements MysqlHandable
 	
 	public PlayerData(){}
 	
-	public PlayerData(int id, String synchroKey, GameMode gameMode, UUID uuid, String name, 
+	public PlayerData(int id, String synchroKey, UUID uuid, String name, 
 			ItemStack[] inventoryContents, ItemStack[] armorContents, ItemStack offHand, 
 			ItemStack[] enderchestContents, int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, LinkedHashMap<Attribute, Double> attributes, double health, 
@@ -87,7 +85,6 @@ public class PlayerData implements MysqlHandable
 	{
 		setId(id);
 		setSynchroKey(synchroKey);
-		setGameMode(gameMode);
 		setUUID(uuid);
 		setName(name);
 		setInventoryStorageContents(inventoryContents);
@@ -125,7 +122,7 @@ public class PlayerData implements MysqlHandable
 		setClearToggle(clearToggle);
 	}
 	
-	public PlayerData(int id, String synchroKey, GameMode gameMode, UUID uuid, String name, 
+	public PlayerData(int id, String synchroKey, UUID uuid, String name, 
 			String inventoryContents, String armorContents, String offHand, 
 			String enderchestContents, int foodLevel, float saturation, int saturatedRegenRate, int unsaturatedRegenRate, 
 			int starvationRate, float exhaustion, String attributes, double health, 
@@ -140,7 +137,6 @@ public class PlayerData implements MysqlHandable
 	{
 		setId(id);
 		setSynchroKey(synchroKey);
-		setGameMode(gameMode);
 		setUUID(uuid);
 		setName(name);
 		MIM plugin = MIM.getPlugin();
@@ -233,16 +229,6 @@ public class PlayerData implements MysqlHandable
 	public void setSynchroKey(String synchroKey)
 	{
 		this.synchroKey = synchroKey;
-	}
-
-	public GameMode getGameMode()
-	{
-		return gameMode;
-	}
-
-	public void setGameMode(GameMode gameMode)
-	{
-		this.gameMode = gameMode;
 	}
 
 	public int getId()
@@ -630,7 +616,7 @@ public class PlayerData implements MysqlHandable
 		{
 			String sql = "INSERT INTO `" + tablename
 					+ "`(`player_uuid`, `player_name`,"
-					+ " `synchro_key`, `game_mode`,"
+					+ " `synchro_key`,"
 					+ " `inventory_content`, `armor_content`, `off_hand`, `enderchest_content`,"
 					+ " `food_level`, `saturation`, `saturated_regen_rate`, `unsaturated_regen_rate`,"
 					+ " `starvation_rate`, `exhaustion`, `attributes`, `health`, `absorption_amount`,"
@@ -641,7 +627,7 @@ public class PlayerData implements MysqlHandable
 					+ " `persistent_data`, `clear_toggle`) " 
 					+ "VALUES("
 					+ "?, ?, "
-					+ "?, ?, "
+					+ "?, "
 					+ "?, ?, ?, ?, "
 					+ "?, ?, ?, ?, "
 					+ "?, ?, ?, ?, ?, "
@@ -654,50 +640,49 @@ public class PlayerData implements MysqlHandable
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
 	        ps.setString(3, getSynchroKey());
-	        ps.setString(4, getGameMode().toString());
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setString(8, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
-	        ps.setInt(9, getFoodLevel());
-	        ps.setFloat(10, getSaturation());
-	        ps.setInt(11, getSaturatedRegenRate());
-	        ps.setInt(12, getUnsaturatedRegenRate());
-	        ps.setInt(13, getStarvationRate());
-	        ps.setFloat(14, getExhaustion());
+	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
+	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
+	        ps.setInt(8, getFoodLevel());
+	        ps.setFloat(9, getSaturation());
+	        ps.setInt(10, getSaturatedRegenRate());
+	        ps.setInt(11, getUnsaturatedRegenRate());
+	        ps.setInt(12, getStarvationRate());
+	        ps.setFloat(13, getExhaustion());
 	        StringBuilder at = new StringBuilder();
 	        for(Entry<Attribute, Double> e : getAttributes().entrySet())
 	        {
 	        	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
 	        }
-	        ps.setString(15, at.toString());
-	        ps.setDouble(16, getHealth());
-	        ps.setDouble(17, getAbsorptionAmount());
-	        ps.setFloat(18, getExpTowardsNextLevel());
-	        ps.setInt(19, getExpLevel());
-	        ps.setInt(20, getTotalExperience());
-	        ps.setFloat(21, getWalkSpeed());
-	        ps.setFloat(22, getFlySpeed());
-	        ps.setInt(23, getFireTicks());
-	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isFlying());
-	        ps.setBoolean(26, isGlowing());
-	        ps.setBoolean(27, isGravity());
-	        ps.setBoolean(28, isInvisible());
-	        ps.setBoolean(29, isInvulnerable());
-	        ps.setString(30, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(31, getEntityCategory().toString());
-	        ps.setInt(32, getArrowsInBody());
-	        ps.setInt(33, getMaximumAir());
-	        ps.setInt(34, getRemainingAir());
-	        ps.setString(35, getCustomName());
+	        ps.setString(14, at.toString());
+	        ps.setDouble(15, getHealth());
+	        ps.setDouble(16, getAbsorptionAmount());
+	        ps.setFloat(17, getExpTowardsNextLevel());
+	        ps.setInt(18, getExpLevel());
+	        ps.setInt(19, getTotalExperience());
+	        ps.setFloat(20, getWalkSpeed());
+	        ps.setFloat(21, getFlySpeed());
+	        ps.setInt(22, getFireTicks());
+	        ps.setInt(23, getFreezeTicks());
+	        ps.setBoolean(24, isFlying());
+	        ps.setBoolean(25, isGlowing());
+	        ps.setBoolean(26, isGravity());
+	        ps.setBoolean(27, isInvisible());
+	        ps.setBoolean(28, isInvulnerable());
+	        ps.setString(29, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(30, getEntityCategory().toString());
+	        ps.setInt(31, getArrowsInBody());
+	        ps.setInt(32, getMaximumAir());
+	        ps.setInt(33, getRemainingAir());
+	        ps.setString(34, getCustomName());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(36, pd.toString());
-	        ps.setBoolean(37, isClearToggle());
+	        ps.setString(35, pd.toString());
+	        ps.setBoolean(36, isClearToggle());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -716,7 +701,7 @@ public class PlayerData implements MysqlHandable
 		{
 			String sql = "UPDATE `" + tablename
 				+ "` SET `player_uuid` = ?, `player_name` = ?,"
-				+ " `synchro_key` = ?, `game_mode` = ?,"
+				+ " `synchro_key` = ?,"
 				+ " `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?,"
 				+ " `food_level` = ?, `saturation` = ?, `saturated_regen_rate` = ?, `unsaturated_regen_rate` = ?,"
 				+ " `starvation_rate` = ?, `exhaustion` = ?, `attributes` = ?, `health` = ?, `absorption_amount` = ?,"
@@ -730,51 +715,50 @@ public class PlayerData implements MysqlHandable
 			ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
 	        ps.setString(3, getSynchroKey());
-	        ps.setString(4, getGameMode().toString());
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setString(8, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
-	        ps.setInt(9, getFoodLevel());
-	        ps.setFloat(10, getSaturation());
-	        ps.setInt(11, getSaturatedRegenRate());
-	        ps.setInt(12, getUnsaturatedRegenRate());
-	        ps.setInt(13, getStarvationRate());
-	        ps.setFloat(14, getExhaustion());
+	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
+	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+	        ps.setString(7, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
+	        ps.setInt(8, getFoodLevel());
+	        ps.setFloat(9, getSaturation());
+	        ps.setInt(10, getSaturatedRegenRate());
+	        ps.setInt(11, getUnsaturatedRegenRate());
+	        ps.setInt(12, getStarvationRate());
+	        ps.setFloat(13, getExhaustion());
 	        StringBuilder at = new StringBuilder();
 	        for(Entry<Attribute, Double> e : getAttributes().entrySet())
 	        {
 	        	at.append(e.getKey().toString()+";"+e.getValue().doubleValue()+"@");
 	        }
-	        ps.setString(15, at.toString());
-	        ps.setDouble(16, getHealth());
-	        ps.setDouble(17, getAbsorptionAmount());
-	        ps.setFloat(18, getExpTowardsNextLevel());
-	        ps.setInt(19, getExpLevel());
-	        ps.setInt(20, getTotalExperience());
-	        ps.setFloat(21, getWalkSpeed());
-	        ps.setFloat(22, getFlySpeed());
-	        ps.setInt(23, getFireTicks());
-	        ps.setInt(24, getFreezeTicks());
-	        ps.setBoolean(25, isFlying());
-	        ps.setBoolean(26, isGlowing());
-	        ps.setBoolean(27, isGravity());
-	        ps.setBoolean(28, isInvisible());
-	        ps.setBoolean(29, isInvulnerable());
-	        ps.setString(30, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
-	        ps.setString(31, getEntityCategory().toString());
-	        ps.setInt(32, getArrowsInBody());
-	        ps.setInt(33, getMaximumAir());
-	        ps.setInt(34, getRemainingAir());
-	        ps.setString(35, getCustomName());
+	        ps.setString(14, at.toString());
+	        ps.setDouble(15, getHealth());
+	        ps.setDouble(16, getAbsorptionAmount());
+	        ps.setFloat(17, getExpTowardsNextLevel());
+	        ps.setInt(18, getExpLevel());
+	        ps.setInt(19, getTotalExperience());
+	        ps.setFloat(20, getWalkSpeed());
+	        ps.setFloat(21, getFlySpeed());
+	        ps.setInt(22, getFireTicks());
+	        ps.setInt(23, getFreezeTicks());
+	        ps.setBoolean(24, isFlying());
+	        ps.setBoolean(25, isGlowing());
+	        ps.setBoolean(26, isGravity());
+	        ps.setBoolean(27, isInvisible());
+	        ps.setBoolean(28, isInvulnerable());
+	        ps.setString(29, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(30, getEntityCategory().toString());
+	        ps.setInt(31, getArrowsInBody());
+	        ps.setInt(32, getMaximumAir());
+	        ps.setInt(33, getRemainingAir());
+	        ps.setString(34, getCustomName());
 	        StringBuilder pd = new StringBuilder();
 	        for(PersistentData per : getPersistentData())
 	        {
 	        	pd.append(per.getNamespaced()+";"+per.getKey()+";"+per.getPersistentType().toString()+";"+per.getPersistentValue()+"@");
 	        }
-	        ps.setString(36, pd.toString());
-	        ps.setBoolean(37, isClearToggle());
-			int i = 38;
+	        ps.setString(35, pd.toString());
+	        ps.setBoolean(36, isClearToggle());
+			int i = 37;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -813,7 +797,6 @@ public class PlayerData implements MysqlHandable
 				al.add(new PlayerData(
 						rs.getInt("id"),
 						rs.getString("synchro_key"),
-						GameMode.valueOf(rs.getString("game_mode")),
 						UUID.fromString(rs.getString("player_uuid")),
 						rs.getString("player_name"),
 						rs.getString("inventory_content"),
