@@ -467,10 +467,13 @@ public class PlayerDataHandler
 			load(syncType, player, pd);
 			return;
 		}
-		player.getInventory().setStorageContents(pd.getInventoryStorageContents());
-		player.getInventory().setArmorContents(pd.getArmorContents());
-		player.getInventory().setItemInOffHand(pd.getOffHand());
-		player.getEnderChest().setContents(pd.getEnderchestContents());
+		try
+		{
+			player.getInventory().setStorageContents(pd.getInventoryStorageContents());
+			player.getInventory().setArmorContents(pd.getArmorContents());
+			player.getInventory().setItemInOffHand(pd.getOffHand());
+			player.getEnderChest().setStorageContents(pd.getEnderchestContents());
+		} catch(Exception e){}
 		player.setFoodLevel(pd.getFoodLevel());
 		player.setSaturation(pd.getSaturation());
 		player.setSaturatedRegenRate(pd.getSaturatedRegenRate());
@@ -566,7 +569,7 @@ public class PlayerDataHandler
 			player.getInventory().setStorageContents(pd.getInventoryStorageContents());
 			player.getInventory().setArmorContents(pd.getArmorContents());
 			player.getInventory().setItemInOffHand(pd.getOffHand());
-			player.getEnderChest().setContents(pd.getEnderchestContents());
+			player.getEnderChest().setStorageContents(pd.getEnderchestContents());
 			return;
 		case EFFECT:
 			for(PotionEffect pe : pd.getActiveEffects())

@@ -150,6 +150,7 @@ public class PlayerQuitListener extends BaseListener
 		pd.setRemainingAir(player.getRemainingAir());
 		pd.setCustomName(player.getCustomName());
 		pd.setPersistentData(PlayerDataHandler.getPersitentData(player));
+		pd.setLastGameMode(player.getGameMode());
 		return pd;
 	}
 }

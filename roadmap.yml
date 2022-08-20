@@ -27,6 +27,7 @@ Build 0-3-2
 - PredefinePlayerState Object angepasst.
 - GameMode wird nun von anderen Server übernommen, wenn die Config es nicht blockiert.
 - /whois Fehler bezüglich PlayerTimes wurde gefixt.
+- Hab das mit dem Dupen probiert. Aka Item rausgeworfen und teleportiert. Bei mir passierte nix.
 
 Build 0-2-8
 - /invsee InventarArray > 36 checkup eingefügt.
