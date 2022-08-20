@@ -153,7 +153,6 @@ public class MysqlSetup
 		  		+ " time_stamp BIGINT,"
 		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " synchro_key text,"
-		  		+ " game_mode text,"
 		  		
 		  		+ " inventory_content LONGTEXT,"
 		  		+ " armor_content LONGTEXT,"
@@ -174,8 +173,11 @@ public class MysqlSetup
 		  		+ " fly_speed float,"
 		  		+ " fire_ticks int,"
 		  		+ " freeze_ticks int,"
+		  		+ " flying boolean,"
 		  		+ " glowing boolean,"
 		  		+ " gravity boolean,"
+		  		+ " invisible boolean,"
+		  		+ " invulnerable boolean,"
 		  		+ " potion_effects LONGTEXT,"
 		  		+ " entity_category text,"
 		  		+ " arrows_in_body int,"
@@ -193,13 +195,10 @@ public class MysqlSetup
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
 		  		+ " state_name text,"
 		  		+ " synchro_key text,"
-		  		+ " game_mode text,"
-		  		
 		  		+ " inventory_content LONGTEXT,"
 		  		+ " armor_content LONGTEXT,"
 		  		+ " off_hand MEDIUMTEXT,"
 		  		+ " enderchest_content LONGTEXT,"
-		  		
 		  		+ " food_level int,"
 		  		+ " saturation float,"
 		  		+ " saturated_regen_rate int,"
@@ -222,7 +221,6 @@ public class MysqlSetup
 		  		+ " arrows_in_body int,"
 		  		+ " maximum_air int,"
 		  		+ " remaining_air int,"
-		  		+ " custom_name text,"
 		  		+ " persistent_data LONGTEXT);";
 		baseSetup(data);
 		return true;

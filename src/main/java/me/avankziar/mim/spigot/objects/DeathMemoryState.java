@@ -554,7 +554,17 @@ public class DeathMemoryState implements MysqlHandable
 					+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
 					+ " `potion_effects`, `entity_category`, `arrows_in_body`, `maximum_air`, `remaining_air`, `custom_name`,"
 					+ " `persistent_data`, `time_stamp`) " 
-					+ "VALUES(?, ?)";
+					+ "VALUES("
+					+ "?, "
+					+ "?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, "
+					+ "?, ?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, "
+					+ "?, ?, ?, ?, ?, ?, "
+					+ "?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getSynchroKey());
@@ -622,7 +632,7 @@ public class DeathMemoryState implements MysqlHandable
 				+ " `starvation_rate` = ?, `exhaustion` = ?, `attributes` = ?, `health` = ?, `absorption_amount` = ?,"
 				+ " `exp_towards_next_level` = ?, `exp_level` = ?,"
 				+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?, `freeze_ticks` = ?,"
-				+ " `flying`, `glowing`, `gravity`, `invisible`, `invulnerable`,"
+				+ " `flying` = ?, `glowing` = ?, `gravity` = ?, `invisible` = ?, `invulnerable` = ?,"
 				+ " `potion_effects` = ?, `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?, `remaining_air` = ?, `custom_name` = ?,"
 				+ " `persistent_data` = ?, `time_stamp` = ?" 
 				+ " WHERE "+whereColumn;

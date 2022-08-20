@@ -154,10 +154,9 @@ public class PredefinePlayerStateHandler
 	 */
 	public static void save(SyncType syncType, final Player player, String statename, String synchroKey)
 	{
-		GameMode gm = player.getGameMode();
 		PredefinePlayerState pps = (PredefinePlayerState) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PREDEFINEPLAYERSTATE,
-				"`state_name` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				statename, synchroKey, gm.toString());
+				"`state_name` = ? AND `synchro_key` = ?",
+				statename, synchroKey);
 		LinkedHashMap<Attribute, Double> attributes = new LinkedHashMap<>();
 		for(Attribute at : attributeList)
 		{
@@ -170,11 +169,7 @@ public class PredefinePlayerStateHandler
 		}
 		if(pps != null)
 		{
-			if(syncType != SyncType.FULL)
-			{
-				save(syncType, player, pps);
-				return;
-			}
+			pps.setSynchroKey(synchroKey);
 			pps.setStateName(statename);
 			pps.setInventoryStorageContents(player.getInventory().getStorageContents());
 			pps.setArmorContents(player.getInventory().getArmorContents());
@@ -202,14 +197,18 @@ public class PredefinePlayerStateHandler
 			pps.setArrowsInBody(player.getArrowsInBody());
 			pps.setMaximumAir(player.getMaximumAir());
 			pps.setRemainingAir(player.getRemainingAir());
-			pps.setCustomName(player.getCustomName());
 			pps.setPersistentData(getPersitentData(player));
+			if(syncType != SyncType.FULL)
+			{
+				save(syncType, player, pps);
+				return;
+			}
 			MIM.getPlugin().getMysqlHandler().updateData(MysqlHandler.Type.PREDEFINEPLAYERSTATE, pps,
-					"`state_name` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-				statename, synchroKey, gm.toString());
+					"`state_name` = ? AND `synchro_key` = ?",
+				statename, synchroKey);
 		} else
 		{
-			pps = new PredefinePlayerState(0, synchroKey, gm, statename,
+			pps = new PredefinePlayerState(0, synchroKey, statename,
 					player.getInventory().getStorageContents(), player.getInventory().getArmorContents(),
 					player.getInventory().getItemInOffHand(), player.getEnderChest().getContents(),
 					player.getFoodLevel(), player.getSaturation(), player.getSaturatedRegenRate(),
@@ -217,8 +216,9 @@ public class PredefinePlayerStateHandler
 					attributes, player.getHealth(), player.getAbsorptionAmount(), 
 					player.getExp(), player.getLevel(),
 					player.getWalkSpeed(), player.getFlySpeed(), player.getFireTicks(), player.getFreezeTicks(),
-					player.isGlowing(), player.hasGravity(), pe, player.getCategory(), player.getArrowsInBody(), 
-					player.getMaximumAir(), player.getRemainingAir(), player.getCustomName(), getPersitentData(player));
+					player.getAllowFlight(), player.isGlowing(), player.hasGravity(), player.isInvisible(), player.isInvulnerable(),
+					pe, player.getCategory(), player.getArrowsInBody(), 
+					player.getMaximumAir(), player.getRemainingAir(), getPersitentData(player));
 			MIM.getPlugin().getMysqlHandler().create(MysqlHandler.Type.PREDEFINEPLAYERSTATE, pps);
 		}
 	}
@@ -239,8 +239,8 @@ public class PredefinePlayerStateHandler
 					+ " `walk_speed` = ?, `fly_speed` = ?, `fire_ticks` = ?,"
 					+ " `freeze_ticks` = ?, `glowing` = ?, `gravity` = ?,"
 					+ " `entity_category` = ?, `arrows_in_body` = ?, `maximum_air` = ?,"
-					+ " `remaining_air` = ?, `custom_name` = ?,"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `state_name` = ?";
+					+ " `remaining_air` = ?"
+					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setInt(1, pps.getFoodLevel());
 		        ps.setFloat(2, pps.getSaturation());
@@ -268,8 +268,7 @@ public class PredefinePlayerStateHandler
 		        ps.setInt(19, pps.getRemainingAir());
 		        
 		        ps.setString(20, pps.getSynchroKey());
-		        ps.setString(21, pps.getGameMode().toString());
-		        ps.setString(22, player.getUniqueId().toString());		
+		        ps.setString(21, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -283,14 +282,13 @@ public class PredefinePlayerStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
 					+ "` SET "
 					+ " `exp_towards_next_level` = ?, `exp_level` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `state_name` = ?";
+					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setFloat(1, pps.getExpTowardsNextLevel());
 		        ps.setInt(2, pps.getExpLevel());
 		        
 		        ps.setString(3, pps.getSynchroKey());
-		        ps.setString(4, pps.getGameMode().toString());
-		        ps.setString(5, pps.getStateName());		
+		        ps.setString(4, pps.getStateName());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -304,7 +302,7 @@ public class PredefinePlayerStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
 					+ "` SET "
 					+ " `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `state_name` = ?";
+					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pps.getInventoryStorageContents()));
 		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pps.getArmorContents()));
@@ -312,8 +310,7 @@ public class PredefinePlayerStateHandler
 		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(pps.getEnderchestContents()));
 		        
 		        ps.setString(5, pps.getSynchroKey());
-		        ps.setString(6, pps.getGameMode().toString());
-		        ps.setString(7, pps.getStateName());		
+		        ps.setString(6, pps.getStateName());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -327,14 +324,13 @@ public class PredefinePlayerStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
 					+ "` SET "
 					+ " `potion_effects` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `state_name` = ?";
+					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pps.getActiveEffects().toArray(
 		        		new PotionEffect[pps.getActiveEffects().size()])));
 		        
 		        ps.setString(2, pps.getSynchroKey());
-		        ps.setString(3, pps.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)
@@ -348,7 +344,7 @@ public class PredefinePlayerStateHandler
 				String sql = "UPDATE `" + MysqlHandler.Type.PREDEFINEPLAYERSTATE.getValue()
 					+ "` SET "
 					+ " `persistent_data` = ?"
-					+ " WHERE `synchro_key` = ? AND `game_mode` = ? AND `state_name` = ?";
+					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 		        StringBuilder pds = new StringBuilder();
 		        for(PersistentData per : pps.getPersistentData())
@@ -358,8 +354,7 @@ public class PredefinePlayerStateHandler
 		        ps.setString(1, pds.toString());
 		        
 		        ps.setString(2, pps.getSynchroKey());
-		        ps.setString(3, pps.getGameMode().toString());
-		        ps.setString(4, player.getUniqueId().toString());		
+		        ps.setString(3, player.getUniqueId().toString());		
 				int u = ps.executeUpdate();
 				MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
 			} catch (SQLException e)

@@ -49,7 +49,7 @@ public class PlayerData implements MysqlHandable
 	private float flySpeed; //getFlySpeed
 	private int fireTicks; //getFireTicks
 	private int freezeTicks; //getFreezeTicks
-	private boolean flying; //isFlying
+	private boolean flying; //getAllowFlight
 	private boolean glowing; //isGlowing
 	private boolean gravity; //hasGravity
 	private boolean invisible; //isInvisible
@@ -461,17 +461,11 @@ public class PlayerData implements MysqlHandable
 		this.freezeTicks = freezeTicks;
 	}
 
-	/**
-	 * @return the flying
-	 */
 	public boolean isFlying()
 	{
 		return flying;
 	}
 
-	/**
-	 * @param flying the flying to set
-	 */
 	public void setFlying(boolean flying)
 	{
 		this.flying = flying;
@@ -497,17 +491,11 @@ public class PlayerData implements MysqlHandable
 		this.gravity = gravity;
 	}
 
-	/**
-	 * @return the invisible
-	 */
 	public boolean isInvisible()
 	{
 		return invisible;
 	}
-
-	/**
-	 * @param invisible the invisible to set
-	 */
+	
 	public void setInvisible(boolean invisible)
 	{
 		this.invisible = invisible;
