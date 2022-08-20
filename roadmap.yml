@@ -26,6 +26,7 @@ Build 0-3-2
 - DeathMemoryState grobe Fehler behoben.
 - PredefinePlayerState Object angepasst.
 - GameMode wird nun von anderen Server übernommen, wenn die Config es nicht blockiert.
+- /whois Fehler bezüglich PlayerTimes wurde gefixt.
 
 Build 0-2-8
 - /invsee InventarArray > 36 checkup eingefügt.

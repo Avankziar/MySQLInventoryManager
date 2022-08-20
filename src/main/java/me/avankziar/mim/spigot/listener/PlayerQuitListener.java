@@ -71,7 +71,7 @@ public class PlayerQuitListener extends BaseListener
 							ClearAndResetHandler.clearAndReset(SyncType.FULL, player);
 							return;
 						}
-						if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA,
+						if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA,
 								"`player_uuid` = ? AND `synchro_key` = ?",
 								uuid.toString(), pd.getSynchroKey()))
 						{

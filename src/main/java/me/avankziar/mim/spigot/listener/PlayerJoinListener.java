@@ -1,7 +1,6 @@
 package main.java.me.avankziar.mim.spigot.listener;
 
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
