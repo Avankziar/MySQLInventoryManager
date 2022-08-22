@@ -30,12 +30,12 @@ public class MiMSaveAndKick extends ArgumentModule
 		}
 		if(server != null)
 		{
-			plugin.getPlayerParameterApi().saveAndKickServer(server);
+			plugin.getPlayerParameterProvider().saveAndKickServer(server);
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickServer").replace("%server%", server)));
 			return;
 		} else
 		{
-			plugin.getPlayerParameterApi().saveAndKickAll();
+			plugin.getPlayerParameterProvider().saveAndKickAll();
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAndKickAll")));
 			return;
 		}

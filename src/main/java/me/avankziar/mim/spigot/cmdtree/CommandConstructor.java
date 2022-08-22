@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import main.java.me.avankziar.mim.spigot.MIM;
-
 public class CommandConstructor extends BaseConstructor
 {
     public ArrayList<ArgumentConstructor> subcommands;

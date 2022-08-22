@@ -45,6 +45,8 @@ import main.java.me.avankziar.mim.spigot.cmd.CustomPlayerInventoryCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.EnderChestCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.FlyCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.GameModeCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.InvDeathListCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.InvDeathLoadCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
@@ -70,9 +72,12 @@ import main.java.me.avankziar.mim.spigot.database.YamlHandler;
 import main.java.me.avankziar.mim.spigot.database.YamlManager;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
-import main.java.me.avankziar.mim.spigot.ifh.Base64Api;
-import main.java.me.avankziar.mim.spigot.ifh.CommandToBungeeApi;
-import main.java.me.avankziar.mim.spigot.ifh.PlayerParameterApi;
+import main.java.me.avankziar.mim.spigot.ifh.SendItemAPI;
+import main.java.me.avankziar.mim.spigot.ifh.provider.Base64Provider;
+import main.java.me.avankziar.mim.spigot.ifh.provider.CommandToBungeeProvider;
+import main.java.me.avankziar.mim.spigot.ifh.provider.PlayerParameterProvider;
+import main.java.me.avankziar.mim.spigot.ifh.provider.SendItemProvider;
+import main.java.me.avankziar.mim.spigot.ifh.provider.SynchronizationProvider;
 import main.java.me.avankziar.mim.spigot.listener.InventoryCloseListener;
 import main.java.me.avankziar.mim.spigot.listener.IsOnlineListener;
 import main.java.me.avankziar.mim.spigot.listener.LoadStatusListener;
@@ -104,6 +109,7 @@ public class MIM extends JavaPlugin
 	private BackgroundTask backgroundTask;
 	private ConfigHandler configHandler;
 	private OfflinePlayerLoader opl;
+	private SendItemAPI siapi;
 	
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
@@ -117,9 +123,11 @@ public class MIM extends JavaPlugin
 	public Set<UUID> playerInSync = new HashSet<>();
 	public Set<UUID> playerSyncComplete = new HashSet<>();
 	
-	private Base64Api base64Api;
-	private CommandToBungeeApi cmdToBungeeApi;
-	private PlayerParameterApi ppmApi;
+	private Base64Provider base64Provider;
+	private CommandToBungeeProvider cmdToBungeeProvider;
+	private PlayerParameterProvider ppmProvider;
+	private SendItemProvider siProvider;
+	private SynchronizationProvider synProvider;
 	private Economy ecoConsumer;
 	private net.milkbowl.vault.economy.Economy ecoVault;
 	private PlayerTimes playerTimesConsumer;
@@ -156,6 +164,7 @@ public class MIM extends JavaPlugin
 		
 		utility = new Utility(plugin);
 		backgroundTask = new BackgroundTask(this);
+		siapi = new SendItemAPI(plugin);
 		
 		getVersion();
 		setupIFH();
@@ -223,6 +232,11 @@ public class MIM extends JavaPlugin
 	public OfflinePlayerLoader getOfflinePlayerLoader()
 	{
 		return opl;
+	}
+	
+	public SendItemAPI getSendItemAPI()
+	{
+		return siapi;
 	}
 	
 	private void setupCommandTree()
@@ -306,6 +320,16 @@ public class MIM extends JavaPlugin
 		registerCommand(attributes.getPath(), attributes.getName());
 		getCommand(attributes.getName()).setExecutor(new AttributeCmdExecutor(plugin, attributes));
 		getCommand(attributes.getName()).setTabCompleter(new TabCompletionOne(plugin));
+		
+		CommandConstructor invdeathload = new CommandConstructor(CommandExecuteType.INV_DEATH_LOAD, "invdeathload", false);
+		registerCommand(invdeathload.getPath(), invdeathload.getName());
+		getCommand(invdeathload.getName()).setExecutor(new InvDeathLoadCmdExecutor(plugin, invdeathload));
+		getCommand(invdeathload.getName()).setTabCompleter(new TabCompletionOne(plugin));
+		
+		CommandConstructor invdeathlist = new CommandConstructor(CommandExecuteType.INV_DEATH_LIST, "invdeathlist", false);
+		registerCommand(invdeathlist.getPath(), invdeathlist.getName());
+		getCommand(invdeathlist.getName()).setExecutor(new InvDeathListCmdExecutor(plugin, invdeathlist, invdeathload.getCommandString()));
+		getCommand(invdeathlist.getName()).setTabCompleter(new TabCompletionOne(plugin));
 		
 		setupCmdClear();
 		setupCmdCustomPlayerInventory();
@@ -540,10 +564,10 @@ public class MIM extends JavaPlugin
 		pm.registerEvents(new PrepareItemEnchantListener(), plugin);
 		Messenger me = getServer().getMessenger();
 		me.registerOutgoingPluginChannel(this, StaticValues.CMDTB_TOBUNGEE);
-		if(ppmApi != null)
+		if(ppmProvider != null)
 		{
 			me.registerOutgoingPluginChannel(this, StaticValues.PP_TOBUNGEE);
-			me.registerIncomingPluginChannel(this, StaticValues.PP_TOSPIGOT, ppmApi);
+			me.registerIncomingPluginChannel(this, StaticValues.PP_TOSPIGOT, ppmProvider);
 		}
 		me.registerOutgoingPluginChannel(this, StaticValues.WHOIS_TOBUNGEE);
 		me.registerIncomingPluginChannel(this, StaticValues.WHOIS_TOSPIGOT, new WhoIsListener());
@@ -558,9 +582,19 @@ public class MIM extends JavaPlugin
 		return configHandler;
 	}
 	
-	public Base64Api getBase64Api()
+	public Base64Provider getBase64Provider()
 	{
-		return base64Api;
+		return base64Provider;
+	}
+	
+	public CommandToBungeeProvider getCmdToBungeeProvider()
+	{
+		return cmdToBungeeProvider;
+	}
+	
+	public PlayerParameterProvider getPlayerParameterProvider()
+	{
+		return ppmProvider;
 	}
 	
 	public Economy getEconomy()
@@ -571,16 +605,6 @@ public class MIM extends JavaPlugin
 	public net.milkbowl.vault.economy.Economy getVaultEconomy()
 	{
 		return ecoVault;
-	}
-	
-	public CommandToBungeeApi getCmdToBungeeApi()
-	{
-		return cmdToBungeeApi;
-	}
-	
-	public PlayerParameterApi getPlayerParameterApi()
-	{
-		return ppmApi;
 	}
 	
 	public PlayerTimes getPlayerTimes()
@@ -627,6 +651,8 @@ public class MIM extends JavaPlugin
 		setupBase64();
 		setupEconomy();
 		setupCommandToBungee();
+		setupSendItem();
+		setupSynchronization();
 		
 		setupPlayerParameter();
 		setupPlayerTimes();
@@ -634,7 +660,6 @@ public class MIM extends JavaPlugin
 		setupVanisch();
 	}
 	
-	//Hier IFH implementieren für später
 	private boolean setupBase64()
 	{      
 		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
@@ -643,10 +668,10 @@ public class MIM extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 	    	return false;
 	    }
-		base64Api = new Base64Api();
+		base64Provider = new Base64Provider();
     	plugin.getServer().getServicesManager().register(
         main.java.me.avankziar.ifh.spigot.serializer.Base64.class,
-        base64Api,
+        base64Provider,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> Base64.class is provided!");
@@ -661,10 +686,10 @@ public class MIM extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 	    	return false;
 	    }
-		cmdToBungeeApi = new CommandToBungeeApi(plugin);
+		cmdToBungeeProvider = new CommandToBungeeProvider(plugin);
     	plugin.getServer().getServicesManager().register(
         main.java.me.avankziar.ifh.spigot.tobungee.commands.CommandToBungee.class,
-        cmdToBungeeApi,
+        cmdToBungeeProvider,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> CommandToBungee.class is provided!");
@@ -679,13 +704,47 @@ public class MIM extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 	    	return false;
 	    }
-		ppmApi = new PlayerParameterApi(plugin);
+		ppmProvider = new PlayerParameterProvider(plugin);
     	plugin.getServer().getServicesManager().register(
         main.java.me.avankziar.ifh.spigot.synchronization.PlayerParameter.class,
-        ppmApi,
+        ppmProvider,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> PlayerParameter.class is provided!");
+		return true;
+	}
+	
+	private boolean setupSendItem()
+	{      
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "!");
+	    	return false;
+	    }
+		siProvider = new SendItemProvider(plugin);
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.synchronization.SendItem.class,
+        siProvider,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> SendItem.class is provided!");
+		return true;
+	}
+	
+	private boolean setupSynchronization()
+	{      
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "!");
+	    	return false;
+	    }
+		synProvider = new SynchronizationProvider(plugin);
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.synchronization.Synchronization.class,
+        synProvider,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> Synchronization.class is provided!");
 		return true;
 	}
 	
@@ -894,14 +953,7 @@ public class MIM extends JavaPlugin
 	
 	public void setupPlayers()
 	{
-		ArrayList<PlayerData> pd = new ArrayList<>();
-		try
-		{
-			pd = PlayerData.convert(plugin.getMysqlHandler().getFullList(MysqlHandler.Type.PLAYERDATA, "`id` ASC", "?", 1));
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		ArrayList<PlayerData> pd = PlayerData.convert(plugin.getMysqlHandler().getFullList(MysqlHandler.Type.PLAYERDATA, "`id` ASC", "?", 1));
 		ArrayList<String> cus = new ArrayList<>();
 		for(PlayerData chus : pd) 
 		{

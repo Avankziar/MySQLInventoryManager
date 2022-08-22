@@ -48,7 +48,7 @@ public class EnderChestCmdExecutor implements CommandExecutor
 		if (args.length == 0) 
 		{
 			Inventory inv = InventoryCloseListener.getExternInventory(player.getUniqueId(), "EC", "EC");
-			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
 			if(inv == null)
 			{
 				inv = player.getEnderChest();

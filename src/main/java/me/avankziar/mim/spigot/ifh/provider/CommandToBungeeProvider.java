@@ -1,4 +1,4 @@
-package main.java.me.avankziar.mim.spigot.ifh;
+package main.java.me.avankziar.mim.spigot.ifh.provider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -12,11 +12,11 @@ import main.java.me.avankziar.ifh.spigot.tobungee.commands.CommandToBungee;
 import main.java.me.avankziar.mim.general.StaticValues;
 import main.java.me.avankziar.mim.spigot.MIM;
 
-public class CommandToBungeeApi implements CommandToBungee
+public class CommandToBungeeProvider implements CommandToBungee
 {
 	private MIM plugin;
 	
-	public CommandToBungeeApi(MIM plugin)
+	public CommandToBungeeProvider(MIM plugin)
 	{
 		this.plugin = plugin;
 	}

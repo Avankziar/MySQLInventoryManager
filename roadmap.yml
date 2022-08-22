@@ -1,9 +1,3 @@
-java.lang.NullPointerException: Cannot invoke "org.bukkit.attribute.AttributeInstance.setBaseValue(double)" because the return value of "org.bukkit.entity.Player.getAttribute(org.bukkit.attribute.Attribute)" is null
-	at main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler.load(PlayerDataHandler.java:519) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.objects.SyncTask.run(SyncTask.java:92) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.BaseListener.doSync(BaseListener.java:143) ~[mysqlinventorymanagement-0-2-2.jar:?]
-	at main.java.me.avankziar.mim.spigot.listener.PlayerJoinListener.onPlayerQuit(PlayerJoinListener.java:62) ~[mysqlinventorymanagement-0-2-2.jar:?]
-
 Build 1-0-0 -------------------------------------------------------------
 + /mim | Infoseite für alle Befehle.
 + /mim saveandkick [servername] | Speichert den vollen Spielstand aller Spieler und kick dies dann. Optional nur für einen Server.
@@ -19,6 +13,14 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz info | Gibt Infos bezüglich der defaultbox aus.
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
+
+Build 0-3-3
+- /invdeathload <Spieler> <deathmemorystateid>, hinzugefügt
+- /invdeathlist [Spieler], hinzugefügt
+- IFH Interface für SendItem eingebunden.
+- IFH Interface für Synchronization eingebungen.
+- WaitingItems Api hinzugefügt.
+- RunTask für WaitingItems wurde hinzugefügt.
 
 Build 0-3-2
 - Speicherung wird durch NMS nun 150 ms nach dem Verlassen des Servers ausgeführt.

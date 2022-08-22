@@ -19,45 +19,28 @@ public class ConfigHandler
 	
 	public YamlConfiguration getSyncYaml(World world, boolean console)
 	{
-		YamlConfiguration w = plugin.getYamlHandler().getSynServer();
-		if(console)
+		if(world == null)
 		{
-			if(w.getBoolean("ServerOverWorldSettings"))
-			{
-				w = plugin.getYamlHandler().getSynServer();
-				if(w == null)
-				{
-					return null;
-				} 
-			}
-		} else
+			YamlConfiguration s = plugin.getYamlHandler().getSyncServer();
+			return s;
+		}
+		YamlConfiguration w = plugin.getYamlHandler().getSyncWorld(world);
+		if(console || w == null || w.getBoolean("ServerOverWorldSettings", true))
 		{
-			w = plugin.getYamlHandler().getSyncWorld(world);
-			if(w == null)
-			{
-				w = plugin.getYamlHandler().getSynServer();
-				if(w == null)
-				{
-					return null;
-				}
-			} else
-			{
-				if(w.getBoolean("ServerOverWorldSettings"))
-				{
-					w = plugin.getYamlHandler().getSynServer();
-					if(w == null)
-					{
-						return null;
-					} 
-				}
-			}
+			YamlConfiguration s = plugin.getYamlHandler().getSyncServer();
+			return s;
 		}
 		return w;
 	}
 	
-	public String getSynchroKey(Player player, boolean console)
+	public YamlConfiguration getSyncYaml(World world)
 	{
-		YamlConfiguration w = getSyncYaml(player == null ? null : player.getWorld(), console);
+		return getSyncYaml(world, false);
+	}
+	
+	public String getSynchroKey(Player player)
+	{
+		YamlConfiguration w = getSyncYaml(player == null ? null : player.getWorld());
 		if(w == null)
 		{
 			return "default";
@@ -65,9 +48,9 @@ public class ConfigHandler
 		return w.getString("Synchrokey", "default");
 	}
 	
-	public String getSynchroKey(World world, boolean console)
+	public String getSynchroKey(World world)
 	{
-		YamlConfiguration w = getSyncYaml(world, console);
+		YamlConfiguration w = getSyncYaml(world);
 		if(w == null)
 		{
 			return "default";
@@ -172,7 +155,7 @@ public class ConfigHandler
 		{
 			return 0;
 		}
-		return w.getInt("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey", 0);
+		return w.getInt("MaximalDeathMemoryStatePerPlayerPerSynchrokey", 0);
 	}
 	
 	public int getTimeDelayInSecsRemoveCooldown(World world, BaseListener.Type btype)

@@ -30,12 +30,12 @@ public class MiMSave extends ArgumentModule
 		}
 		if(server != null)
 		{
-			plugin.getPlayerParameterApi().saveServer(server);
+			plugin.getPlayerParameterProvider().saveServer(server);
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveServer").replace("%server%", server)));
 			return;
 		} else
 		{
-			plugin.getPlayerParameterApi().saveAll();
+			plugin.getPlayerParameterProvider().saveAll();
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("SyncTask.SaveAll")));
 			return;
 		}

@@ -134,18 +134,18 @@ public class DeathMemoryState implements MysqlHandable
 		setUUID(uuid);
 		MIM plugin = MIM.getPlugin();
 		ArrayList<ItemStack> invc = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(inventoryContents))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(inventoryContents))
 		{
 			invc.add((ItemStack) o);
 		}
 		setInventoryStorageContents(invc.toArray(new ItemStack[invc.size()]));
 		ArrayList<ItemStack> arc = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(armorContents))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(armorContents))
 		{
 			arc.add((ItemStack) o);
 		}
 		setArmorContents(arc.toArray(new ItemStack[arc.size()]));
-		setOffHand((ItemStack) plugin.getBase64Api().fromBase64(offHand));
+		setOffHand((ItemStack) plugin.getBase64Provider().fromBase64(offHand));
 		setFoodLevel(foodLevel);
 		setSaturation(saturation);
 		setSaturatedRegenRate(unsaturatedRegenRate);
@@ -175,7 +175,7 @@ public class DeathMemoryState implements MysqlHandable
 		setInvisible(invisible);
 		setInvulnerable(invulnerable);
 		ArrayList<PotionEffect> pe = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(activeEffects))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(activeEffects))
 		{
 			pe.add((PotionEffect) o);
 		}
@@ -568,9 +568,9 @@ public class DeathMemoryState implements MysqlHandable
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getSynchroKey());
-	        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+	        ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(getArmorContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Provider().toBase64(getOffHand()));
 	        ps.setInt(6, getFoodLevel());
 	        ps.setFloat(7, getSaturation());
 	        ps.setInt(8, getSaturatedRegenRate());
@@ -596,7 +596,7 @@ public class DeathMemoryState implements MysqlHandable
 	        ps.setBoolean(23, isGravity());
 	        ps.setBoolean(24, isInvisible());
 	        ps.setBoolean(25, isInvulnerable());
-	        ps.setString(26, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(26, MIM.getPlugin().getBase64Provider().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
 	        ps.setString(27, getEntityCategory().toString());
 	        ps.setInt(28, getArrowsInBody());
 	        ps.setInt(29, getMaximumAir());
@@ -639,9 +639,9 @@ public class DeathMemoryState implements MysqlHandable
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
 		    ps.setString(2, getSynchroKey());
-		    ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-		    ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-		    ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
+		    ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64Array(getInventoryStorageContents()));
+		    ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(getArmorContents()));
+		    ps.setString(5, MIM.getPlugin().getBase64Provider().toBase64(getOffHand()));
 		    ps.setInt(6, getFoodLevel());
 		    ps.setFloat(7, getSaturation());
 		    ps.setInt(8, getSaturatedRegenRate());
@@ -667,7 +667,7 @@ public class DeathMemoryState implements MysqlHandable
 		    ps.setBoolean(23, isGravity());
 		    ps.setBoolean(24, isInvisible());
 		    ps.setBoolean(25, isInvulnerable());
-		    ps.setString(26, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+		    ps.setString(26, MIM.getPlugin().getBase64Provider().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
 		    ps.setString(27, getEntityCategory().toString());
 		    ps.setInt(28, getArrowsInBody());
 		    ps.setInt(29, getMaximumAir());

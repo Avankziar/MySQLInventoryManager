@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.mim.spigot.MIM;
+import main.java.me.avankziar.mim.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.mim.spigot.database.MysqlHandler;
 import main.java.me.avankziar.mim.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.mim.spigot.handler.PlayerDataHandler;
@@ -57,7 +58,7 @@ public class PlayerJoinListener extends BaseListener
 	{
 		if(plugin.getConfigHandler().loadPredefineOnFirstJoin(world)
 				&& !plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ?",
-						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false)))
+						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player)))
 		{ //Info Wenn der Spieler zum ersten Mal mit dem GameMode und dem SynchroKey Joint
 			if(!preChecks(player))
 			{
@@ -84,7 +85,7 @@ public class PlayerJoinListener extends BaseListener
 			loadstatus.remove(player.getUniqueId());
 			return;
 		} else if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ? AND `synchro_key` = ?",
-						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player, false)))
+						player.getUniqueId().toString(), plugin.getConfigHandler().getSynchroKey(player)))
 		{
 			//Wenn der Spieler noch nie gejoint ist und kein Vordefiniertes existiert.
 			doSync(player, SyncType.FULL, RunType.SAVE);
@@ -96,6 +97,7 @@ public class PlayerJoinListener extends BaseListener
 			PlayerDataHandler.load(SyncType.FULL, player);
 		}
 		loadstatus.remove(player.getUniqueId());
+		BackgroundTask.waitingItemsTask(player);
 	}
 	
 	public static boolean inLoadStatus(UUID uuid)

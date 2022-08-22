@@ -128,20 +128,20 @@ public class PredefinePlayerState implements MysqlHandable
 		setStateName(stateName);
 		MIM plugin = MIM.getPlugin();
 		ArrayList<ItemStack> invc = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(inventoryContents))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(inventoryContents))
 		{
 			invc.add((ItemStack) o);
 		}
 		setInventoryStorageContents(invc.toArray(new ItemStack[invc.size()]));
 		ArrayList<ItemStack> arc = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(armorContents))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(armorContents))
 		{
 			arc.add((ItemStack) o);
 		}
 		setArmorContents(arc.toArray(new ItemStack[arc.size()]));
-		setOffHand((ItemStack) plugin.getBase64Api().fromBase64(offHand));
+		setOffHand((ItemStack) plugin.getBase64Provider().fromBase64(offHand));
 		ArrayList<ItemStack> ecc = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(enderchestContents))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(enderchestContents))
 		{
 			ecc.add((ItemStack) o);
 		}
@@ -175,7 +175,7 @@ public class PredefinePlayerState implements MysqlHandable
 		setInvisible(invisible);
 		setInvulnerable(invulnerable);
 		ArrayList<PotionEffect> pe = new ArrayList<>();
-		for(Object o : plugin.getBase64Api().fromBase64Array(activeEffects))
+		for(Object o : plugin.getBase64Provider().fromBase64Array(activeEffects))
 		{
 			pe.add((PotionEffect) o);
 		}
@@ -555,10 +555,10 @@ public class PredefinePlayerState implements MysqlHandable
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getStateName());
 	        ps.setString(2, getSynchroKey());
-	        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
+	        ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(getArmorContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Provider().toBase64(getOffHand()));
+	        ps.setString(6, MIM.getPlugin().getBase64Provider().toBase64Array(getEnderchestContents()));
 	        ps.setInt(7, getFoodLevel());
 	        ps.setFloat(8, getSaturation());
 	        ps.setInt(9, getSaturatedRegenRate());
@@ -584,7 +584,7 @@ public class PredefinePlayerState implements MysqlHandable
 	        ps.setBoolean(24, isGravity());
 	        ps.setBoolean(25, isInvisible());
 	        ps.setBoolean(26, isInvulnerable());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(27, MIM.getPlugin().getBase64Provider().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
 	        ps.setString(28, getEntityCategory().toString());
 	        ps.setInt(29, getArrowsInBody());
 	        ps.setInt(30, getMaximumAir());
@@ -626,10 +626,10 @@ public class PredefinePlayerState implements MysqlHandable
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getStateName());
 	        ps.setString(2, getSynchroKey());
-	        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64Array(getInventoryStorageContents()));
-	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getArmorContents()));
-	        ps.setString(5, MIM.getPlugin().getBase64Api().toBase64(getOffHand()));
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getEnderchestContents()));
+	        ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64Array(getInventoryStorageContents()));
+	        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(getArmorContents()));
+	        ps.setString(5, MIM.getPlugin().getBase64Provider().toBase64(getOffHand()));
+	        ps.setString(6, MIM.getPlugin().getBase64Provider().toBase64Array(getEnderchestContents()));
 	        ps.setInt(7, getFoodLevel());
 	        ps.setFloat(8, getSaturation());
 	        ps.setInt(9, getSaturatedRegenRate());
@@ -655,7 +655,7 @@ public class PredefinePlayerState implements MysqlHandable
 	        ps.setBoolean(24, isGravity());
 	        ps.setBoolean(25, isInvisible());
 	        ps.setBoolean(26, isInvulnerable());
-	        ps.setString(27, MIM.getPlugin().getBase64Api().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
+	        ps.setString(27, MIM.getPlugin().getBase64Provider().toBase64Array(getActiveEffects().toArray(new PotionEffect[getActiveEffects().size()])));
 	        ps.setString(28, getEntityCategory().toString());
 	        ps.setInt(29, getArrowsInBody());
 	        ps.setInt(30, getMaximumAir());

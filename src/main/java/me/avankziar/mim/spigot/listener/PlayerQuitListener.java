@@ -95,7 +95,7 @@ public class PlayerQuitListener extends BaseListener
 	{
 		Player player = playerII != null ? playerII : playerI;
 		final PlayerInventory iv = player.getInventory();
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(world, false);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(world);
 		PlayerData pd = new PlayerData();
 		final ItemStack[] inv = iv.getStorageContents();
 		final ItemStack[] armor = iv.getArmorContents();

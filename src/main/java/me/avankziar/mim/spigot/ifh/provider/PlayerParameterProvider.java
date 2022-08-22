@@ -1,4 +1,4 @@
-package main.java.me.avankziar.mim.spigot.ifh;
+package main.java.me.avankziar.mim.spigot.ifh.provider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,11 +21,11 @@ import main.java.me.avankziar.mim.spigot.listener.BaseListener;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask;
 import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
 
-public class PlayerParameterApi extends BaseListener implements PlayerParameter, PluginMessageListener
+public class PlayerParameterProvider extends BaseListener implements PlayerParameter, PluginMessageListener
 {
 	private MIM plugin;
 	
-	public PlayerParameterApi(MIM plugin)
+	public PlayerParameterProvider(MIM plugin)
 	{
 		super(plugin, BaseListener.Type.IFH_API);
 		this.plugin = plugin;
@@ -64,7 +64,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	@Override
 	public void load(Player player)
 	{
-		load(player, new ConfigHandler(plugin).getSynchroKey(player, false), SyncType.FULL);
+		load(player, new ConfigHandler(plugin).getSynchroKey(player), SyncType.FULL);
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	@Override
 	public void load(Player player, SyncType syncType)
 	{
-		load(player, new ConfigHandler(plugin).getSynchroKey(player, false), syncType);
+		load(player, new ConfigHandler(plugin).getSynchroKey(player), syncType);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	@Override
 	public void save(Player player)
 	{
-		save(player, new ConfigHandler(plugin).getSynchroKey(player, false), SyncType.FULL);
+		save(player, new ConfigHandler(plugin).getSynchroKey(player), SyncType.FULL);
 	}
 	
 	@Override
@@ -102,7 +102,7 @@ public class PlayerParameterApi extends BaseListener implements PlayerParameter,
 	@Override
 	public void save(Player player, SyncType syncType)
 	{
-		save(player, new ConfigHandler(plugin).getSynchroKey(player, false), syncType);
+		save(player, new ConfigHandler(plugin).getSynchroKey(player), syncType);
 	}
 	
 	@Override

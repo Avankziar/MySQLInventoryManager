@@ -1,4 +1,4 @@
-package main.java.me.avankziar.mim.spigot.ifh;
+package main.java.me.avankziar.mim.spigot.ifh.provider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,8 +11,8 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import main.java.me.avankziar.ifh.spigot.serializer.Base64;
 
-public class Base64Api implements Base64
-{
+public class Base64Provider implements Base64
+{	
 	@Override
 	public Object fromBase64(String data)
 	{

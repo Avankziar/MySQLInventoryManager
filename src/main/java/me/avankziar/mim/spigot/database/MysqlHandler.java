@@ -1,6 +1,5 @@
 package main.java.me.avankziar.mim.spigot.database;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import main.java.me.avankziar.mim.spigot.objects.DeathMemoryState;
 import main.java.me.avankziar.mim.spigot.objects.PlayerData;
 import main.java.me.avankziar.mim.spigot.objects.PredefinePlayerState;
 import main.java.me.avankziar.mim.spigot.objects.SynchronStatus;
+import main.java.me.avankziar.mim.spigot.objects.WaitingItems;
 
 public class MysqlHandler
 {
@@ -23,7 +23,8 @@ public class MysqlHandler
 		DEATHMEMORYSTATE("mimDeathMemoryState", new DeathMemoryState()),
 		PREDEFINEPLAYERSTATE("mimPredefinePlayerState", new PredefinePlayerState()),
 		CUSTOMPLAYERINVENTORY("mimCustomPlayerInventory", new CustomPlayerInventory()),
-		SYNCHRONSTATUS("mimSynchronStatus", new SynchronStatus())
+		SYNCHRONSTATUS("mimSynchronStatus", new SynchronStatus()),
+		WAITINGITEMS("mimWaitingItems", new WaitingItems())
 		;
 		
 		private Type(String value, Object object)
@@ -306,7 +307,7 @@ public class MysqlHandler
 	}
 	
 	public ArrayList<Object> getFullList(Type type, String orderByColumn,
-			String whereColumn, Object...whereObject) throws IOException
+			String whereColumn, Object...whereObject)
 	{
 		Object object = type.getObject();
 		if(object instanceof MysqlHandable)

@@ -20,6 +20,8 @@ public class Bypass
 		SHULKER_OPEN_IN_INVENTORY,
 		SHULKER_OPEN_AIRCLICK,
 		FLY_OTHERPLAYER,
+		INV_DEATHLIST_OTHER,
+		INV_DEATHLOAD_OTHER,
 	}
 	private static LinkedHashMap<Bypass.Permission, String> mapPerm = new LinkedHashMap<>();
 	

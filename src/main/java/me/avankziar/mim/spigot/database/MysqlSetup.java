@@ -60,6 +60,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseVI())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -247,6 +251,20 @@ public class MysqlSetup
 		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
 		  		+ " player_uuid char(36) NOT NULL,"
 		  		+ " synchron_status text);";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseVI() 
+	{
+		  String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.WAITINGITEMS.getValue()
+		  		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		  		+ " player_uuid char(36) NOT NULL,"
+		  		+ " synchro_key text,"
+		  		+ " sender_name text,"
+		  		+ " reason text,"
+		  		+ " time_stamp BIGINT,"		  		
+		  		+ " items LONGTEXT);";
 		baseSetup(data);
 		return true;
 	}

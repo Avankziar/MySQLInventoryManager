@@ -220,7 +220,7 @@ public class CustomPlayerInventory implements MysqlHandable
 		ArrayList<ItemStack> invc = new ArrayList<>();
 		if(inventory != null)
 		{
-			for(Object o : MIM.getPlugin().getBase64Api().fromBase64Array(inventory))
+			for(Object o : MIM.getPlugin().getBase64Provider().fromBase64Array(inventory))
 			{
 				invc.add((ItemStack) o);
 			}
@@ -306,7 +306,7 @@ public class CustomPlayerInventory implements MysqlHandable
 	        ps.setInt(3, getActualRowAmount());
 	        ps.setInt(4, getTargetRowAmount());
 	        ps.setInt(5, getMaxbuyedRowAmount());
-	        ps.setString(6, MIM.getPlugin().getBase64Api().toBase64Array(getInventory()));
+	        ps.setString(6, MIM.getPlugin().getBase64Provider().toBase64Array(getInventory()));
 	        
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
@@ -332,7 +332,7 @@ public class CustomPlayerInventory implements MysqlHandable
 			ps.setInt(1, getActualRowAmount());
 	        ps.setInt(2, getTargetRowAmount());
 	        ps.setInt(3, getMaxbuyedRowAmount());
-	        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(getInventory()));
+	        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(getInventory()));
 	        
 			int i = 5;
 			for(Object o : whereObject)

@@ -58,7 +58,7 @@ public class YamlHandler
 		return lang;
 	}
 	
-	public YamlConfiguration getSynServer()
+	public YamlConfiguration getSyncServer()
 	{
 		return ser;
 	}

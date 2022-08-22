@@ -304,10 +304,10 @@ public class PredefinePlayerStateHandler
 					+ " `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pps.getInventoryStorageContents()));
-		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(pps.getArmorContents()));
-		        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64(pps.getOffHand()));
-		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(pps.getEnderchestContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(pps.getInventoryStorageContents()));
+		        ps.setString(2, MIM.getPlugin().getBase64Provider().toBase64Array(pps.getArmorContents()));
+		        ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64(pps.getOffHand()));
+		        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(pps.getEnderchestContents()));
 		        
 		        ps.setString(5, pps.getSynchroKey());
 		        ps.setString(6, pps.getStateName());		
@@ -326,7 +326,7 @@ public class PredefinePlayerStateHandler
 					+ " `potion_effects` = ?"
 					+ " WHERE `synchro_key` = ? AND `state_name` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pps.getActiveEffects().toArray(
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(pps.getActiveEffects().toArray(
 		        		new PotionEffect[pps.getActiveEffects().size()])));
 		        
 		        ps.setString(2, pps.getSynchroKey());
@@ -371,7 +371,7 @@ public class PredefinePlayerStateHandler
 	 */
 	public static void load(SyncType syncType, Player player, String statename)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
 		GameMode gm = player.getGameMode();
 		PredefinePlayerState pps = (PredefinePlayerState) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PREDEFINEPLAYERSTATE,
 				"`state_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",

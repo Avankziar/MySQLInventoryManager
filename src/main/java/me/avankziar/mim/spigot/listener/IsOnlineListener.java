@@ -52,7 +52,7 @@ public class IsOnlineListener implements PluginMessageListener
             		if(!isOnline || (isOnline && requestServer.equals(targetserver)))
             		{
             			Player requester = Bukkit.getPlayer(UUID.fromString(requesterUUID));
-            			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+            			String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
             			UUID otheruuid = UUID.fromString(targetuuid);
             			Inventory inv = null;
             			Player other = Bukkit.getPlayer(otheruuid);

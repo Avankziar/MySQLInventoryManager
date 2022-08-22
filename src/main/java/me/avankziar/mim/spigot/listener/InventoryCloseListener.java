@@ -152,7 +152,7 @@ public class InventoryCloseListener extends BaseListener
 							+ "` SET `inventory_content` = ?"
 							+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 						PreparedStatement ps = conn.prepareStatement(sql);
-				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
+				        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(inv.getContents()));
 				        
 				        ps.setString(2, synchroKey);
 				        ps.setString(3, targetPlayer.toString());
@@ -197,8 +197,8 @@ public class InventoryCloseListener extends BaseListener
 							+ "` SET `armor_content` = ?, `off_hand` = ?"
 							+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 						PreparedStatement ps = conn.prepareStatement(sql);
-				        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
-				        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64(offhand));
+				        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(armor.toArray(new ItemStack[armor.size()])));
+				        ps.setString(2, MIM.getPlugin().getBase64Provider().toBase64(offhand));
 				        
 				        ps.setString(3, synchroKey);
 				        ps.setString(4, targetPlayer.toString());	
@@ -219,7 +219,7 @@ public class InventoryCloseListener extends BaseListener
 						+ " `enderchest_content` = ?"
 						+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 					PreparedStatement ps = conn.prepareStatement(sql);
-			        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(inv.getContents()));
+			        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(inv.getContents()));
 			        
 			        ps.setString(2, synchroKey);
 			        ps.setString(3, targetPlayer.toString());		
@@ -244,7 +244,7 @@ public class InventoryCloseListener extends BaseListener
 	
 	private void ecSave(final Player player)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
 		GameMode gm = player.getGameMode();
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
@@ -259,7 +259,7 @@ public class InventoryCloseListener extends BaseListener
 				+ "` SET `enderchest_content` = ?"
 				+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 			PreparedStatement ps = conn.prepareStatement(sql);
-	        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
+	        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(player.getEnderChest().getContents()));
 	        
 	        ps.setString(2, pd.getSynchroKey());
 	        ps.setString(3, player.getUniqueId().toString());		

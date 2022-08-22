@@ -36,7 +36,7 @@ public class WhoIsListener implements PluginMessageListener
             		String requesterUUID = in.readUTF();
             		String targetUUID = in.readUTF();
             		String targetname = in.readUTF();
-            		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+            		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
             		Player target = Bukkit.getPlayer(UUID.fromString(targetUUID));
             		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
             				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",

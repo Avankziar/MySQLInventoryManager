@@ -163,6 +163,12 @@ public class YamlManager
 		configSpigotKeys.put("SleepMode"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
+		configSpigotKeys.put("RunTask.WaitingsItems.Active"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		configSpigotKeys.put("RunTask.WaitingsItems.RepeatingInSeconds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				180}));
 		
 		configSpigotKeys.put("Default.ClearToggle"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -272,6 +278,15 @@ public class YamlManager
 				"/attributes <attribute> <value>", "/attributes ",
 				"&c/attributes <Attribute> <Wert> &f| Verändert einen Wert eines der Spielereigenschaften.",
 				"&c/attributes <attribute> <value> &f| Changes a value of one of the player properties.");
+		
+		commandsInput("invdeathload", "invdeathload", "invdeathload.cmd.invdeathload", 
+				"/invdeathload <player> <deathmemorystateid>", "/invdeathload ",
+				"&c/invdeathload <Spieler> <DeathMemoryStateID> &f| Lädt und setzt alle Eigenschaften & Inventare(Außer Ec) des Spielers auf einen Zustand vor einem seiner Tode.",
+				"&c/invdeathload <player> <deathmemorystateid> &f| Loads and sets all properties & inventories(Except Ec) of the player to a state before one of his deaths.");
+		commandsInput("invdeathlist", "invdeathlist", "invdeathlist.cmd.invdeathlist", 
+				"/invdeathlist [player]", "/invdeathlist ",
+				"&c/invdeathlist [Spieler] &f| Listet alle ladbare DeathMemoryStates des Spielers auf.",
+				"&c/invdeathlist [player] &f| Lists all loadable DeathMemoryStates of the player.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -610,6 +625,38 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast den Flugmodus für &f%player% &edeaktiviert.",
 				"&eYou have disabled the flight mode for &f%player%&e."}));
+		languageKeys.put("DeathMemoryState.ListHeadline",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=== &f%player%´s %amount% &cDeathMemoryState &e===",
+				"&e=== &f%player%´s %amount% &cDeathMemoryState &e==="}));
+		languageKeys.put("DeathMemoryState.ListLine",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c%time% &f> ",
+				"&c%time% &f> "}));
+		languageKeys.put("DeathMemoryState.ListLineEnd",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&fLaden...? >> &a✔",
+				"&fLoading...? >> &a✔"}));
+		languageKeys.put("DeathMemoryState.ListLineEndHover",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier zum laden des DeathMemoryState.",
+				"&eClick here to load the DeathMemoryState."}));
+		languageKeys.put("DeathMemoryState.NotExist",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas angegebene DeathMemoryState existiert nicht!",
+				"&cThe specified DeathMemoryState does not exist!"}));
+		languageKeys.put("DeathMemoryState.LoadPlayer",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast das DeathMemoryState von &f%player% &evom &f%time% &egeladen!",
+				"&eYou have loaded the DeathMemoryState from &f%player% &efrom &f%time%&e!"}));
+		languageKeys.put("DeathMemoryState.LoadOther",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDein DeathMemoryState vom &f%time% &ewurde von &f%player% &egeladen!",
+				"&eYour DeathMemoryState from &f%time% &ehas been loaded by &f%player%&e!"}));
+		languageKeys.put("WaitingItems.RunTask",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eMindestens &f%amount% &eItempackete können abgeholt werden! &aKlicke hier für die Übersicht!",
+				"&eAt least &f%amount% &eitempackets can be picked up! &aClick here for the overview!"}));
 	}
 	
 	private void initLangCustomPlayerInventory()
@@ -742,7 +789,7 @@ public class YamlManager
 		syncKeys.put("ClearAndReset.OnLeaveOrQuit",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
-		syncKeys.put("MaximalDeathMemoryStatePerPlayerPerGameModePerSynchrokey",
+		syncKeys.put("MaximalDeathMemoryStatePerPlayerPerSynchrokey",
 				new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				5}));
 		syncKeys.put("TimeDelayInSecs.RemoveCooldown",

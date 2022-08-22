@@ -86,7 +86,7 @@ public class WhoIsCmdExecutor implements CommandExecutor
 		{
 			PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
     				"`player_uuid` = ? AND `synchro_key` = ? AND `game_mode` = ?",
-    				targetuuid.toString(), MIM.getPlugin().getConfigHandler().getSynchroKey(target, false), target.getGameMode().toString());
+    				targetuuid.toString(), MIM.getPlugin().getConfigHandler().getSynchroKey(target), target.getGameMode().toString());
 			WhoIsCmdExecutor.sendWhoIs(player, 
     				targetuuid.toString(), targetname, target.getAddress().getAddress().toString(),
     				pd, true, null, null, 0.0, 0.0, 0.0, 0F, 0F);

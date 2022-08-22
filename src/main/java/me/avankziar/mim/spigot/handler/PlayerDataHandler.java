@@ -153,7 +153,7 @@ public class PlayerDataHandler
 	 */
 	public static void save(SyncType syncType, final Player player)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 				"`player_uuid` = ? AND `synchro_key` = ?",
 				player.getUniqueId().toString(), synchroKey);
@@ -316,10 +316,10 @@ public class PlayerDataHandler
 					+ "` SET `inventory_content` = ?, `armor_content` = ?, `off_hand` = ?, `enderchest_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
-		        ps.setString(2, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
-		        ps.setString(3, MIM.getPlugin().getBase64Api().toBase64(player.getInventory().getItemInOffHand()));
-		        ps.setString(4, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(player.getInventory().getStorageContents()));
+		        ps.setString(2, MIM.getPlugin().getBase64Provider().toBase64Array(player.getInventory().getArmorContents()));
+		        ps.setString(3, MIM.getPlugin().getBase64Provider().toBase64(player.getInventory().getItemInOffHand()));
+		        ps.setString(4, MIM.getPlugin().getBase64Provider().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(5, pd.getSynchroKey());
 		        ps.setString(6, player.getUniqueId().toString());		
@@ -337,7 +337,7 @@ public class PlayerDataHandler
 					+ "` SET `armor_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getArmorContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(player.getInventory().getArmorContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, player.getUniqueId().toString());		
@@ -355,7 +355,7 @@ public class PlayerDataHandler
 					+ "` SET `enderchest_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getEnderChest().getContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(player.getEnderChest().getContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, player.getUniqueId().toString());		
@@ -373,7 +373,7 @@ public class PlayerDataHandler
 					+ "` SET `off_hand` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64(player.getInventory().getItemInOffHand()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64(player.getInventory().getItemInOffHand()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, player.getUniqueId().toString());		
@@ -391,7 +391,7 @@ public class PlayerDataHandler
 					+ "` SET `inventory_content` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(player.getInventory().getStorageContents()));
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(player.getInventory().getStorageContents()));
 		        
 		        ps.setString(2, pd.getSynchroKey());
 		        ps.setString(3, player.getUniqueId().toString());		
@@ -409,7 +409,7 @@ public class PlayerDataHandler
 					+ "` SET `potion_effects` = ?"
 					+ " WHERE `synchro_key` = ? AND `player_uuid` = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
-		        ps.setString(1, MIM.getPlugin().getBase64Api().toBase64Array(pe.toArray(
+		        ps.setString(1, MIM.getPlugin().getBase64Provider().toBase64Array(pe.toArray(
 		        		new PotionEffect[pd.getActiveEffects().size()])));
 		        
 		        ps.setString(2, pd.getSynchroKey());
@@ -453,7 +453,7 @@ public class PlayerDataHandler
 	 */
 	public static void load(SyncType syncType, Player player)
 	{
-		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player, false);
+		String synchroKey = MIM.getPlugin().getConfigHandler().getSynchroKey(player);
 		PlayerData pd = (PlayerData) MIM.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA,
 				"`player_uuid` = ? AND `synchro_key` = ?",
 				player.getUniqueId().toString(), synchroKey);
