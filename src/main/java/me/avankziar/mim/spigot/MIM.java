@@ -50,6 +50,7 @@ import main.java.me.avankziar.mim.spigot.cmd.InvDeathLoadCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.PredefinePlayerStateCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.SendItemCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletionOne;
@@ -63,6 +64,9 @@ import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIInfo;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPISee;
 import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSave;
 import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSaveAndKick;
+import main.java.me.avankziar.mim.spigot.cmd.pdps.PDPSCreate;
+import main.java.me.avankziar.mim.spigot.cmd.pdps.PDPSDelete;
+import main.java.me.avankziar.mim.spigot.cmd.pdps.PDPSLoad;
 import main.java.me.avankziar.mim.spigot.cmd.si.SIHand;
 import main.java.me.avankziar.mim.spigot.cmd.si.SIInv;
 import main.java.me.avankziar.mim.spigot.cmd.si.SIMaterial;
@@ -342,6 +346,7 @@ public class MIM extends JavaPlugin
 		setupCmdCustomPlayerInventory();
 		setupWaitingItems();
 		setupSendingItems();
+		setupPredefinePlayerState();
 	}
 	
 	private void setupCmdClear()
@@ -441,6 +446,27 @@ public class MIM extends JavaPlugin
 		registerCommand(si.getPath(), si.getName());
 		getCommand(si.getName()).setExecutor(new SendItemCmdExecutor(plugin, si));
 		getCommand(si.getName()).setTabCompleter(new TabCompletionOne(plugin));
+	}
+	
+	private void setupPredefinePlayerState()
+	{
+		ArgumentConstructor create = new ArgumentConstructor(CommandExecuteType.PREDEFINEPLAYERSTATE_CREATE,
+				"predefineplayerstate_create", 0, 0, 1, false, null);
+		new PDPSCreate(create);
+		
+		ArgumentConstructor load = new ArgumentConstructor(CommandExecuteType.PREDEFINEPLAYERSTATE_LOAD,
+				"predefineplayerstate_load", 0, 0, 1, false, null);
+		new PDPSLoad(load);
+		
+		ArgumentConstructor delete = new ArgumentConstructor(CommandExecuteType.PREDEFINEPLAYERSTATE_DELETE,
+				"predefineplayerstate_delete", 0, 0, 1, false, null);
+		new PDPSDelete(delete);
+		
+		CommandConstructor pdps = new CommandConstructor(CommandExecuteType.PREDEFINEPLAYERSTATE, "predefineplayerstate", false,
+				create, load, delete);
+		registerCommand(pdps.getPath(), pdps.getName());
+		getCommand(pdps.getName()).setExecutor(new PredefinePlayerStateCmdExecutor(plugin, pdps));
+		getCommand(pdps.getName()).setTabCompleter(new TabCompletionOne(plugin));
 	}
 	
 	private void setupBypassPerm()

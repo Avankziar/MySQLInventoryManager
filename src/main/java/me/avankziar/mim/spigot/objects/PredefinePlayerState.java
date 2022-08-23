@@ -746,14 +746,14 @@ public class PredefinePlayerState implements MysqlHandable
 		return new ArrayList<>();
 	}
 	
-	public static ArrayList<PlayerData> convert(ArrayList<Object> arrayList)
+	public static ArrayList<PredefinePlayerState> convert(ArrayList<Object> arrayList)
 	{
-		ArrayList<PlayerData> l = new ArrayList<>();
+		ArrayList<PredefinePlayerState> l = new ArrayList<>();
 		for(Object o : arrayList)
 		{
-			if(o instanceof PlayerData)
+			if(o instanceof PredefinePlayerState)
 			{
-				l.add((PlayerData) o);
+				l.add((PredefinePlayerState) o);
 			}
 		}
 		return l;

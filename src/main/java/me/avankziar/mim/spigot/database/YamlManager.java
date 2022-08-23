@@ -323,6 +323,23 @@ public class YamlManager
 				"/senditem inv <player>", "/senditem inv ",
 				"&c/senditem inv <Spieler> &f| Sendet das Gesamte Inventar, bis auf Rüstung und Offhand.",
 				"&c/senditem inv <player> &f| Sends the entire inventory, except for armor and offhand.");
+		
+		commandsInput("predefineplayerstate", "predefineplayerstate", "predefineplayerstate.cmd.predefineplayerstate", 
+				"/predefineplayerstate <page>", "/predefineplayerstate ",
+				"&c/predefineplayerstate <Seitenzahl> &f| List pro Seite 10 PredefinePlayerState.",
+				"&c/predefineplayerstate <page> &f| List per page 10 PredefinePlayerState.");
+		argumentInput("predefineplayerstate_create", "create", "predefineplayerstate.cmd",
+				"/predefineplayerstate create <statename>", "/predefineplayerstate create ",
+				"&c/predefineplayerstate create <statename> &f| Erstellt oder überscheibt das PredefinePlayerState.",
+				"&c/predefineplayerstate create <statename> &f| Creates or overwrites the PredefinePlayerState.");
+		argumentInput("predefineplayerstate_load", "load", "predefineplayerstate.cmd",
+				"/predefineplayerstate load <statename>", "/predefineplayerstate load ",
+				"&c/predefineplayerstate load <statename> &f| Lädt den PredefinePlayerState.",
+				"&c/predefineplayerstate load <statename> &f| Load the PredefinePlayerState.");
+		argumentInput("predefineplayerstate_delete", "delete", "predefineplayerstate.cmd",
+				"/predefineplayerstate delete <statename>", "/predefineplayerstate delete ",
+				"&c/predefineplayerstate delete <statename> &f| Löscht den angegeben PredefinePlayerState.",
+				"&c/predefineplayerstate delete <statename> &f| Deletes the specified PredefinePlayerState.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -745,6 +762,62 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast dem Spieler %player% das Itempacket gesendet. Grund: &f%reason%",
 				"&eYou have sent the item packet to the player %player%. Reason: &f%reason%"}));
+		languageKeys.put("PredefinePlayerState.NoItemsWaiting",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAuf diesem Server wartet sind keine PredefinePlayerState erstellt!",
+				"&cThere are no PredefinePlayerState created waiting on this server"}));
+		languageKeys.put("PredefinePlayerState.Headline",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e===&f%amount% &ePredefinePlayerState, SynchroKey &f%synchrokey%&e, Seite &f%page%&e===",
+				"&e===&f%amount% &ePredefinePlayerState, SynchroKey &f%synchrokey%&e, page &f%page%&e==="}));
+		languageKeys.put("PredefinePlayerState.LineStart",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%statename% ",
+				"&f%statename% "}));
+		languageKeys.put("PredefinePlayerState.LinePartI",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f> &bÜberschreiben ",
+				"&f> &bOverride "}));
+		languageKeys.put("PredefinePlayerState.HoverI",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke um den PredefinePlayerState mit deinen aktuellen Werten zu überschreiben!",
+				"&eClick to overwrite the PredefinePlayerState with your current values!"}));
+		languageKeys.put("PredefinePlayerState.LinePartII",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f> &eLaden ",
+				"&f> &bLoad "}));
+		languageKeys.put("PredefinePlayerState.HoverII",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke um den PredefinePlayerState zu laden.~!~&cDie eigenen Werte werden Überschrieben!",
+				"&eClick to load the PredefinePlayerState.~!~&cYour own values will be overwritten!"}));
+		languageKeys.put("PredefinePlayerState.LinePartIII",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f> &cLöschen",
+				"&f> &cDelete"}));
+		languageKeys.put("PredefinePlayerState.HoverIII",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke um den PredefinePlayerState zu löschen!",
+				"&eClick to delete the PredefinePlayerState!"}));
+		languageKeys.put("PredefinePlayerState.Create.Override",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast den PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &eüberschrieben!",
+				"&eYou have overwritten the PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%)&e!"}));
+		languageKeys.put("PredefinePlayerState.Create.New",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&bDu hast den PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &berstellt!",
+				"&bYou have created the PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%)&b!"}));
+		languageKeys.put("PredefinePlayerState.Loaded",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast den PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &egeladen!",
+				"&eYou have loaded the PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%)&e!"}));
+		languageKeys.put("PredefinePlayerState.DontExist",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cPredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &cexistiert nicht!",
+				"&cPredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &cdont exist!"}));
+		languageKeys.put("PredefinePlayerState.Deleted",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast den PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%) &cgeladen!",
+				"&cYou have loaded the PredefinePlayerState &f%statename% (SynchroKey: %synchrokey%)&c!"}));
 	}
 	
 	private void initLangCustomPlayerInventory()

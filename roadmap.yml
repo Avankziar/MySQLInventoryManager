@@ -14,7 +14,7 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
-Build 0-3-4
+Build 0-3-5
 - /invdeathload <Spieler> <deathmemorystateid>, hinzugefügt
 - /invdeathlist [Spieler], hinzugefügt
 - IFH Interface für SendItem eingebunden.
@@ -28,6 +28,10 @@ Build 0-3-4
 - /senditem hand <Spielername>, hinzugefügt
 - /senditem material <Spielername>, hinzugefügt
 - /senditem inv <Spielername>, hinzugefügt
+- /predefineplayerstate <Zahl>, hinzugefügt
+- /predefineplayerstate create <Statename>, hinzugefügt
+- /predefineplayerstate load <Statename>, hinzugefügt
+- /predefineplayerstate delete <Statename>, hinzugefügt
 
 Build 0-3-2
 - Speicherung wird durch NMS nun 150 ms nach dem Verlassen des Servers ausgeführt.

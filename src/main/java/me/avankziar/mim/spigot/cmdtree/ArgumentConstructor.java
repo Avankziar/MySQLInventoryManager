@@ -5,8 +5,6 @@ import java.util.LinkedHashMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import main.java.me.avankziar.mim.spigot.MIM;
-
 public class ArgumentConstructor extends BaseConstructor
 {
     public int minArgsConstructor;
