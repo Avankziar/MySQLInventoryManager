@@ -163,12 +163,18 @@ public class YamlManager
 		configSpigotKeys.put("SleepMode"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
-		configSpigotKeys.put("RunTask.WaitingsItems.Active"
+		configSpigotKeys.put("RunTask.WaitingsItems.Info.Active"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
-		configSpigotKeys.put("RunTask.WaitingsItems.RepeatingInSeconds"
+		configSpigotKeys.put("RunTask.WaitingsItems.Info.RepeatingInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				180}));
+		configSpigotKeys.put("RunTask.WaitingsItems.CleanUp.Active"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		configSpigotKeys.put("RunTask.WaitingsItems.CleanUp.DeleteWhatIsDaysOld"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				365}));
 		
 		configSpigotKeys.put("Default.ClearToggle"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -287,6 +293,36 @@ public class YamlManager
 				"/invdeathlist [player]", "/invdeathlist ",
 				"&c/invdeathlist [Spieler] &f| Listet alle ladbare DeathMemoryStates des Spielers auf.",
 				"&c/invdeathlist [player] &f| Lists all loadable DeathMemoryStates of the player.");
+		
+		commandsInput("waitingitems", "waitingitems", "waitingitems.cmd.waitingitems", 
+				"/waitingitems ", "/waitingitems ",
+				"&c/waitingitems &f| Listet die ersten 10 wartenden Itempackete auf.",
+				"&c/waitingitems &f| Lists the first 10 waiting item packages.");
+		argumentInput("waitingitems_accept", "accept", "waitingitems.cmd",
+				"/waitingitems accept <id>", "/waitingitems accept ",
+				"&c/waitingitems accept <ID> &f| Nimmt das angegebene Itempacket an.",
+				"&c/waitingitems accept <id> &f| Accepts the specified item package.");
+		argumentInput("waitingitems_list", "list", "waitingitems.cmd",
+				"/waitingitems list <page>", "/waitingitems list ",
+				"&c/waitingitems list <Seitenzahl> &f| Listet 10 wartenden Itempackete auf.",
+				"&c/waitingitems list <page> &f| Lists 10 waiting item packages.");
+		
+		commandsInput("senditem", "senditem", "senditem.cmd.senditem", 
+				"/senditem ", "/senditem ",
+				"&c/senditem &f| Zwischenbefehl.",
+				"&c/senditem &f| Command in between.");
+		argumentInput("senditem_hand", "hand", "senditem.cmd",
+				"/senditem hand <player>", "/senditem hand ",
+				"&c/senditem hand <Spieler> &f| Sendet das Item in der Haupthand.",
+				"&c/senditem hand <player> &f| Sends the item in the main hand.");
+		argumentInput("senditem_material", "material", "senditem.cmd",
+				"/senditem material <player>", "/senditem material ",
+				"&c/senditem material <Spieler> &f| Sendet alle Items des Inventars, welche das gleiche Material haben, wie das in der Haupthand.",
+				"&c/senditem material <player> &f| Sends all items of the inventory, which have the same material as the one in the main hand.");
+		argumentInput("senditem_inv", "inv", "senditem.cmd",
+				"/senditem inv <player>", "/senditem inv ",
+				"&c/senditem inv <Spieler> &f| Sendet das Gesamte Inventar, bis auf Rüstung und Offhand.",
+				"&c/senditem inv <player> &f| Sends the entire inventory, except for armor and offhand.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -370,6 +406,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cMeintest du:",
 				"&cDid you mean:"}));
+		languageKeys.put("UseAFollowingArgument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte nutze ein weiteres Argument im Befehl!",
+				"&Please use another argument in the command!"}));
 		languageKeys.put("Boolean.True"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&aJa",
@@ -657,6 +697,54 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eMindestens &f%amount% &eItempackete können abgeholt werden! &aKlicke hier für die Übersicht!",
 				"&eAt least &f%amount% &eitempackets can be picked up! &aClick here for the overview!"}));
+		languageKeys.put("WaitingItems.NoItemsWaiting",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAuf diesem Server wartet kein Itempacket auf dich!",
+				"&cThere is no item package waiting for you on this server!"}));
+		languageKeys.put("WaitingItems.Headline",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e===&f%amount% &eWartende ItemPacke, Seite &f%page%&e===",
+				"&e===&f%amount% &eWaiting ItemPack, page &f%page%&e==="}));
+		languageKeys.put("WaitingItems.LineStart",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%time%&e, Sender: &f%sender%&e, Grund: &r%reason% ",
+				"&f%time%&e, Sender: &f%sender%&e, Reason: &r%reason% "}));
+		languageKeys.put("WaitingItems.LineEnd",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f> Annehmen? >> &a✔",
+				"&f> Accept? >> &a✔"}));
+		languageKeys.put("WaitingItems.Hover",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier um Items anzunehmen!",
+				"&eClick here to accept items!"}));
+		languageKeys.put("WaitingItems.DontExist",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Itempacket existiert nicht!",
+				"&cThe item package does not exist!"}));
+		languageKeys.put("WaitingItems.NotYours",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Itempacket ist nicht an dich adressiert!",
+				"&cThe item package is not addressed to you!"}));
+		languageKeys.put("WaitingItems.IsHalfDistributed",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAlle Items aus dem Itempacket wurde nach Möglichkeit verteilt. Nicht übernahmefähige Items wurden zurück ins Packet gesteckt und warten auf eine erneute Annahme.",
+				"&eAll items from the item package were distributed if possible. Items that could not be accepted were put back into the package and are waiting to be accepted again."}));
+		languageKeys.put("WaitingItems.IsDistributed",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAlle Items aus dem Itempacket wurde verteilt.",
+				"&eAll items from the item package were distributed."}));
+		languageKeys.put("SendItem.CannotSendItemsToYourself",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu kannst dir nicht selber Items schicken!",
+				"&cYou cant send items to yourself!"}));
+		languageKeys.put("SendItem.NoItemInHand",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast kein Item in deiner Haupthand!",
+				"&cYou have no item in your main hand!"}));
+		languageKeys.put("SendItem.Send",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast dem Spieler %player% das Itempacket gesendet. Grund: &f%reason%",
+				"&eYou have sent the item packet to the player %player%. Reason: &f%reason%"}));
 	}
 	
 	private void initLangCustomPlayerInventory()

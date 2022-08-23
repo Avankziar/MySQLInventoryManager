@@ -24,13 +24,14 @@ public class BackgroundTask
 	
 	public boolean initBackgroundTask()
 	{
-		runWaitingItemsTask(plugin.getYamlHandler().getConfig().getBoolean("RunTask.WaitingsItems.Active", true));
+		runWaitingItemsInfoTask(plugin.getYamlHandler().getConfig().getBoolean("RunTask.WaitingsItems.Info.Active", true));
+		runWaitingItemsCleanUpTask(plugin.getYamlHandler().getConfig().getBoolean("RunTask.WaitingsItems.CleanUp.Active", true));
 		return true;
 	}
 	
-	private void runWaitingItemsTask(boolean run)
+	private void runWaitingItemsInfoTask(boolean active)
 	{
-		if(!run)
+		if(!active)
 		{
 			return;
 		}
@@ -41,13 +42,13 @@ public class BackgroundTask
 			{
 				for(Player player : Bukkit.getOnlinePlayers())
 				{
-					waitingItemsTask(player);
+					waitingItemsInfoTask(player);
 				}
 			}
-		}.runTaskTimerAsynchronously(plugin, 25, 20L*plugin.getYamlHandler().getConfig().getInt("RunTask.WaitingsItems.RepeatingInSeconds", 180));
+		}.runTaskTimerAsynchronously(plugin, 25, 20L*plugin.getYamlHandler().getConfig().getInt("RunTask.WaitingsItems.Info.RepeatingInSeconds", 180));
 	}
 	
-	public static void waitingItemsTask(Player player)
+	public static void waitingItemsInfoTask(Player player)
 	{
 		if(player == null || !player.isOnline())
 		{
@@ -62,5 +63,23 @@ public class BackgroundTask
 		}
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("WaitingItems.RunTask"),
 				ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(CommandExecuteType.WAITINGITEMS_LIST)+" 0"));
+	}
+	
+	private void runWaitingItemsCleanUpTask(boolean active)
+	{
+		if(!active)
+		{
+			return;
+		}
+		long nowMinus = System.currentTimeMillis()
+				-(1000L*60*60*24*plugin.getYamlHandler().getConfig().getInt("RunTask.WaitingsItems.CleanUp.DeleteWhatIsDaysOld", 365));
+		int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.WAITINGITEMS, "`time_stamp` < ?", nowMinus);
+		if(count > 0)
+		{
+			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.WAITINGITEMS, "`time_stamp` < ?", nowMinus);
+			MIM.log.info("==========MIM Database DeleteTask==========");
+			MIM.log.info("Deleted WaitingItems Entry: "+count);
+			MIM.log.info("===========================================");
+		}
 	}
 }

@@ -109,4 +109,15 @@ public class SendItemAPI
 		return WaitingItems.convert(plugin.getMysqlHandler().getFullList(MysqlHandler.Type.WAITINGITEMS, "`id` ASC",
 				"`player_uuid` = ? AND `synchro_key` = ?", uuid.toString(), synchroKey));
 	}
+	
+	public ArrayList<WaitingItems> getWaitingItems(UUID uuid, String synchroKey, int page)
+	{
+		int quantity = 10;
+		int start = page * quantity;
+		if(start < 0)
+			start = 0;
+		return WaitingItems.convert(plugin.getMysqlHandler().getList(MysqlHandler.Type.WAITINGITEMS, "`id` ASC",
+				start, quantity,
+				"`player_uuid` = ? AND `synchro_key` = ?", uuid.toString(), synchroKey));
+	}
 }

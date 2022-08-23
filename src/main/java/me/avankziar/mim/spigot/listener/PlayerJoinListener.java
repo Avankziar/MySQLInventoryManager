@@ -97,7 +97,7 @@ public class PlayerJoinListener extends BaseListener
 			PlayerDataHandler.load(SyncType.FULL, player);
 		}
 		loadstatus.remove(player.getUniqueId());
-		BackgroundTask.waitingItemsTask(player);
+		BackgroundTask.waitingItemsInfoTask(player);
 	}
 	
 	public static boolean inLoadStatus(UUID uuid)

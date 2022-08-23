@@ -100,7 +100,7 @@ public class InvDeathListCmdExecutor implements CommandExecutor
 		{
 			ArrayList<BaseComponent> bc2 = new ArrayList<>();
 			bc2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("DeathMemoryState.ListLine")
-					.replace("%time%", TimeHandler.getDate(dms.getTimeStamp()))));
+					.replace("%time%", TimeHandler.getDateTime(dms.getTimeStamp()))));
 			bc2.add(ChatApi.apiChat(plugin.getYamlHandler().getLang().getString("DeathMemoryState.ListLineEnd"),
 					ClickEvent.Action.SUGGEST_COMMAND, deathloadcmd+player.getName()+" "+dms.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("DeathMemoryState.ListLineEndHover")));

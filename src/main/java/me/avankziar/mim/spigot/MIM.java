@@ -50,8 +50,10 @@ import main.java.me.avankziar.mim.spigot.cmd.InvDeathLoadCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.InventorySeeCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.MiMCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.OnlineCmdExecutor;
+import main.java.me.avankziar.mim.spigot.cmd.SendItemCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletion;
 import main.java.me.avankziar.mim.spigot.cmd.TabCompletionOne;
+import main.java.me.avankziar.mim.spigot.cmd.WaitingItemsCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.WhoIsCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.WorkbenchCmdExecutor;
 import main.java.me.avankziar.mim.spigot.cmd.clear.ClearSub;
@@ -61,6 +63,11 @@ import main.java.me.avankziar.mim.spigot.cmd.cpi.CPIInfo;
 import main.java.me.avankziar.mim.spigot.cmd.cpi.CPISee;
 import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSave;
 import main.java.me.avankziar.mim.spigot.cmd.mim.MiMSaveAndKick;
+import main.java.me.avankziar.mim.spigot.cmd.si.SIHand;
+import main.java.me.avankziar.mim.spigot.cmd.si.SIInv;
+import main.java.me.avankziar.mim.spigot.cmd.si.SIMaterial;
+import main.java.me.avankziar.mim.spigot.cmd.wi.WIAccept;
+import main.java.me.avankziar.mim.spigot.cmd.wi.WIList;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.mim.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.mim.spigot.cmdtree.BaseConstructor;
@@ -333,6 +340,8 @@ public class MIM extends JavaPlugin
 		
 		setupCmdClear();
 		setupCmdCustomPlayerInventory();
+		setupWaitingItems();
+		setupSendingItems();
 	}
 	
 	private void setupCmdClear()
@@ -399,6 +408,39 @@ public class MIM extends JavaPlugin
 			getCommand(xyz.getName()).setExecutor(new CustomPlayerInventoryCmdExecutor(plugin, xyz, cpiname));
 			getCommand(xyz.getName()).setTabCompleter(new TabCompletion(plugin));
 		}
+	}
+	
+	private void setupWaitingItems()
+	{
+		ArgumentConstructor accept = new ArgumentConstructor(CommandExecuteType.WAITINGITEMS_ACCEPT, "waitingitems_accept", 0, 0, 1, false, null);
+		new WIAccept(accept);
+		
+		ArgumentConstructor list = new ArgumentConstructor(CommandExecuteType.WAITINGITEMS_LIST, "waitingitems_list", 0, 0, 1, false, null);
+		new WIList(list);
+		
+		CommandConstructor wi = new CommandConstructor(CommandExecuteType.WAITINGITEMS, "waitingitems", false,
+				accept, list);
+		registerCommand(wi.getPath(), wi.getName());
+		getCommand(wi.getName()).setExecutor(new WaitingItemsCmdExecutor(plugin, wi));
+		getCommand(wi.getName()).setTabCompleter(new TabCompletionOne(plugin));
+	}
+	
+	private void setupSendingItems()
+	{
+		ArgumentConstructor hand = new ArgumentConstructor(CommandExecuteType.SENDITEM_HAND, "senditems_hand", 0, 0, 999, false, null);
+		new SIHand(hand);
+		
+		ArgumentConstructor mat = new ArgumentConstructor(CommandExecuteType.SENDITEM_MATERIAL, "senditem_material", 0, 0, 999, false, null);
+		new SIMaterial(mat);
+		
+		ArgumentConstructor inv = new ArgumentConstructor(CommandExecuteType.SENDITEM_INV, "senditem_inv", 0, 0, 999, false, null);
+		new SIInv(inv);
+		
+		CommandConstructor si = new CommandConstructor(CommandExecuteType.SENDITEM, "senditem", false,
+				hand, mat, inv);
+		registerCommand(si.getPath(), si.getName());
+		getCommand(si.getName()).setExecutor(new SendItemCmdExecutor(plugin, si));
+		getCommand(si.getName()).setTabCompleter(new TabCompletionOne(plugin));
 	}
 	
 	private void setupBypassPerm()

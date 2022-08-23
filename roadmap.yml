@@ -14,13 +14,20 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
-Build 0-3-3
+Build 0-3-4
 - /invdeathload <Spieler> <deathmemorystateid>, hinzugefügt
 - /invdeathlist [Spieler], hinzugefügt
 - IFH Interface für SendItem eingebunden.
 - IFH Interface für Synchronization eingebungen.
 - WaitingItems Api hinzugefügt.
 - RunTask für WaitingItems wurde hinzugefügt.
+- /waitingitem, hinzugefügt
+- /waitingitem list <Zahl>, hinzugefügt
+- /waitingitem accept <ID>, hinzugefügt
+- /senditem, hinzugefügt
+- /senditem hand <Spielername>, hinzugefügt
+- /senditem material <Spielername>, hinzugefügt
+- /senditem inv <Spielername>, hinzugefügt
 
 Build 0-3-2
 - Speicherung wird durch NMS nun 150 ms nach dem Verlassen des Servers ausgeführt.
