@@ -32,6 +32,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
+import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
 import main.java.me.avankziar.ifh.spigot.interfaces.Vanish;
 import main.java.me.avankziar.ifh.spigot.position.LastKnownPosition;
@@ -144,6 +145,7 @@ public class MIM extends JavaPlugin
 	private PlayerTimes playerTimesConsumer;
 	private LastKnownPosition lastKnownPositionConsumer;
 	private Vanish vanishconsumer;
+	private Administration administrationConsumer;
 	
 	private LuckPerms lpapi;
 	
@@ -159,6 +161,8 @@ public class MIM extends JavaPlugin
 		log.info(" ██║╚██╔╝██║██║██║╚██╔╝██║ | Depend Plugins: "+plugin.getDescription().getDepend().toString());
 		log.info(" ██║ ╚═╝ ██║██║██║ ╚═╝ ██║ | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
 		log.info(" ╚═╝     ╚═╝╚═╝╚═╝     ╚═╝ | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
+		
+		setupIFHAdministration();
 		
 		yamlHandler = new YamlHandler(this);
 		
@@ -1007,6 +1011,48 @@ public class MIM extends JavaPlugin
     			}
             }.runTaskTimer(plugin, 20L, 20*2);
 		}
+	}
+	
+	private void setupIFHAdministration()
+	{ 
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    try
+			    {
+			    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
+	                         getServer().getServicesManager().getRegistration(Administration.class);
+				    if (rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    administrationConsumer = rsp.getProvider();
+				    log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+			    } catch(NoClassDefFoundError e) 
+			    {
+			    	cancel();
+			    }		    
+			    cancel();
+			}
+        }.runTaskTimer(plugin,  0L, 20*2);
+	}
+	
+	public Administration getAdministration()
+	{
+		return administrationConsumer;
 	}
 	
 	public ArrayList<String> getPlayers()

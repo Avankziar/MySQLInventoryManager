@@ -129,6 +129,12 @@ public class YamlManager
 	
 	public void initConfig() //INFO:Config
 	{		
+		configSpigotKeys.put("useIFHAdministration"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		configSpigotKeys.put("IFHAdministrationPath"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"mim"}));
 		configSpigotKeys.put("Language"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"ENG"}));
