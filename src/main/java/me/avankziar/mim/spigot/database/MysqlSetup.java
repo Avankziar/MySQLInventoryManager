@@ -11,25 +11,40 @@ import main.java.me.avankziar.mim.spigot.MIM;
 
 public class MysqlSetup 
 {
-	private String host;
-	private int port;
-	private String database;
-	private String user;
-	private String password;
-	private boolean isAutoConnect;
-	private boolean isVerifyServerCertificate;
-	private boolean isSSLEnabled;
+	final private String host;
+	final private int port;
+	final private String database;
+	final private String user;
+	final private String password;
+	final private boolean isAutoConnect;
+	final private boolean isVerifyServerCertificate;
+	final private boolean isSSLEnabled;
 	
 	public MysqlSetup(MIM plugin)
 	{
-		host = plugin.getYamlHandler().getConfig().getString("Mysql.Host");
-		port = plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306);
-		database = plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName");
-		user = plugin.getYamlHandler().getConfig().getString("Mysql.User");
-		password = plugin.getYamlHandler().getConfig().getString("Mysql.Password");
-		isAutoConnect = plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true);
-		isVerifyServerCertificate = plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false);
-		isSSLEnabled = plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false);
+		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
+		{
+			adm = false;
+		}
+		
+		host = adm ? plugin.getAdministration().getHost(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
+		port = adm ? plugin.getAdministration().getPort(path)
+				: plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306);
+		database = adm ? plugin.getAdministration().getDatabase(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName");
+		user = adm ? plugin.getAdministration().getUsername(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.User");
+		password = adm ? plugin.getAdministration().getPassword(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.Password");
+		isAutoConnect = adm ? plugin.getAdministration().isAutoReconnect(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true);
+		isVerifyServerCertificate = adm ? plugin.getAdministration().isVerifyServerCertificate(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false);
+		isSSLEnabled = adm ? plugin.getAdministration().useSSL(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false);
 		loadMysqlSetup();
 	}
 	
