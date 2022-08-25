@@ -436,7 +436,7 @@ public class MIM extends JavaPlugin
 	
 	private void setupSendingItems()
 	{
-		ArgumentConstructor hand = new ArgumentConstructor(CommandExecuteType.SENDITEM_HAND, "senditems_hand", 0, 0, 999, false, null);
+		ArgumentConstructor hand = new ArgumentConstructor(CommandExecuteType.SENDITEM_HAND, "senditem_hand", 0, 0, 999, false, null);
 		new SIHand(hand);
 		
 		ArgumentConstructor mat = new ArgumentConstructor(CommandExecuteType.SENDITEM_MATERIAL, "senditem_material", 0, 0, 999, false, null);
