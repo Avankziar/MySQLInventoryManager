@@ -14,6 +14,9 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
+Build 1-0-1
+- IFH Administration aktualisiert
+
 Build 1-0-0
 - MC 1.19.2 support
 - IFH Administration implementiert

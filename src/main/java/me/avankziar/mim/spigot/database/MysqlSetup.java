@@ -20,15 +20,12 @@ public class MysqlSetup
 	final private boolean isVerifyServerCertificate;
 	final private boolean isSSLEnabled;
 	
-	public MysqlSetup(MIM plugin)
+	public MysqlSetup(MIM plugin, boolean adm, String path)
 	{
-		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
-		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
+		if(adm)
 		{
-			adm = false;
-		}
-		
+			MIM.log.log(Level.INFO, "Using IFH Administration");
+		}		
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
 		port = adm ? plugin.getAdministration().getPort(path)

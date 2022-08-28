@@ -166,10 +166,14 @@ public class MIM extends JavaPlugin
 		
 		yamlHandler = new YamlHandler(this);
 		
-		if (yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		boolean adm = plugin.getAdministration() != null 
+				&& plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration")
+				&& plugin.getAdministration().isMysqlPathActive(path);
+		if(adm || yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
 		{
 			mysqlHandler = new MysqlHandler(plugin);
-			mysqlSetup = new MysqlSetup(plugin);
+			mysqlSetup = new MysqlSetup(plugin, adm, path);
 		} else
 		{
 			log.severe("MySQL is not set in the Plugin " + pluginName + "!");
