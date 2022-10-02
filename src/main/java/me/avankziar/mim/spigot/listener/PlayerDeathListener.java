@@ -6,8 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import main.java.me.avankziar.mim.spigot.MIM;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask;
-import main.java.me.avankziar.mim.spigot.objects.SyncTask.RunType;
+import main.java.me.avankziar.mim.spigot.handler.DeathMemoryStateHandler;
 import main.java.me.avankziar.mim.spigot.objects.SyncType;
 
 public class PlayerDeathListener extends BaseListener
@@ -26,6 +25,6 @@ public class PlayerDeathListener extends BaseListener
 		}
 		final Player player = event.getEntity();
 		//Ausnahme!
-		new SyncTask(plugin, SyncType.FULL, RunType.SAVE_DEATHSTATE, player).run();
+		DeathMemoryStateHandler.save(SyncType.FULL, player);
 	}
 }

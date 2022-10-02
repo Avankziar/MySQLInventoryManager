@@ -14,6 +14,10 @@ Build 1-0-0 -------------------------------------------------------------
 + /xyz see <Spielername> | Schaut in die defaultbox des angegeben Spielers.
 + Wenn der Server heruntergefahren wird, ist eine Speichermethode eingebaut für alle auf dem Server befindlichen Spieler als Sicherheitsmaßnahme.
 
+- PlayerDeathListener speichert kein DeathPlayerMemoryState
+- MIM mit /ec und zeitgleich rechtsklick auf einen NPC sorgt dafür, dass man die items des npcs herausholen kann.
+  Das 
+
 Build 1-0-1
 - IFH Administration aktualisiert
 
