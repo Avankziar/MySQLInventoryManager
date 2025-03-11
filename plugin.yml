@@ -1,8 +1,0 @@
-name: MySQLInventoryManagement
-main: main.java.me.avankziar.mim.spigot.MIM
-version: 1
-author: Avankziar
-api-version: 1.19
-depend: [InterfaceHub]
-softdepend: [Vault]
-description: A Mysql Inventory synchronization and Custom Inventory management.

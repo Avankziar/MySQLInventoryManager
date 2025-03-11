@@ -1,0 +1,10 @@
+name: MySQLInventoryManager
+main: me.avankziar.mim.spigot.MIM
+version: 1
+author: Avankziar
+api-version: 1.21
+description: A Player Data(Inventory, PotionEffect, Enderchest etc.) synchronizer through a database
+depend: [InterfaceHub]
+softdepend: [RootAdministration]
+website: TBA
+prefix: MIM
