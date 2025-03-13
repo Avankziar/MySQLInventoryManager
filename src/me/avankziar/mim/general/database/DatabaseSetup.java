@@ -12,7 +12,10 @@ import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 import me.avankziar.mim.general.objects.PlayerData;
+import me.avankziar.mim.general.objects.PlayerEnderchest;
 import me.avankziar.mim.general.objects.PlayerInventory;
+import me.avankziar.mim.general.objects.PlayerMetaData;
+import me.avankziar.mim.general.objects.PlayerPotionEffect;
 
 public class DatabaseSetup 
 {
@@ -53,6 +56,9 @@ public class DatabaseSetup
     {
         register.add(new PlayerData());
         register.add(new PlayerInventory());
+        register.add(new PlayerMetaData());
+        register.add(new PlayerEnderchest());
+        register.add(new PlayerPotionEffect());
     }
 
     public boolean loadDatabaseSetup(ServerType serverType) 

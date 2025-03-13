@@ -8,10 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEntityEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -64,15 +62,6 @@ public class PreventInteractionListener implements Listener
 		}
 	}
 	
-	/*@EventHandler
-	public void onBucket(PlayerBucketEvent event)
-	{
-		if(SynchronHandler.inSync(event.getPlayer().getUniqueId()))
-		{
-			event.setCancelled(true);
-		}
-	}*/
-	
 	@EventHandler
 	public void onCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
@@ -84,15 +73,6 @@ public class PreventInteractionListener implements Listener
 	
 	@EventHandler
 	public void onDropItem(PlayerDropItemEvent event)
-	{
-		if(SynchronHandler.inSync(event.getPlayer().getUniqueId()))
-		{
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onGameModeChange(PlayerGameModeChangeEvent event)
 	{
 		if(SynchronHandler.inSync(event.getPlayer().getUniqueId()))
 		{

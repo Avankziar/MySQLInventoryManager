@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -257,6 +258,41 @@ public class DatabaseHandler
         }
         return new ArrayList<>();
     }
+    
+    /**
+     * Führt eine Datenbank-Transaktion aus. Falls ein Fehler auftritt, wird ein Rollback durchgeführt.
+     * 
+     * @param transaction Die Logik, die innerhalb der Transaktion ausgeführt wird.
+     */
+    public void runTransaction(Consumer<Connection> transaction) 
+    {
+        try (Connection conn = databaseSetup.getConnection()) 
+        {  // Falls PostgreSQL, hier entsprechend anpassen
+            conn.setAutoCommit(false);  // Transaktion starten
 
+            try 
+            {
+                transaction.accept(conn);  // SQL-Befehle ausführen
+                conn.commit();  // Transaktion abschließen
+            } catch (Exception e) 
+            {
+                conn.rollback();  // Bei Fehler alles zurücksetzen
+                getTransactionLogger().log(Level.SEVERE, "Transaction failed! Rolling back...", e);
+            } finally 
+            {
+                conn.setAutoCommit(true);  // AutoCommit wieder aktivieren
+            }
 
+        } catch (SQLException e) 
+        {
+            getTransactionLogger().log(Level.SEVERE, "Could not establish database connection!", e);
+        }
+    }
+
+    /**
+     * Liefert den Logger für Fehlermeldungen (Anpassen, falls du einen anderen Logger nutzt).
+     */
+    private static java.util.logging.Logger getTransactionLogger() {
+        return java.util.logging.Logger.getLogger("DatabaseHandler");
+    }
 }

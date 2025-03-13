@@ -25,15 +25,17 @@ public class PlayerData implements DatabaseTable<PlayerData>
 	private UUID uuid;
 	private String name;
 	private boolean inSync;
+	private boolean syncMessage;
 	
 	public PlayerData(){}
 	
-	public PlayerData(int id, UUID uuid, String name, boolean inSync)
+	public PlayerData(int id, UUID uuid, String name, boolean inSync, boolean syncMessage)
 	{
 		setId(id);
 		setUUID(uuid);
 		setName(name);
 		setInSync(inSync);
+		setSyncMessage(syncMessage);
 	}
 	
 	public static String databaseType = "";
@@ -83,6 +85,16 @@ public class PlayerData implements DatabaseTable<PlayerData>
 		this.inSync = inSync;
 	}
 
+	public boolean isSyncMessage()
+	{
+		return syncMessage;
+	}
+
+	public void setSyncMessage(boolean syncMessage)
+	{
+		this.syncMessage = syncMessage;
+	}
+
 	public String getTableName() 
     {
         return "MySQL".equalsIgnoreCase(databaseType) ? "mimPlayerData" : "public.mim_player_data";
@@ -99,8 +111,9 @@ public class PlayerData implements DatabaseTable<PlayerData>
             sql.append("CREATE TABLE IF NOT EXISTS `").append(tableName).append("` (")
                .append("id BIGINT AUTO_INCREMENT PRIMARY KEY, ")
                .append("player_uuid char(36) NOT NULL UNIQUE, ")
-               .append("player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,")
-               .append("in_sync boolean")
+               .append("player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL, ")
+               .append("in_sync boolean, ")
+               .append("sync_message boolean")
                .append(");");
         } 
         else if ("PostgreSQL".equalsIgnoreCase(databaseType)) 
@@ -108,8 +121,9 @@ public class PlayerData implements DatabaseTable<PlayerData>
             sql.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (")
                .append("id SERIAL PRIMARY KEY, ")
                .append("player_uuid UUID NOT NULL, ")
-               .append("player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,")
-               .append("in_sync boolean")
+               .append("player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL, ")
+               .append("in_sync boolean, ")
+               .append("sync_message boolean")
                .append(");");
         } 
         else 
@@ -126,12 +140,13 @@ public class PlayerData implements DatabaseTable<PlayerData>
 		try
 		{
 			String sql = "INSERT INTO " + getTableName()
-					+ " (player_uuid, player_name, in_sync) " 
-					+ "VALUES(?, ?, ?)";
+					+ " (player_uuid, player_name, in_sync, sync_message) " 
+					+ "VALUES(?, ?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
 	        ps.setString(2, getName());
 	        ps.setBoolean(3, isInSync());
+	        ps.setBoolean(4, isSyncMessage());
 	        
 	        int i = ps.executeUpdate();
 	        DatabaseHandler.addRows(QueryType.INSERT, i);
@@ -150,14 +165,15 @@ public class PlayerData implements DatabaseTable<PlayerData>
 		try
 		{
 			String sql = "UPDATE " + getTableName()
-				+ " SET player_uuid = ?, player_name = ?, in_sync = ?" 
+				+ " SET player_uuid = ?, player_name = ?, in_sync = ?, sync_message = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
 			ps.setString(2, getName());
 			ps.setBoolean(3, isInSync());
+	        ps.setBoolean(4, isSyncMessage());
 			
-			int i = 4;
+			int i = 5;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -198,7 +214,8 @@ public class PlayerData implements DatabaseTable<PlayerData>
 				al.add(new PlayerData(rs.getInt("id"),
 						UUID.fromString(rs.getString("player_uuid")),
 						rs.getString("player_name"),
-						rs.getBoolean("in_sync")));
+						rs.getBoolean("in_sync"),
+						rs.getBoolean("sync_message")));
 			}
 			return al;
 		} catch (SQLException e)

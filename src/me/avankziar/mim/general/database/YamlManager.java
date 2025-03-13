@@ -626,7 +626,40 @@ public class YamlManager
 				5},
 				new Object[] {
 				"",
-				"Die Anzahl an Datenbankeinträge, welche bspw. pro Spielerinventar in der Datenbank angelegt werden.",
+				"Die Anzahl an Datenbankeinträge, welche pro Spielerinventar in der Datenbank angelegt werden.",
+				"",
+				""});
+		addConfig("AtTimeDatabaseBackUp.MetaData",
+				new Object[] {
+				5},
+				new Object[] {
+				"",
+				"Die Anzahl an Datenbankeinträge, welche pro Exp/Level/Feuerticks/Freezeticks etc in der Datenbank angelegt werden.",
+				"",
+				""});
+		addConfig("AtTimeDatabaseBackUp.PotionEffect",
+				new Object[] {
+				5},
+				new Object[] {
+				"",
+				"Die Anzahl an Datenbankeinträge, welche pro PotionEffect etc in der Datenbank angelegt werden.",
+				"",
+				""});
+		addConfig("AtTimeDatabaseBackUp.Enderchest",
+				new Object[] {
+				5},
+				new Object[] {
+				"",
+				"Die Anzahl an Datenbankeinträge, welche pro Spieler Enderchest in der Datenbank angelegt werden.",
+				"",
+				""});
+		addConfig("OverrideGameModeForWorld",
+				new Object[] {
+				"lobby;SURVIVAL",
+				"hub;CREATIVE"},
+				new Object[] {
+				"",
+				"Gibt die Welten auf dem aktuellen Server an, wo ein ein GameMode synchronization immer überschrieben werden mit dem angegeben GameMode.",
 				"",
 				""});
 	}

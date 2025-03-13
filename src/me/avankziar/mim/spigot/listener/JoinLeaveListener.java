@@ -2,19 +2,22 @@ package me.avankziar.mim.spigot.listener;
 
 import java.util.UUID;
 
-import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.avankziar.mim.general.assistance.ChatApiS;
 import me.avankziar.mim.general.objects.PlayerData;
+import me.avankziar.mim.general.objects.PlayerEnderchest;
 import me.avankziar.mim.general.objects.PlayerInventory;
+import me.avankziar.mim.general.objects.PlayerMetaData;
+import me.avankziar.mim.general.objects.PlayerPotionEffect;
 import me.avankziar.mim.spigot.MIM;
 import me.avankziar.mim.spigot.handler.SynchronHandler;
 
@@ -26,7 +29,7 @@ public class JoinLeaveListener implements Listener
 		final UUID uuid = event.getPlayer().getUniqueId();
 		SynchronHandler.setSync(uuid, true);
 		final Player player = event.getPlayer();
-		player.sendMessage("[MIM] Sync startet...");
+		player.sendMessage("[MIM] Sync startet..."); //REMOVEME
 		final String name = player.getName();
 		updatePlayer(player, uuid, name, 1);
 	}
@@ -56,42 +59,38 @@ public class JoinLeaveListener implements Listener
 			}.runTaskLater(MIM.getPlugin(), 2L);
 		} else
 		{
-			/*
-			 * Player has quit.
-			 */
 			if(player == null)
 			{
+				/*
+				 * Player has quit.
+				 */
 				return;
 			}
-			if(SynchronHandler.syncInventory(player, uuid))
+			if(!SynchronHandler.syncInventory(player, uuid))
 			{
-				MIM.logger.info("Sync Inventory of "+name+" was successful!");
-			} else
+				MIM.logger.info("Sync Inventory of "+name+" was unsuccessful!"); //REMOVEME
+			}
+			if(!SynchronHandler.syncMetaData(player, uuid))
 			{
-				MIM.logger.info("Sync Inventory of "+name+" was unsuccessful!");
+				MIM.logger.info("Sync MetaData of "+name+" was unsuccessful!"); //REMOVEME
+			}
+			if(!SynchronHandler.syncPotionEffect(player, uuid))
+			{
+				MIM.logger.info("Sync PotionEffect of "+name+" was unsuccessful!"); //REMOVEME
+			}
+			if(!SynchronHandler.syncEnderchest(player, uuid))
+			{
+				MIM.logger.info("Sync Enderchest of "+name+" was unsuccessful!"); //REMOVEME
 			}
 			SynchronHandler.setSync(uuid, false);
-			player.sendMessage("[MIM] Sync fertig!");
+			player.sendMessage("[MIM] Sync fertig!"); //REMOVEME
 			//ToSync
-			player.setArrowsInBody(0);
-			player.setExhaustion(0);
-			player.setExp(0);
-			player.setFireTicks(0);
-			player.setFlying(false);
-			player.setFoodLevel(0);
-			player.setFreezeTicks(0);
-			player.setGameMode(GameMode.SURVIVAL);
-			player.setHealth(0);
-			player.setLevel(0);
-			player.setRemainingAir(0);
-			player.setSaturatedRegenRate(0);
-			player.setSaturation(0);
-			player.setStarvationRate(0);
+			
 			//EndOfSync
 			PlayerData pd = MIM.getPlugin().getMysqlHandler().getData(new PlayerData(), "`id` ASC", "`player_uuid` = ?", uuid.toString());
 			if(pd == null)
 			{
-				pd = new PlayerData(0, uuid, name, false);
+				pd = new PlayerData(0, uuid, name, false, true);
 				MIM.getPlugin().getMysqlHandler().create(pd);
 			} else
 			{
@@ -117,16 +116,54 @@ public class JoinLeaveListener implements Listener
 			SynchronHandler.setSync(uuid, false);
 			return;
 		}
-		final String name = event.getPlayer().getName();
-		MIM.getPlugin().getMysqlHandler().updateData(new PlayerData(0, uuid, name, true), "`player_uuid` = ?", uuid.toString());
-		final ItemStack[] inv = event.getPlayer().getInventory().getStorageContents();
-		final ItemStack offhand = event.getPlayer().getInventory().getItemInOffHand();
-		final ItemStack helmet = event.getPlayer().getInventory().getHelmet();
-		final ItemStack chestplate = event.getPlayer().getInventory().getChestplate();
-		final ItemStack legging = event.getPlayer().getInventory().getLeggings();
-		final ItemStack boots = event.getPlayer().getInventory().getBoots();
-		PlayerInventory pi = new PlayerInventory(0, uuid, System.currentTimeMillis(), inv, offhand, helmet, chestplate, legging, boots);
-		MIM.getPlugin().getMysqlHandler().create(pi);
-		MIM.getPlugin().getMysqlHandler().updateData(new PlayerData(0, uuid, name, false), "`player_uuid` = ?", uuid.toString());
+		final Player player = event.getPlayer();
+		final String name = player.getName();
+		/*
+		 * Must be insert as soon it can be, to ensure the other server, where the player may join,
+		 * will not sync a old synchronized inventory or other data.
+		 */
+		MIM.getPlugin().getMysqlHandler().updateData(new PlayerData(0, uuid, name, true, true), "`player_uuid` = ?", uuid.toString());
+		final long timestamp = System.currentTimeMillis();
+		
+		// Alle Daten in Objekte speichern
+		final PlayerInventory playerInventory = new PlayerInventory(
+		    0, uuid, timestamp, 
+		    player.getInventory().getStorageContents(),
+		    player.getInventory().getItemInOffHand(),
+		    player.getInventory().getHelmet(),
+		    player.getInventory().getChestplate(),
+		    player.getInventory().getLeggings(),
+		    player.getInventory().getBoots()
+		);
+		final PlayerMetaData playerMetaData = new PlayerMetaData(
+		    0, uuid, timestamp, 
+		    player.getGameMode(),
+		    player.getAttribute(Attribute.MAX_HEALTH).getBaseValue(),
+		    player.getHealth(),
+		    player.getRemainingAir(),
+		    player.getFireTicks(),
+		    player.getFreezeTicks(),
+		    player.getExp(),
+		    player.getLevel(),
+		    player.getExhaustion(),
+		    player.getFoodLevel(),
+		    player.getSaturation()
+		);
+		final PlayerPotionEffect playerPotionEffect = new PlayerPotionEffect(
+				0, uuid, timestamp,
+				player.getActivePotionEffects().toArray(new PotionEffect[player.getActivePotionEffects().size()])
+		);
+		final PlayerEnderchest playerEnderchest = new PlayerEnderchest(
+				0, uuid, timestamp,
+				player.getEnderChest().getStorageContents()
+		);
+		MIM.getPlugin().getMysqlHandler().runTransaction((conn) -> 
+		{
+		    playerInventory.create(conn);
+		    playerMetaData.create(conn);
+		    playerPotionEffect.create(conn);
+		    playerEnderchest.create(conn);
+		    new PlayerData(0, uuid, name, false, true).update(conn, "`player_uuid` = ?", uuid.toString()); //Unsync Player in database to let him sync on a other server if he only changed servers.
+		});
 	}
 }

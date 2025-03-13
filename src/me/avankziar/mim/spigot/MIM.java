@@ -45,7 +45,7 @@ public class MIM extends JavaPlugin
 {
 	public static Logger logger;
 	private static MIM plugin;
-	public static String pluginname = "Base";
+	public static String pluginname = "MySQLInventoryHandler";
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private SQLSetup mysqlSetup;

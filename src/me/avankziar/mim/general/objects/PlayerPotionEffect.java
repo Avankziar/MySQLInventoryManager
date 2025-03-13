@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import me.avankziar.mim.general.database.DatabaseHandler;
 import me.avankziar.mim.general.database.DatabaseSetup;
@@ -17,33 +17,21 @@ import me.avankziar.mim.general.database.QueryType;
 import me.avankziar.mim.general.database.ServerType;
 import me.avankziar.mim.spigot.handler.Base64Handler;
 
-public class PlayerInventory implements DatabaseTable<PlayerInventory> 
+public class PlayerPotionEffect implements DatabaseTable<PlayerPotionEffect> 
 {
     private int id;
     private UUID uuid;
     private long updateTime;
-    private ItemStack[] inventory;
-    private ItemStack offHand;
-    private ItemStack helmet;
-    private ItemStack chestplate;
-    private ItemStack legging;
-    private ItemStack boots;
+    private PotionEffect[] potionEffect;
+    
+    public PlayerPotionEffect() {}
 
-    public PlayerInventory() {}
-
-    public PlayerInventory(int id, UUID uuid, long updateTime, ItemStack[] inventory,
-                           ItemStack offHand, ItemStack helmet, ItemStack chestplate, ItemStack legging,
-                           ItemStack boots) 
+    public PlayerPotionEffect(int id, UUID uuid, long updateTime, PotionEffect[] potionEffect) 
     {
         setId(id);
         setUUID(uuid);
         setUpdateTime(updateTime);
-        setInventory(inventory);
-        setOffHand(offHand);
-        setHelmet(helmet);
-        setChestplate(chestplate);
-        setLegging(legging);
-        setBoots(boots);
+        setPotionEffect(potionEffect);
     }
     
     public static String databaseType = "";
@@ -83,69 +71,19 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
         this.updateTime = updateTime;
     }
 
-    public ItemStack[] getInventory() 
-    {
-        return inventory;
-    }
+    public PotionEffect[] getPotionEffect()
+	{
+		return potionEffect;
+	}
 
-    public void setInventory(ItemStack[] inventory) 
-    {
-        this.inventory = inventory;
-    }
-
-    public ItemStack getOffHand() 
-    {
-        return offHand;
-    }
-
-    public void setOffHand(ItemStack offHand) 
-    {
-        this.offHand = offHand;
-    }
-
-    public ItemStack getHelmet() 
-    {
-        return helmet;
-    }
-
-    public void setHelmet(ItemStack helmet) 
-    {
-        this.helmet = helmet;
-    }
-
-    public ItemStack getChestplate() 
-    {
-        return chestplate;
-    }
-
-    public void setChestplate(ItemStack chestplate) 
-    {
-        this.chestplate = chestplate;
-    }
-
-    public ItemStack getLegging() 
-    {
-        return legging;
-    }
-
-    public void setLegging(ItemStack legging) 
-    {
-        this.legging = legging;
-    }
-
-    public ItemStack getBoots() 
-    {
-        return boots;
-    }
-
-    public void setBoots(ItemStack boots) 
-    {
-        this.boots = boots;
-    }
+	public void setPotionEffect(PotionEffect[] potionEffect)
+	{
+		this.potionEffect = potionEffect;
+	}
 
     public String getTableName() 
     {
-        return "MySQL".equalsIgnoreCase(databaseType) ? "mimPlayerInventory" : "public.mim_player_inventory";
+        return "MySQL".equalsIgnoreCase(databaseType) ? "mimPlayerPotionEffect" : "public.mim_player_potioneffect";
     }
 
     public boolean setupDatabase(DatabaseSetup dbSetup) 
@@ -160,12 +98,7 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
                .append("id BIGINT AUTO_INCREMENT PRIMARY KEY, ")
                .append("player_uuid CHAR(36) NOT NULL, ")
                .append("upload_time BIGINT, ")
-               .append("inventory MEDIUMTEXT, ")
-               .append("off_hand TEXT, ")
-               .append("helmet TEXT, ")
-               .append("chestplate TEXT, ")
-               .append("legging TEXT, ")
-               .append("boots TEXT);");
+               .append("potion_effect MEDIUMTEXT);");
         } 
         else if ("PostgreSQL".equalsIgnoreCase(databaseType)) 
         {
@@ -173,12 +106,7 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
                .append("id SERIAL PRIMARY KEY, ")
                .append("player_uuid UUID NOT NULL, ")
                .append("upload_time BIGINT, ")
-               .append("inventory MEDIUMTEXT, ")
-               .append("off_hand TEXT, ")
-               .append("helmet TEXT, ")
-               .append("chestplate TEXT, ")
-               .append("legging TEXT, ")
-               .append("boots TEXT);");
+               .append("potion_effect MEDIUMTEXT);");
         } 
         else 
         {
@@ -194,18 +122,13 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
         try 
         {
             String sql = "INSERT INTO " + getTableName()
-                       + " (player_uuid, upload_time, inventory, off_hand, helmet, chestplate, legging, boots) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                       + " (player_uuid, upload_time, potion_effect) "
+                       + "VALUES (?, ?, ?)";
             
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, getUUID().toString());
             ps.setLong(2, getUpdateTime());
-            ps.setString(3, Base64Handler.getBase64Inventory(getInventory()));
-            ps.setString(4, Base64Handler.getBase64Item(getOffHand()));
-            ps.setString(5, Base64Handler.getBase64Item(getHelmet()));
-            ps.setString(6, Base64Handler.getBase64Item(getChestplate()));
-            ps.setString(7, Base64Handler.getBase64Item(getLegging()));
-            ps.setString(8, Base64Handler.getBase64Item(getBoots()));
+            ps.setString(3, Base64Handler.getBase64PotionEffect(getPotionEffect()));
 
             int i = ps.executeUpdate();
             DatabaseHandler.addRows(QueryType.INSERT, i);
@@ -224,21 +147,15 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
         try 
         {
             String sql = "UPDATE " + getTableName()
-                       + " SET player_uuid = ?, upload_time = ?, inventory = ?,"
-                       + " off_hand = ?, helmet = ?, chestplate = ?, legging = ?, boots = ?"
+                       + " SET player_uuid = ?, upload_time = ?, potion_effect = ?"
                        + " WHERE " + whereColumn;
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, getUUID().toString());
             ps.setLong(2, getUpdateTime());
-            ps.setString(3, Base64Handler.getBase64Inventory(getInventory()));
-            ps.setString(4, Base64Handler.getBase64Item(getOffHand()));
-            ps.setString(5, Base64Handler.getBase64Item(getHelmet()));
-            ps.setString(6, Base64Handler.getBase64Item(getChestplate()));
-            ps.setString(7, Base64Handler.getBase64Item(getLegging()));
-            ps.setString(8, Base64Handler.getBase64Item(getBoots()));
+            ps.setString(3, Base64Handler.getBase64PotionEffect(getPotionEffect()));
 
-            int i = 9;
+            int i = 4;
             for (Object o : whereObject) 
             {
                 ps.setObject(i, o);
@@ -259,7 +176,7 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
 
 
     @Override
-    public ArrayList<PlayerInventory> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject) 
+    public ArrayList<PlayerPotionEffect> get(Connection conn, String orderby, String limit, String whereColumn, Object... whereObject) 
     {
         try 
         {
@@ -277,18 +194,13 @@ public class PlayerInventory implements DatabaseTable<PlayerInventory>
             ResultSet rs = ps.executeQuery();
             DatabaseHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
 
-            ArrayList<PlayerInventory> al = new ArrayList<>();
+            ArrayList<PlayerPotionEffect> al = new ArrayList<>();
             while (rs.next()) 
             {
-                al.add(new PlayerInventory(rs.getInt("id"),
+                al.add(new PlayerPotionEffect(rs.getInt("id"),
                         UUID.fromString(rs.getString("player_uuid")),
                         rs.getLong("upload_time"),
-                        Base64Handler.fromBase64Inventory(rs.getString("inventory")),
-                        Base64Handler.fromBase64Item(rs.getString("off_hand")),
-                        Base64Handler.fromBase64Item(rs.getString("helmet")),
-                        Base64Handler.fromBase64Item(rs.getString("chestplate")),
-                        Base64Handler.fromBase64Item(rs.getString("legging")),
-                        Base64Handler.fromBase64Item(rs.getString("boots"))));
+                        Base64Handler.fromBase64PotionEffect(rs.getString("potion_effect"))));
             }
             return al;
         } 
